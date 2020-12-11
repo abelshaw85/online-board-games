@@ -22,8 +22,7 @@ export class GameService {
   turnChanged = new Subject<boolean>();
 
 
-  constructor(private httpClient: HttpClient, private changeDetectorRef: ChangeDetectorRef) {
-    //this.changeDetectorRef.detach();
+  constructor(private httpClient: HttpClient) {
   }
 
   new() {
@@ -137,8 +136,9 @@ export class GameService {
       this.squares[positionToDrop.row][positionToDrop.col].piece = Object.assign({}, pieceToDrop);
     }
     this.gameLog.push(pieceToDrop.player + " has dropped a " + pieceToDrop.name);
-    this.unhighlightPossibleMoves();
-    this.checkForCheck();
+    if (!this.checkForCheck()) {
+      this.unhighlightPossibleMoves();
+    }
     this.toggleTurn()
     this.gameLogUpdated.next(this.gameLog.slice());
 
@@ -177,6 +177,7 @@ export class GameService {
       let capturedPiece: Piece = Object.assign({}, this.squares[to.row][to.col].piece);
       capturedPiece.taken = true;
       this.gameLog.push(movingPiece.player + "'s " + movingPiece.name + " captured " + capturedPiece.player + "'s " + capturedPiece.name + ".");
+      capturedPiece = this.unpromotePiece(capturedPiece);
       this.squares[to.row][to.col].piece = capturedPiece;
       if (capturedPiece.player === "Black") {
         capturedPiece.player = "White"; //piece switches sides once captured
@@ -211,6 +212,17 @@ export class GameService {
     }
     this.toggleTurn();
     this.gameLogUpdated.next(this.gameLog.slice());
+  }
+
+  unpromotePiece(promotedPiece: Piece): Piece {
+    if (promotedPiece.promoted) {
+      let unpromotedPiece: Piece = Object.assign({}, this.pieces.find(x => x.promotionPiece === promotedPiece.name));
+      unpromotedPiece.player = promotedPiece.player;
+      unpromotedPiece.taken = promotedPiece.taken;
+      return unpromotedPiece;
+    } else {
+      return Object.assign({}, promotedPiece);
+    }
   }
 
   highlightPossibleMoves(pieceName: string, position: RowColPosition, player: string) {
@@ -335,7 +347,6 @@ export class GameService {
   }
 
   toggleTurn() {
-    console.log("toggle turn");
     this.blacksTurn = !this.blacksTurn;
     this.turnChanged.next(this.blacksTurn);
   }
@@ -357,7 +368,6 @@ export class GameService {
     if (kingSquare.danger) {
       this.unhighlightPossibleMoves();
       kingSquare.inCheck = true;
-      alert("King is in check!");
       return true;
     }
     return false;
