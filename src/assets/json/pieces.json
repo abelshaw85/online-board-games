@@ -109,8 +109,7 @@
       "promoted": false,
       "extended": true,
       "moves": [
-        {"row": 1, "col": 0},
-        {"row": 1, "col": 0}
+        {"row": -1, "col": 0}
       ],
       "promotionPiece": "Promoted Lance",
       "enforcedPromotionRow": 0
