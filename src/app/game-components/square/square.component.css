@@ -1,0 +1,46 @@
+.square {
+  width: 4vw;
+  border: 1px solid black;
+  text-align: center;
+  background-color: rgb(236, 220, 198);
+  margin: 1px;
+  display: inline-block;
+  position: relative;
+}
+
+.hover:hover {
+  border: 1px solid rgb(32, 32, 32);
+  background-color: rgb(240, 208, 163);
+}
+
+.activeSquare {
+  background-color: rgb(149, 236, 186);
+}
+
+.dangerSquare {
+  background-color: rgb(248, 134, 134);
+}
+
+.currentSquare {
+  background-color: rgb(228, 227, 227);
+}
+
+.checkSquare {
+  background-color: rgb(255, 0, 0);
+}
+
+.square:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.square-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
+  display: block;
+}

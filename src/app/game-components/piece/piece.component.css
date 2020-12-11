@@ -1,0 +1,28 @@
+img {
+  width:100%;
+  height:100%;
+  vertical-align: middle;
+}
+
+.piece-container {
+  vertical-align: middle;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 2%;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  height: 100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.grab {
+  cursor: grab;
+}
+
+.white {
+  transform: rotate(180deg);
+}

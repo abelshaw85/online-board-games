@@ -1,0 +1,13 @@
+.board-container {
+  text-align: center;
+}
+
+.board-row {
+  padding: 0px;
+  margin-bottom: -5px;
+}
+
+.takenContainer {
+  background-color: rgb(241, 239, 239);
+  border: 1px solid black;
+}

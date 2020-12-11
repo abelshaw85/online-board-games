@@ -1,0 +1,22 @@
+<div
+  class="piece-container"
+  [ngClass]="{
+    'grab': isActive()
+  }"
+  cdkDrag
+  [cdkDragDisabled]="!isActive()"
+  (cdkDragStarted)="onDragStart($event)"
+  (cdkDragEnded)="onDragEnd($event)"
+  cdkDragBoundary=".board-container"
+
+  >
+  <img src="{{piece.imgUrl}}"
+    [ngStyle]="{'width': piece.size + '%', 'height': piece.size + '%'}"
+    [ngClass]="{'white': piece.player != null && piece.player == 'White'}"
+    draggable="false"
+    matTooltip="{{piece.name}}"
+    [matTooltipShowDelay]="500"
+    aria-label="Button that displays a tooltip when focused or hovered over">
+    <div class="" *cdkDragPlaceholder></div>
+</div>
+

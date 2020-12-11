@@ -1,0 +1,26 @@
+<div class="row board-container" cdkDropListGroup>
+  <div class="col-md-2 col-sm-12 takenContainer">
+    <app-taken-pieces
+      [heading]="'Taken by White'"
+      [takenPieces]="takenByWhite"
+      [showTurn]="!blacksTurn">
+    </app-taken-pieces>
+  </div>
+  <div class="col-md-8">
+    <div *ngFor="let row of squares" class="board-row">
+        <app-square *ngFor="let square of row" [square]="square"></app-square>
+    </div>
+    <div>
+      <textarea style="width: 100%;" rows="10" disabled>{{gameLog.join('\n')}}</textarea>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-12 takenContainer">
+    <app-taken-pieces
+      [heading]="'Taken by Black'"
+      [takenPieces]="takenByBlack"
+      [showTurn]="blacksTurn">
+    </app-taken-pieces>
+  </div>
+</div>
+
+

@@ -1,0 +1,12 @@
+<div>
+  <h4>{{heading}}</h4>
+  <div class="turn"><img src="assets/img/turn-star.png" style="height: 100%; width: auto;" *ngIf="showTurn"></div>
+  <hr>
+
+    <!-- <span *ngFor="let square of takenPieces"
+      cdkDropList
+      cdkDropListSortingDisabled
+      [cdkDropListData]="square"> -->
+      <app-square *ngFor="let square of takenPieces" [square]="square"></app-square>
+    <!-- </span> -->
+</div>

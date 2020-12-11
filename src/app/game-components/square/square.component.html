@@ -1,0 +1,20 @@
+<div
+  class="square"
+  [ngClass]="{
+    'activeSquare': square.active,
+    'dangerSquare': square.danger,
+    'currentSquare': square.current,
+    'checkSquare': square.inCheck,
+    'hover': hasActivePiece()
+  }">
+  <span class="square-content align-middle"
+    cdkDropList
+    cdkDropListSortingDisabled
+    [cdkDropListData]="square"
+    (cdkDropListDropped)="drop($event)">
+    <app-piece
+      *ngIf="square.piece != null"
+      [piece]="square.piece"
+      [position]="square.position"></app-piece>
+  </span>
+</div>
