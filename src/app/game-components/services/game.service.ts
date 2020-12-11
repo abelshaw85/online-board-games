@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { Piece } from '../piece/piece.model';
 import { RowColPosition } from '../square/row-col-position.model';
 import { Square } from '../square/square.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class GameService {
@@ -41,7 +42,7 @@ export class GameService {
   }
 
   fetchPieces() {
-    this.httpClient.get<Piece[]>('/assets/json/pieces.json').subscribe((fetchedPieces) => {
+    this.httpClient.get<Piece[]>(environment.piecesJson).subscribe((fetchedPieces) => {
       for (var piece of fetchedPieces["Pieces"]) {
         let name: string = piece["name"];
         let imgUrl: string = piece["imgUrl"];
@@ -77,7 +78,7 @@ export class GameService {
         this.pieces.push(newPiece);
       }
       //Set up white pieces
-      this.httpClient.get<{'pieceName': string, 'position': {'row': number, 'col': number}}[]>('/assets/json/board.json').subscribe((fetchedStartingPositions) => {
+      this.httpClient.get<{'pieceName': string, 'position': {'row': number, 'col': number}}[]>(environment.boardJson).subscribe((fetchedStartingPositions) => {
         for (var fetchedPosition of fetchedStartingPositions["Black"]) {
           let piece: Piece = this.getPieceByName(fetchedPosition["pieceName"]);
           piece.player = "Black";
