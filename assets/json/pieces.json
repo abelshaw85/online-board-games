@@ -1,0 +1,193 @@
+{
+	"Pieces": [
+    {
+      "name": "King General",
+      "imgUrl": "assets/img/pieces-svg/king-general.svg",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1},
+        {"row": 1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": -1}
+      ]
+    },
+    {
+      "name": "Jewled General",
+      "imgUrl": "assets/img/pieces-svg/jeweled-general.svg",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1},
+        {"row": 1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": -1}
+      ]
+    },
+    {
+      "name": "Rook",
+      "imgUrl": "assets/img/pieces-svg/rook.svg",
+      "size": 95,
+      "promoted": false,
+      "extended": true,
+      "moves": [
+        {"row": 1, "col": 0},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": 0, "col": -1}
+      ],
+      "promotionPiece": "Promoted Rook"
+    },
+    {
+      "name": "Bishop",
+      "imgUrl": "assets/img/pieces-svg/bishop.svg",
+      "size": 95,
+      "promoted": false,
+      "extended": true,
+      "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1}
+      ],
+      "promotionPiece": "Promoted Bishop"
+    },
+    {
+      "name": "Gold General",
+      "imgUrl": "assets/img/pieces-svg/gold-general.svg",
+      "size": 90,
+      "promoted": false,
+      "moves": [
+        {"row": 1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": -1},
+        {"row": -1, "col": 1},
+        {"row": -1, "col": -1}
+      ]
+    },
+    {
+      "name": "Silver General",
+      "imgUrl": "assets/img/pieces-svg/silver-general.svg",
+      "size": 90,
+      "promoted": false,
+      "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1},
+        {"row": -1, "col": 0}
+      ],
+      "promotionPiece": "Promoted Silver"
+    },
+    {
+      "name": "Knight",
+      "imgUrl": "assets/img/pieces-svg/knight.svg",
+      "size": 85,
+      "promoted": false,
+      "moves": [
+        {"row": -2, "col": 1},
+        {"row": -2, "col": -1}
+      ],
+      "promotionPiece": "Promoted Knight",
+      "enforcedPromotionRow": 1
+    },
+    {
+      "name": "Lance",
+      "imgUrl": "assets/img/pieces-svg/lance.svg",
+      "size": 80,
+      "promoted": false,
+      "extended": true,
+      "moves": [
+        {"row": 1, "col": 0},
+        {"row": 1, "col": 0}
+      ],
+      "promotionPiece": "Promoted Lance",
+      "enforcedPromotionRow": 0
+    },
+    {
+      "name": "Pawn",
+      "imgUrl": "assets/img/pieces-svg/pawn.svg",
+      "size": 75,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+        {"row": -1, "col": 0}
+      ],
+      "promotionPiece": "Promoted Pawn",
+      "enforcedPromotionRow": 0
+    },
+    {
+      "name": "Promoted Rook",
+      "imgUrl": "assets/img/pieces-svg/promoted-rook.svg",
+      "size": 95,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "Rook",
+        "King General"
+      ]
+    },
+    {
+      "name": "Promoted Bishop",
+      "imgUrl": "assets/img/pieces-svg/promoted-bishop.svg",
+      "size": 95,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "Bishop",
+        "King General"
+      ]
+    },
+    {
+      "name": "Promoted Silver",
+      "imgUrl": "assets/img/pieces-svg/promoted-silver.svg",
+      "size": 90,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "Gold General"
+      ]
+    },
+    {
+      "name": "Promoted Knight",
+      "imgUrl": "assets/img/pieces-svg/promoted-knight.svg",
+      "size": 85,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "Gold General"
+      ]
+    },
+    {
+      "name": "Promoted Lance",
+      "imgUrl": "assets/img/pieces-svg/promoted-lance.svg",
+      "size": 80,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "Gold General"
+      ]
+    },
+    {
+      "name": "Promoted Pawn",
+      "imgUrl": "assets/img/pieces-svg/promoted-pawn.svg",
+      "size": 75,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "Gold General"
+      ]
+    }
+	]
+}
