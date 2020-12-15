@@ -56,7 +56,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       }
     );
     this.gameService.new();
-    this.squares = this.gameService.getSquares();
+    this.squares = this.gameService.getSquares(); //required for initial setup
   }
 
   ngOnDestroy(): void {

@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Piece } from '../piece/piece.model';
 import { RowColPosition } from '../square/row-col-position.model';
 import { Square } from '../square/square.model';
 import { environment } from '../../../environments/environment';
+import { PieceBag } from './piece-bag.service';
 
 @Injectable()
 export class GameService {
@@ -15,14 +16,14 @@ export class GameService {
   takenByWhiteUpdated = new Subject<Square[]>();
   gameLog: string[] = [];
   gameLogUpdated = new Subject<string[]>();
-  private pieces: Piece[] = [];
+  //private pieces: Piece[] = [];
   private takenByBlack: Square[] = [];
   private takenByWhite: Square[] = [];
   blacksTurn: boolean;
   turnChanged = new Subject<boolean>();
 
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private pieceBag: PieceBag) {
   }
 
   new() {
@@ -36,50 +37,15 @@ export class GameService {
       }
       this.squares.push(row); //add row to the Square[][]
     }
-    this.fetchPieces();
+    this.setupBoard();
 
   }
 
-  fetchPieces() {
-    this.httpClient.get<Piece[]>(environment.piecesJson).subscribe((fetchedPieces) => {
-      for (var piece of fetchedPieces["Pieces"]) {
-        let name: string = piece["name"];
-        let imgUrl: string = piece["imgUrl"];
-        let size: number = piece["size"];
-        let moves: RowColPosition[] = [];
-        let promoted: boolean = piece["promoted"];
-        // If this is a promoted piece, borrow moves from existing pieces
-        if (promoted) {
-          let movesToCopy: string[] = piece["moves"];
-          movesToCopy.forEach((pieceName: string) => {
-            let pieceToCopyMoves: Piece = this.getPieceByName(pieceName);
-            pieceToCopyMoves.moves.forEach((pieceMove: RowColPosition) => {
-              if (moves.filter((move) => move.row == pieceMove.row && move.col == pieceMove.col).length === 0) {
-                moves.push(pieceMove);
-              }
-            });
-          });
-        } else {
-          for (var move of <{'row': number, 'col': number}[]>piece["moves"]) {
-            moves.push(new RowColPosition(move.row, move.col));
-          }
-        }
-        let promotionPiece: string = null;
-        let enforcedPromotionRow: number = -1;
-        if (piece.hasOwnProperty('enforcedPromotionRow')) {
-          enforcedPromotionRow = piece["enforcedPromotionRow"];
-        }
-        if (piece.hasOwnProperty('promotionPiece')) {
-          promotionPiece = piece["promotionPiece"];
-        }
-        let extended: boolean = piece["extended"];
-        let newPiece: Piece = new Piece(name, imgUrl, size, moves, null, promoted, promotionPiece, enforcedPromotionRow, extended);
-        this.pieces.push(newPiece);
-      }
-      //Set up white pieces
+  setupBoard() {
+      //Set up black pieces
       this.httpClient.get<{'pieceName': string, 'position': {'row': number, 'col': number}}[]>(environment.boardJson).subscribe((fetchedStartingPositions) => {
         for (var fetchedPosition of fetchedStartingPositions["Black"]) {
-          let piece: Piece = this.getPieceByName(fetchedPosition["pieceName"]);
+          let piece: Piece = this.pieceBag.getPieceByName(fetchedPosition["pieceName"]);
           piece.player = "Black";
           let row: number = fetchedPosition["position"]["row"];
           let col: number = fetchedPosition["position"]["col"];
@@ -91,7 +57,7 @@ export class GameService {
           this.squares[row][col].piece = piece;
         }
 
-        //Set up white pieces
+        //Set up white pieces by mirroring the black pieces, then adding the 2nd line rook/bishop
         let endRow = this.squares[this.BOARD_SIZE - 1];
         let frontRow = this.squares[this.BOARD_SIZE - 3];
         for (let i = 0; i < endRow.length; i++) {
@@ -101,24 +67,15 @@ export class GameService {
           this.squares[2][i].piece.player = "White";
         }
         for (var fetchedPosition of fetchedStartingPositions["White"]) {
-          let piece: Piece = this.getPieceByName(fetchedPosition["pieceName"]);
+          let piece: Piece = this.pieceBag.getPieceByName(fetchedPosition["pieceName"]);
           piece.player = "White";
           let row: number = fetchedPosition["position"]["row"];
           let col: number = fetchedPosition["position"]["col"];
           this.squares[row][col].piece = piece;
         }
-      });
     });
     this.gameLog.push("A New Shogi Game! It is Black's turn.");
     this.gameLogUpdated.next(this.gameLog.slice());
-  }
-
-  getPieceByName(name: string): Piece {
-    return Object.assign({}, this.pieces.find(x => x.name === name));
-  }
-
-  isExtended(name: string): boolean {
-    return this.getPieceByName(name).extended;
   }
 
   getSquares() {
@@ -136,9 +93,8 @@ export class GameService {
       this.squares[positionToDrop.row][positionToDrop.col].piece = Object.assign({}, pieceToDrop);
     }
     this.gameLog.push(pieceToDrop.player + " has dropped a " + pieceToDrop.name);
-    if (!this.checkForCheck()) {
-      this.unhighlightPossibleMoves();
-    }
+    this.unhighlightPossibleMoves();
+    this.checkForCheck();
     this.toggleTurn()
     this.gameLogUpdated.next(this.gameLog.slice());
 
@@ -177,7 +133,7 @@ export class GameService {
       let capturedPiece: Piece = Object.assign({}, this.squares[to.row][to.col].piece);
       capturedPiece.taken = true;
       this.gameLog.push(movingPiece.player + "'s " + movingPiece.name + " captured " + capturedPiece.player + "'s " + capturedPiece.name + ".");
-      capturedPiece = this.unpromotePiece(capturedPiece);
+      capturedPiece = this.pieceBag.unpromotePiece(capturedPiece);
       this.squares[to.row][to.col].piece = capturedPiece;
       if (capturedPiece.player === "Black") {
         capturedPiece.player = "White"; //piece switches sides once captured
@@ -200,35 +156,22 @@ export class GameService {
     // replace piece with promoted piece if applicable
     if (this.canPromote(to.row, movingPiece)) {
       if (this.isEnforcedPromote(to.row, movingPiece) || confirm("This piece can be promoted to " + movingPiece.promotionPiece + ", would you like to promote this piece?")) {
-        let promotedPiece: Piece = this.getPieceByName(movingPiece.promotionPiece);
-        promotedPiece.player = movingPiece.player;
+        let promotedPiece: Piece = this.pieceBag.promotePiece(movingPiece);
+        //promotedPiece.player = movingPiece.player;
         this.squares[to.row][to.col].piece = promotedPiece;
         this.gameUpdated.next(this.squares); // Update again to show change
         this.gameLog.push(movingPiece.player + " promoted their " + movingPiece.name + " to " + promotedPiece.name + ".");
       }
     }
-    if (!this.checkForCheck()) {
-      this.unhighlightPossibleMoves();
-    }
+    this.checkForCheck();
     this.toggleTurn();
     this.gameLogUpdated.next(this.gameLog.slice());
-  }
-
-  unpromotePiece(promotedPiece: Piece): Piece {
-    if (promotedPiece.promoted) {
-      let unpromotedPiece: Piece = Object.assign({}, this.pieces.find(x => x.promotionPiece === promotedPiece.name));
-      unpromotedPiece.player = promotedPiece.player;
-      unpromotedPiece.taken = promotedPiece.taken;
-      return unpromotedPiece;
-    } else {
-      return Object.assign({}, promotedPiece);
-    }
   }
 
   highlightPossibleMoves(pieceName: string, position: RowColPosition, player: string) {
     // set current square
     this.squares[position.row][position.col].current = true;
-    let piece: Piece = this.getPieceByName(pieceName);
+    let piece: Piece = this.pieceBag.getPieceByName(pieceName);
     piece.moves.forEach(move => {
       let moveRow = move.row;
       let moveCol = move.col;
@@ -241,7 +184,7 @@ export class GameService {
         if (this.isWithinBoard(position.row + moveRow, position.col + moveCol)) {
           let squareToMoveTo: Square = this.squares[position.row + moveRow][position.col + moveCol];
 
-          // Only move if the tile is not occupied by the same colour pieces as the player
+          // Square is empty, and can be moved to
           if (squareToMoveTo.piece == null) {
             this.squares[position.row + moveRow][position.col + moveCol].active = true;
           }
@@ -256,7 +199,7 @@ export class GameService {
           }
 
           // exit the loop if piece is not extended (can move more than 1 square)
-          if (!this.isExtended(pieceName)) {
+          if (!this.pieceBag.isExtended(pieceName)) {
             return; //acts like continue;
           }
           if (moveRow < 0) {
@@ -351,25 +294,34 @@ export class GameService {
     this.turnChanged.next(this.blacksTurn);
   }
 
-  checkForCheck(): boolean {
-    let activePlayer = this.getActivePlayer();
-    let kingSquare: Square;
+  checkForCheck() {
+    this.unhighlightPossibleMoves(); //Reset board to remove previous highlights
+    console.log("CHECKING FOR CHECK");
+    let kingPositions: RowColPosition[] = [];
     this.squares.forEach((row) => {
       row.forEach((square) => {
         if (square.piece != null) {
-          if (square.piece.player == activePlayer) {
-            this.highlightPossibleMoves(square.piece.name, square.position, activePlayer);
-          } else if (square.piece.name == "King General" || square.piece.name == "Jewled General") {
-            kingSquare = square;
+          this.highlightPossibleMoves(square.piece.name, square.position, square.piece.player);
+          if (square.piece.name == "King General" || square.piece.name == "Jeweled General") {
+            kingPositions.push(Object.assign({}, square.position));
+            console.log(square.piece.player + "'s king found.");
           }
         }
       });
     });
-    if (kingSquare.danger) {
-      this.unhighlightPossibleMoves();
-      kingSquare.inCheck = true;
-      return true;
-    }
-    return false;
+    let kingSquares: Square[] = [];
+    kingPositions.forEach((kingSquarePosition) => {
+      kingSquares.push(Object.assign({}, this.squares[kingSquarePosition.row][kingSquarePosition.col])); //make a copy of the king squares before removing highlight
+    });
+    this.unhighlightPossibleMoves(); //clear board before applying in-check highlights
+    kingSquares.forEach((kingSquare) => {
+      if (kingSquare.danger) { //if copy is in danger, add in-check to original
+        this.squares[kingSquare.position.row][kingSquare.position.col].inCheck = true;
+        console.log(this.squares[kingSquare.position.row][kingSquare.position.col].piece.player + "'s king is in check");
+      } else {
+        this.squares[kingSquare.position.row][kingSquare.position.col].inCheck = false;
+        console.log(this.squares[kingSquare.position.row][kingSquare.position.col].piece.player + "'s king is not in check");
+      }
+    });
   }
 }

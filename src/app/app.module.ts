@@ -10,6 +10,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { HttpClientModule } from '@angular/common/http';
 import { TakenPiecesComponent } from './game-components/board/taken-pieces/taken-pieces.component';
+import { GameService } from './game-components/services/game.service';
+import { PieceBag } from './game-components/services/piece-bag.service';
 
 
 @NgModule({
@@ -27,7 +29,7 @@ import { TakenPiecesComponent } from './game-components/board/taken-pieces/taken
     MatTooltipModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [GameService, PieceBag],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
