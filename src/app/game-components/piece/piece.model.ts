@@ -6,7 +6,7 @@ export class Piece {
     public imgUrl: string,
     public size: number,
     public moves: RowColPosition[],
-    public player?: string,
+    public colour?: string,
     public promoted: boolean = false,
     public promotionPiece: string = null,
     public enforcedPromotionRow: number = -1,

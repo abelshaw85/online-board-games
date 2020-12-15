@@ -39,6 +39,6 @@ export class SquareComponent implements OnInit {
   }
 
   hasActivePiece(): boolean {
-    return this.square.piece != null && this.square.piece.player === this.gameService.getActivePlayer();
+    return this.square.piece != null && this.square.piece.colour === this.gameService.getActiveColour();
   }
 }

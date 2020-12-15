@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Player } from '../player/player.model';
 import { GameService } from '../services/game.service';
 import { Square } from '../square/square.model';
 
@@ -14,12 +15,16 @@ export class BoardComponent implements OnInit, OnDestroy {
   takenByWhite: Square[] = [];
   takenByBlack: Square[] = [];
   blacksTurn: boolean;
+  gameLog: string[] = [];
   takenByBlackSubscription: Subscription;
   takenByWhiteSubscription: Subscription;
   gameLogUpdatedSubscription: Subscription;
   turnChangedSubscription: Subscription;
-  gameLog: string[] = [];
   gameSubscription: Subscription;
+  playersSet: Subscription;
+  whitePlayer: Player;
+  blackPlayer: Player;
+
 
   constructor(private gameService: GameService) {
 
@@ -55,7 +60,14 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.blacksTurn = blacksTurn;
       }
     );
-    this.gameService.new();
+
+    this.playersSet = this.gameService.playersSet.subscribe(
+      (players) => {
+        this.blackPlayer = players.Black,
+        this.whitePlayer = players.White
+      }
+    );
+    this.gameService.new(new Player("John"), new Player("Steve"));
     this.squares = this.gameService.getSquares(); //required for initial setup
   }
 
@@ -65,6 +77,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.takenByWhiteSubscription.unsubscribe();
     this.gameLogUpdatedSubscription.unsubscribe();
     this.turnChangedSubscription.unsubscribe();
+    this.playersSet.unsubscribe();
   }
 
 }

@@ -1,7 +1,7 @@
 <div class="row board-container" cdkDropListGroup>
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
-      [heading]="'Taken by White'"
+      [heading]="'Taken by ' + whitePlayer.name + ' [White]'"
       [takenPieces]="takenByWhite"
       [showTurn]="!blacksTurn">
     </app-taken-pieces>
@@ -16,7 +16,7 @@
   </div>
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
-      [heading]="'Taken by Black'"
+      [heading]="'Taken by ' + blackPlayer.name + ' [Black]'"
       [takenPieces]="takenByBlack"
       [showTurn]="blacksTurn">
     </app-taken-pieces>

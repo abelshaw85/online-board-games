@@ -47,28 +47,35 @@ export class PieceBag {
     });
   }
 
-  getPieceByName(name: string): Piece {
-    return Object.assign({}, this.pieces.find(x => x.name === name));
+  getPieceByName(name: string, faceDown = false): Piece {
+    let fetchedPiece: Piece = Object.assign({}, this.pieces.find(x => x.name === name));
+    let moves: RowColPosition[] = [];
+    fetchedPiece.moves.forEach((move) => {
+      let moveRow = move.row;
+      let moveCol = move.col;
+      if (faceDown) {
+        moveRow = moveRow * -1;
+      }
+      moves.push(new RowColPosition(moveRow, moveCol));
+    });
+    fetchedPiece.moves = moves;
+    return fetchedPiece;
   }
 
   isExtended(name: string): boolean {
     return this.getPieceByName(name).extended;
   }
 
-  promotePiece(unpromotedPiece: Piece): Piece {
-    let promotedPiece: Piece = Object.assign({}, this.getPieceByName(unpromotedPiece.promotionPiece));
-    promotedPiece.player = unpromotedPiece.player;
+  promotePiece(unpromotedPieceName: string, faceDown = false): Piece {
+    let nameOfpromotedPiece = this.pieces.find(piece => piece.name === unpromotedPieceName).promotionPiece;
+    let promotedPiece: Piece = Object.assign({}, this.getPieceByName(nameOfpromotedPiece, faceDown));
     return promotedPiece;
   }
 
-  unpromotePiece(promotedPiece: Piece): Piece {
-    if (promotedPiece.promoted) {
-      let unpromotedPiece: Piece = Object.assign({}, this.pieces.find(x => x.promotionPiece === promotedPiece.name));
-      unpromotedPiece.player = promotedPiece.player;
-      unpromotedPiece.taken = promotedPiece.taken;
-      return unpromotedPiece;
-    } else {
-      return Object.assign({}, promotedPiece);
-    }
+  unpromotePiece(promotedPieceName: string, faceDown = false): Piece {
+    let nameOfUnpromotedPiece = this.pieces.find(piece => piece.promotionPiece === promotedPieceName).name;
+    let unpromotedPiece: Piece = this.getPieceByName(nameOfUnpromotedPiece, faceDown);
+    console.log(faceDown);
+    return unpromotedPiece;
   }
 }

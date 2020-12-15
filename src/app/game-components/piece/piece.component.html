@@ -12,11 +12,10 @@
   >
   <img src="{{piece.imgUrl}}"
     [ngStyle]="{'width': piece.size + '%', 'height': piece.size + '%'}"
-    [ngClass]="{'white': piece.player != null && piece.player == 'White'}"
+    [ngClass]="{'white': piece.colour != null && piece.colour == 'White'}"
     draggable="false"
-    matTooltip="{{piece.name}}"
-    [matTooltipShowDelay]="500"
-    aria-label="Button that displays a tooltip when focused or hovered over">
+    matTooltip="{{piece.name + ' : [' + piece.colour + ']'}}"
+    [matTooltipShowDelay]="500">
     <div class="" *cdkDragPlaceholder></div>
 </div>
 

@@ -21,7 +21,7 @@ export class PieceComponent implements OnInit {
     if (this.piece.taken) {
       this.gameService.highlightDrops();
     } else {
-      this.gameService.highlightPossibleMoves(this.piece.name, this.position, this.piece.player);
+      this.gameService.highlightPossibleMoves(this.position);
     }
   }
 
@@ -30,7 +30,7 @@ export class PieceComponent implements OnInit {
   }
 
   isActive(): boolean {
-    return this.gameService.getActivePlayer() == this.piece.player;
+    return this.gameService.getActiveColour() == this.piece.colour;
   }
 
 }
