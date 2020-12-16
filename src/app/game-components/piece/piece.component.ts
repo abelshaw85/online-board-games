@@ -19,7 +19,7 @@ export class PieceComponent implements OnInit {
 
   onDragStart(event) {
     if (this.piece.taken) {
-      this.gameService.highlightDrops();
+      this.gameService.highlightDrops(this.piece);
     } else {
       this.gameService.highlightPossibleMoves(this.position);
     }

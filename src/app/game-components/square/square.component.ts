@@ -30,10 +30,11 @@ export class SquareComponent implements OnInit {
       else if (from != to) {
         this.gameService.movePiece(from, to);
       } else {
-        console.log("INVALID MOVE");
+        // invalid move
         this.gameService.unhighlightPossibleMoves();
       }
     } else {
+      // dropped in same pos
       this.gameService.unhighlightPossibleMoves();
     }
   }

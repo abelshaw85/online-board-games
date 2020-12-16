@@ -99,16 +99,19 @@ export class GameService {
   }
 
   dropPiece(pieceToDrop: Piece, positionToDrop: RowColPosition) {
-    if (this.isInHand(pieceToDrop)) {
-      this.removeFromHand(pieceToDrop);
-      pieceToDrop.taken = false;
-      this.squares[positionToDrop.row][positionToDrop.col].piece = Object.assign({}, pieceToDrop);
-    }
-    this.gameLog.push(pieceToDrop.colour + " has dropped a " + pieceToDrop.name);
-    this.checkForCheck();
-    this.toggleTurn();
-    this.gameLogUpdated.next(this.gameLog.slice());
+    if (this.isInHand(pieceToDrop) && this.squares[positionToDrop.row][positionToDrop.col].piece == null) {
+      // make copy of the piece
+      let copy: Piece = Object.assign({}, pieceToDrop);
+      // drop piece down
+      this.squares[positionToDrop.row][positionToDrop.col].piece = copy;
 
+      this.squares[positionToDrop.row][positionToDrop.col].piece.taken = false;
+      this.removeFromHand(pieceToDrop);
+      this.gameLog.push(pieceToDrop.colour + " has dropped a " + pieceToDrop.name);
+      this.checkForCheck();
+      this.toggleTurn();
+      this.gameLogUpdated.next(this.gameLog.slice());
+    }
   }
 
   isInHand(piece: Piece) {
@@ -156,11 +159,13 @@ export class GameService {
       this.squares[to.row][to.col].piece = capturedPiece;
 
       //Add captured piece to hand
+      let copy = Object.assign({}, this.squares[to.row][to.col]);
+      copy.position = new RowColPosition(-1, -1);
       if (this.getActiveColour() === "White") {
-        this.takenByWhite.push(Object.assign({}, this.squares[to.row][to.col]));
+        this.takenByWhite.push(copy);
         this.takenByWhiteUpdated.next(this.takenByWhite.slice());
       } else {
-        this.takenByBlack.push(Object.assign({}, this.squares[to.row][to.col]));
+        this.takenByBlack.push(copy);
         this.takenByBlackUpdated.next(this.takenByBlack.slice());
       }
     }
@@ -181,7 +186,12 @@ export class GameService {
         this.gameLog.push(movingPiece.colour + " promoted their " + movingPiece.name + " to " + promotedPiece.name + ".");
       }
     }
-    this.checkForCheck();
+    this.unhighlightCheck();
+    if (this.checkForCheck()) {
+      if (this.isCheckMate()) {
+        alert("Checkmate!");
+      }
+    }
     this.toggleTurn();
     this.gameLogUpdated.next(this.gameLog.slice());
   }
@@ -206,7 +216,6 @@ export class GameService {
   getPossibleMoves(square: Square): RowColPosition[] {
     let possibleMoves: RowColPosition[] = [];
     let position: RowColPosition = square.position;
-
     square.piece.moves.forEach((move) => {
       let moveRow = move.row;
       let moveCol = move.col;
@@ -242,14 +251,42 @@ export class GameService {
     return possibleMoves;
   }
 
-  highlightDrops() {
-    this.squares.forEach((row) => {
-      row.forEach((square) => {
-        if (square.piece === null) {
-          square.active = true;
+  highlightDrops(dropPiece: Piece) {
+    let copy = Object.assign({}, dropPiece);
+    let pawnCounts = new Array(this.squares.length).fill(0);
+    // pawns cannot drop in columns where 2 pawns of the same colour already exist
+    if (dropPiece.name == "Pawn") {
+      for (let row = 0; row < this.squares.length; row++) {
+        for (let col = 0; col < this.squares[row].length; col++) {
+          if (this.squares[row][col].piece != null && this.squares[row][col].piece.name == "Pawn" && this.squares[row][col].piece.colour == dropPiece.colour) {
+            pawnCounts[col] += 1;
+          }
         }
-      });
-    });
+      }
+    }
+    let isOmnidirectional: boolean = (dropPiece.moves.find((move) => move.row > 0) != undefined && dropPiece.moves.find((move) => move.row < 0) != undefined);
+    console.log(isOmnidirectional);
+    for (let row = 0; row < this.squares.length; row++) {
+      for (let col = 0; col < this.squares[row].length; col++) {
+        if (this.squares[row][col].piece == null && pawnCounts[col] < 2) {
+          if (!isOmnidirectional) {
+            this.squares[row][col].piece = copy;
+            if (this.getPossibleMoves(this.squares[row][col]).length > 0) {// if a piece can only move forwards, it must have a valid move after being dropped.
+              this.squares[row][col].active = true;
+            }
+            this.squares[row][col].piece = null;
+          } else {
+            this.squares[row][col].active = true;
+          }
+          // //if dropping this piece would cause checkmate, it is an illegal move
+          // this.squares[row][col].piece = copy;
+          // if (this.checkForCheck() && this.isCheckMate()) {
+          //   this.squares[row][col].active = false;
+          // }
+          // this.squares[row][col].piece = null;
+        }
+      }
+    }
   }
 
   unhighlightPossibleMoves() {
@@ -258,7 +295,6 @@ export class GameService {
         this.squares[i][j].active = false;
         this.squares[i][j].danger = false;
         this.squares[i][j].current = false;
-        this.squares[i][j].inCheck = false;
       }
     }
     this.takenByBlack.forEach((square) => {
@@ -274,8 +310,20 @@ export class GameService {
     this.gameUpdated.next(this.squares);
   }
 
+  unhighlightCheck() {
+    for (let i = 0; i < this.BOARD_SIZE; i++) {
+      for (let j = 0; j < this.BOARD_SIZE; j++) {
+        this.squares[i][j].inCheck = false;
+      }
+    }
+  }
+
   isPossibleMove(position: RowColPosition) {
-    return this.squares[position.row][position.col].active || this.squares[position.row][position.col].danger;
+    if (this.isWithinBoard(position.row, position.col)) {
+      return (this.squares[position.row][position.col].active ||
+            this.squares[position.row][position.col].danger)
+    }
+    return false;
   }
 
   canPromote(row: number, piece: Piece): boolean {
@@ -314,12 +362,12 @@ export class GameService {
     this.turnChanged.next(this.blacksTurn);
   }
 
-  checkForCheck() {
+  checkForCheck(): boolean {
     this.unhighlightPossibleMoves(); //Reset board to remove previous highlights
     let kingPositions: RowColPosition[] = [];
     this.squares.forEach((row) => {
       row.forEach((square) => {
-        if (square.piece != null) {
+        if (square.piece != null && square.piece != undefined) {
           this.highlightPossibleMoves(square.position);
           if (square.piece.name == "King General" || square.piece.name == "Jeweled General") {
             kingPositions.push(Object.assign({}, square.position));
@@ -332,35 +380,60 @@ export class GameService {
       kingSquares.push(Object.assign({}, this.squares[kingSquarePosition.row][kingSquarePosition.col])); //make a copy of the king squares before removing highlight
     });
     this.unhighlightPossibleMoves(); //clear board before applying in-check highlights
+    this.unhighlightCheck();
+    let boardContainsCheck = false;
     kingSquares.forEach((kingSquare) => {
       if (kingSquare.danger) { //if copy is in danger, add in-check to original
         this.squares[kingSquare.position.row][kingSquare.position.col].inCheck = true;
+        boardContainsCheck = true;
       } else {
         this.squares[kingSquare.position.row][kingSquare.position.col].inCheck = false;
       }
     });
+    return boardContainsCheck;
   }
 
-  // isCheckMate(): boolean {
-  //   this.squares.forEach((row) => {
-  //     row.forEach((square) => {
-  //       if (square.piece != null && square.piece.player == checkedSquare.piece.player) { //if the piece belongs to the checked king, it may get them out of check.
-  //         let currentSquares: Square[][] = Object.assign({}, this.squares); //backup of existing board
-  //         let possibleMoves: RowColPosition[] = this.getPossibleMoves(square);
-  //         possibleMoves.forEach((move) => {
-  //           this.squares[move.row][move.col].piece = square.piece;
-  //           this.checkForCheck();
-  //           if (!checkedSquare.inCheck) { //if king is no longer in check
-  //             return false;
-  //           } else {
-  //             this.squares = currentSquares;
-  //           }
-  //         });
-  //       }
-  //     });
-  //   });
-  //   return true;
-  // }
+  isCheckMate(): boolean {
+    let checkedColour: string;
+    for (let row of this.squares) {
+      for (let square of row) {
+        if (square.inCheck) {
+          checkedColour = square.piece.colour;
+          return;
+        }
+      }
+    }
+    for (let row of this.squares) {
+      for (let square of row) {
+        if (square.piece != null && square.piece.colour == checkedColour) {
+          let possibleMoves: RowColPosition[] = this.getPossibleMoves(Object.assign({}, square));
+          for (let move of possibleMoves) {
+            //make copy of the squares
+            let fromSquarePiece = Object.assign({}, square.piece);
+            let toSquarePiece = Object.assign({}, this.squares[move.row][move.col].piece);
+
+            this.squares[move.row][move.col].piece = Object.assign({}, fromSquarePiece);
+            this.squares[square.position.row][square.position.col].piece = null;
+
+            let stillInCheck: boolean = this.checkForCheck();
+            //set board back to previous state
+            this.squares[square.position.row][square.position.col].piece = Object.assign({}, fromSquarePiece);
+
+            // Will typically assign an empty object instead of null, so need to manually set null if object has no properties
+            this.squares[move.row][move.col].piece = Object.keys(toSquarePiece).length > 0 ?
+              this.squares[move.row][move.col].piece = Object.assign({}, toSquarePiece) :
+              this.squares[move.row][move.col].piece = null;
+
+            if (!stillInCheck) {
+              this.checkForCheck(); //re-applies check to checked piece
+              return false; //if no longer check, then there is a move to escape check
+            }
+          }
+        }
+      }
+    }
+    return true;
+  }
 
   getSquare(position: RowColPosition): Square {
     return this.squares[position.row][position.col];
