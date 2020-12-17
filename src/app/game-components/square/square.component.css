@@ -8,13 +8,13 @@
   position: relative;
 }
 
+.activeSquare {
+  background-color: rgb(149, 236, 186);
+}
+
 .hover:hover {
   border: 1px solid rgb(32, 32, 32);
   background-color: rgb(240, 208, 163);
-}
-
-.activeSquare {
-  background-color: rgb(149, 236, 186);
 }
 
 .dangerSquare {
@@ -27,6 +27,10 @@
 
 .checkSquare {
   background-color: rgb(255, 0, 0);
+}
+
+.checkSquare:hover {
+  background-color: rgb(255, 66, 66);
 }
 
 .square:after {

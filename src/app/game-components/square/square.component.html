@@ -5,7 +5,7 @@
     'dangerSquare': square.danger,
     'currentSquare': square.current,
     'checkSquare': square.inCheck,
-    'hover': hasActivePiece()
+    'hover': hasActivePiece() && !square.inCheck
   }">
   <span class="square-content align-middle"
     cdkDropList

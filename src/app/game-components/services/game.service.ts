@@ -62,21 +62,29 @@ export class GameService {
           let row: number = fetchedPosition["position"]["row"];
           let col: number = fetchedPosition["position"]["col"];
           if (piece.name === "Pawn") {
-            for (let i = 0; i < this.BOARD_SIZE; i++) {
-              this.squares[row][i].piece = piece;
+            for (let col = 0; col < this.BOARD_SIZE; col++) {
+              this.squares[row][col].piece = piece;
             }
           }
           this.squares[row][col].piece = piece;
+          // if (piece.name == "King General" || piece.name == "Jeweled General") {
+          //   let blackPlayer = this.player1.colour == "Black" ? this.player1 : this.player2;
+          //   blackPlayer.kingPos = new RowColPosition(row, col);
+          // }
         }
 
         //Set up white pieces by mirroring the black pieces, then adding the 2nd line rook/bishop
         let endRow = this.squares[this.BOARD_SIZE - 1];
         let frontRow = this.squares[this.BOARD_SIZE - 3];
-        for (let i = 0; i < endRow.length; i++) {
-          this.squares[0][i].piece = this.pieceBag.getPieceByName(endRow[i].piece.name, true); //true makes the piece move downwards
-          this.squares[0][i].piece.colour = "White";
-          this.squares[2][i].piece = this.pieceBag.getPieceByName(frontRow[i].piece.name, true)
-          this.squares[2][i].piece.colour = "White";
+        for (let col = 0; col < endRow.length; col++) {
+          this.squares[0][col].piece = this.pieceBag.getPieceByName(endRow[col].piece.name, true); //true makes the piece move downwards
+          this.squares[0][col].piece.colour = "White";
+          this.squares[2][col].piece = this.pieceBag.getPieceByName(frontRow[col].piece.name, true)
+          this.squares[2][col].piece.colour = "White";
+          // if (this.squares[0][col].piece.name == "King General" || this.squares[0][col].piece.name == "Jeweled General") {
+          //   let whitePlayer = this.player1.colour == "White" ? this.player1 : this.player2;
+          //   whitePlayer.kingPos = new RowColPosition(0, col);
+          // }
         }
         for (var fetchedPosition of fetchedStartingPositions["White"]) {
           let piece: Piece = this.pieceBag.getPieceByName(fetchedPosition["pieceName"], true);
@@ -88,6 +96,8 @@ export class GameService {
     });
     this.gameLog.push("A New Shogi Game! It is Black's turn.");
     this.gameLogUpdated.next(this.gameLog.slice());
+    // console.log(this.player1.kingPos);
+    // console.log(this.player2.kingPos);
   }
 
   getSquares() {
@@ -139,14 +149,27 @@ export class GameService {
     }
   }
 
+  playerIsInCheck(colour: string): boolean {
+    for (let row of this.squares) {
+      for (let square of row) {
+        if (square.piece != null && square.piece.colour == colour && (square.piece.name == "King General" || square.piece.name == "Jeweled General")) {
+          return square.inCheck;
+        }
+      }
+    }
+    return false;
+  }
+
   movePiece(from: RowColPosition, to: RowColPosition) {
+    let startedInCheck = this.playerIsInCheck(this.getActiveColour());
     let movingPiece: Piece = this.squares[from.row][from.col].piece;
-    this.gameLog.push(movingPiece.colour + " moved their " + movingPiece.name + ".");
+    let moveMessages: string[] = [];
+    moveMessages.push(movingPiece.colour + " moved their " + movingPiece.name + ".");
 
     // If square has a piece to take, add it to player's hand
     if (this.squares[to.row][to.col].piece != null) {
       let capturedPiece: Piece = Object.assign({}, this.squares[to.row][to.col].piece);
-      this.gameLog.push(movingPiece.colour + "'s " + movingPiece.name + " captured " + capturedPiece.colour + "'s " + capturedPiece.name + ".");
+      moveMessages.push(movingPiece.colour + "'s " + movingPiece.name + " captured " + capturedPiece.colour + "'s " + capturedPiece.name + ".");
 
       //Captured pieces must unpromote
       if (capturedPiece.promoted) {
@@ -163,10 +186,10 @@ export class GameService {
       copy.position = new RowColPosition(-1, -1);
       if (this.getActiveColour() === "White") {
         this.takenByWhite.push(copy);
-        this.takenByWhiteUpdated.next(this.takenByWhite.slice());
+
       } else {
         this.takenByBlack.push(copy);
-        this.takenByBlackUpdated.next(this.takenByBlack.slice());
+
       }
     }
 
@@ -175,7 +198,7 @@ export class GameService {
 
     // Move piece
     this.squares[to.row][to.col].piece = movingPiece;
-    this.gameUpdated.next(this.squares);
+
     // replace piece with promoted piece if applicable
     if (this.canPromote(to.row, movingPiece)) {
       if (this.isEnforcedPromote(to.row, movingPiece) || confirm("This piece can be promoted to " + movingPiece.promotionPiece + ", would you like to promote this piece?")) {
@@ -183,16 +206,29 @@ export class GameService {
         promotedPiece.colour = this.getActiveColour();
         this.squares[to.row][to.col].piece = promotedPiece;
         this.gameUpdated.next(this.squares); // Update again to show change
-        this.gameLog.push(movingPiece.colour + " promoted their " + movingPiece.name + " to " + promotedPiece.name + ".");
+        moveMessages.push(movingPiece.colour + " promoted their " + movingPiece.name + " to " + promotedPiece.name + ".");
       }
     }
     this.unhighlightCheck();
     if (this.checkForCheck()) {
       if (this.isCheckMate()) {
         alert("Checkmate!");
+      } else if (this.playerIsInCheck(this.getActiveColour())) {
+        if (startedInCheck) {
+          alert("You failed to get yourself out of check! You have lost the game.");
+        } else {
+          alert("You put yourself in check! You have lost the game.");
+        }
+        return;
       }
     }
+    this.takenByWhiteUpdated.next(this.takenByWhite.slice());
+    this.takenByBlackUpdated.next(this.takenByBlack.slice());
+    this.gameUpdated.next(this.squares);
     this.toggleTurn();
+    for (let message of moveMessages) {
+      this.gameLog.push(message);
+    }
     this.gameLogUpdated.next(this.gameLog.slice());
   }
 
