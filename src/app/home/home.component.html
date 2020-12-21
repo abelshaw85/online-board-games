@@ -1,0 +1,14 @@
+<h1>
+  Welcome!
+</h1>
+  <!-- <p>Id: <span>{{ greeting.id }}</span></p>
+  <p>Message: <span>{{ greeting.content }}!</span></p> -->
+<hr>
+<p>The homepage.</p>
+<a
+  *ngIf="isLoggedIn"
+  class="nav-link"
+  href="/logout"
+  (click)=handleLogout()>
+    Logout
+</a>

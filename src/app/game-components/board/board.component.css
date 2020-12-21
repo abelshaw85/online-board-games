@@ -11,3 +11,8 @@
   background-color: rgb(241, 239, 239);
   border: 1px solid black;
 }
+
+textarea {
+  width: 100%;
+  font-size: 2em;
+}
