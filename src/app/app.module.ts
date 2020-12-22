@@ -17,8 +17,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { WebSocketComponent } from './web-socket/web-socket/web-socket.component';
 import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './home/home.component';
-import { HttpInterceptorService } from './http-interceptor.service';
-import { LogoutComponent } from './auth/logout/logout.component';
+import { HttpInterceptorService } from './auth/http-interceptor.service';
+import { RegisterComponent } from './auth/register/register.component';
 
 
 @NgModule({
@@ -31,7 +31,7 @@ import { LogoutComponent } from './auth/logout/logout.component';
     WebSocketComponent,
     LoginComponent,
     HomeComponent,
-    LogoutComponent
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

@@ -5,10 +5,22 @@
   <p>Message: <span>{{ greeting.content }}!</span></p> -->
 <hr>
 <p>The homepage.</p>
+<div>
+<span *ngIf="!isLoggedIn">
+<a
+  [routerLink]="['/login']">
+    Login
+</a>
+|
+<a
+  [routerLink]="['/register']">
+    Register
+</a>
+</span>
 <a
   *ngIf="isLoggedIn"
-  class="nav-link"
   href="/logout"
   (click)=handleLogout()>
     Logout
 </a>
+</div>
