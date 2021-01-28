@@ -105,6 +105,7 @@ export class ShogiLogicService implements IGameLogic {
   makePromote(game: Game, pieceLocation: RowColPosition, promotionPieceName: string) {
     let pieceColour = game.squares[pieceLocation.row][pieceLocation.col].piece.colour;
     let promotedPiece = this.pieceBag.getPieceByName(promotionPieceName, pieceColour == "White");
+    promotedPiece.colour = pieceColour;
     game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
   }
 
