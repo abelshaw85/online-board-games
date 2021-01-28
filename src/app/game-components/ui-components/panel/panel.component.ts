@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { AuthenticationService } from 'src/app/auth/auth.service';
 import { GameDetails } from '../../game-models/game-details.model';
 import { Player } from '../../game-models/player.model';
 import { GameDetailsService } from '../../services/game-details.service';
@@ -20,7 +21,8 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   constructor(
     private gameManagerService: GameManagerService,
-    private gameDetailsService: GameDetailsService) { }
+    private gameDetailsService: GameDetailsService,
+    private authorisationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.gameDetailsService.getGameDetails().subscribe((response) => {
@@ -73,7 +75,9 @@ export class PanelComponent implements OnInit, OnDestroy {
     } else if (gameDetails.player1.name == "" || gameDetails.player2.name == "") {
       return "Awaiting Second Player";
     } else {
-      return "In Progress";
+      let thisPlayerName = this.authorisationService.getLoggedInUserName();
+      let opposingPlayerName = gameDetails.player1.name != thisPlayerName ? gameDetails.player1.name : gameDetails.player2.name;
+      return "In Progress Against " + opposingPlayerName;
     }
   }
 }
