@@ -1,4 +1,8 @@
-<div class="row board-container" cdkDropListGroup *ngIf="connected">
+<div *ngIf="loading || !connected">
+  <app-loading-spinner></app-loading-spinner>
+  <p>{{loadingMessage}}</p>
+</div>
+<div class="row board-container" cdkDropListGroup *ngIf="!loading && connected">
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
       [heading]="'Taken by ' + this.game.player1.name + ' [White]'"
@@ -30,9 +34,6 @@
       [game]="game">
     </app-taken-pieces>
   </div>
-</div>
-<div *ngIf="!connected">
-  <p>Connecting...</p>
 </div>
 
 

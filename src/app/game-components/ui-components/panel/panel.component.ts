@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
@@ -18,6 +17,8 @@ export class PanelComponent implements OnInit, OnDestroy {
   connected: boolean;
   userGames: GameDetails[] = [];
   singlePlayerSelected: boolean = false;
+  loadingMessage: string = "Loading...";
+  loading: boolean = true;
 
   constructor(
     private gameManagerService: GameManagerService,
@@ -25,6 +26,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     private authorisationService: AuthenticationService) { }
 
   ngOnInit(): void {
+    this.loadingMessage = "Fetching game details...";
     this.gameDetailsService.getGameDetails().subscribe((response) => {
       let gamesDetails: GameDetails[] = [];
       for (var details of response["data"]) {
@@ -32,6 +34,7 @@ export class PanelComponent implements OnInit, OnDestroy {
         gamesDetails.push(gameDetails);
       }
       this.playerGames = gamesDetails;
+      this.loading = false;
     });
   }
 

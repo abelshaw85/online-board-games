@@ -1,4 +1,9 @@
 <h1>Your Games</h1>
+<div *ngIf="loading">
+  <app-loading-spinner></app-loading-spinner>
+  <p>{{loadingMessage}}</p>
+</div>
+<div *ngIf="!loading">
 <div *ngIf="playerGames.length > 0">
   <table class="table table-bordered">
     <thead class="thead-dark">
@@ -27,3 +32,4 @@
 <label><input type="checkbox" [(ngModel)]="isSinglePlayer" name="singlePlayer"> Make Single-Player game</label>
 <br>
 <button class="btn btn-info" [routerLink]="['..', 'join']">Find Games</button>
+</div>

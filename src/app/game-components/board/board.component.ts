@@ -2,6 +2,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { WebSocketService } from 'src/app/web-socket/web-socket.service';
 import { Game } from '../game-models/game.model';
 import { GameManagerService } from '../services/game-manager.service';
@@ -15,8 +16,9 @@ export class BoardComponent implements OnInit, OnDestroy {
   game: Game;
   id: number;
   subscriptions: Subscription[] = [];
-
   connected: boolean;
+  loading: boolean = true;
+  loadingMessage: string = "Loading...";
 
   constructor(
     private webSocketService: WebSocketService,
@@ -31,11 +33,14 @@ export class BoardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.game = new Game();
     this.id = +this.route.snapshot.params["id"];
+    this.loadingMessage = "Fetching game...";
     this.subscriptions.push(this.gameManager.gameReadyWithId.subscribe(
       (gameId) => {
         if (gameId == this.id) {
           this.game = this.gameManager.getGame(this.id);
-          this.connected = true;
+          this.loading = false;
+          this.loadingMessage = "Connecting to server...";
+          this.connect();
         }
       }
     ));
@@ -48,15 +53,18 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   connect() {
-    this.webSocketService._connect();
+    //Check if WebSocket is already connected, and connect if not
+    this.subscriptions.push(this.webSocketService.connectedSubject.subscribe(
+      (isConnected) => {
+        this.connected = isConnected;
+        if (!this.connected) {
+          this.webSocketService._connect();
+        }
+    }));
   }
 
   disconnect() {
     this.webSocketService._disconnect();
-  }
-
-  sendMove() {
-    this.webSocketService._sendMove();
   }
 
   ngOnDestroy(): void {
