@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { AuthenticationService } from '../auth/auth.service';
 
 @Component({
@@ -12,20 +13,21 @@ export class HomeComponent implements OnInit {
   greeting = {};
   isLoggedIn: boolean;
 
-  // constructor(private http: HttpClient) {
-  //   http.get('http://localhost:8080/resource').subscribe(data => this.greeting = data);
-  // }
   constructor(private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService,
+    private authService: AuthenticationService,
     private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authenticationService.isUserLoggedIn();
+    this.isLoggedIn = this.authService.isUserLoggedIn();
   }
 
   handleLogout() {
-    this.authenticationService.logout();
+    this.authService.logout();
+  }
+
+  getUsername() {
+    return this.authService.getLoggedInUserName();
   }
 
 }

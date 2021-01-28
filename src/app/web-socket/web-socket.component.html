@@ -6,8 +6,8 @@
           <form class="form-inline">
               <div class="form-group">
                   <label for="connect">WebSocket connection:</label>
-                  <button (click)="connect()" class="btn btn-primary m-1" type="submit">Connect</button>
-                  <button (click)="disconnect()" class="btn btn-warning m-1" type="submit" disabled="disabled">Disconnect
+                  <button (click)="connect()" class="btn btn-primary m-1" type="submit" [disabled]="this.connected">Connect</button>
+                  <button (click)="disconnect()" class="btn btn-warning m-1" type="submit" [disabled]="!this.connected">Disconnect
                   </button>
               </div>
           </form>
@@ -19,8 +19,8 @@
                   <label for="name">What is your name?</label>
                   <input type="text" [(ngModel)]="name" class="form-control m-1" name="name"> <br>
               </div>
-              <button (click)="sendMessage()" class="btn btn-info m-1" type="submit">Send</button>
-              <button (click)="sendBoardRequest()" class="btn btn-info m-1" type="submit">Board</button>
+              <!--Add click event here if you want to send data to websocket-->
+              <button class="btn btn-info m-1" type="submit" [disabled]="!this.connected">Send</button>
           </form>
       </div>
   </div>

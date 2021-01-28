@@ -10,15 +10,19 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TakenPiecesComponent } from './game-components/board/taken-pieces/taken-pieces.component';
-import { GameService } from './game-components/services/game.service';
 import { PieceBag } from './game-components/services/piece-bag.service';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
-import { WebSocketComponent } from './web-socket/web-socket/web-socket.component';
+import { WebSocketComponent } from './web-socket/web-socket.component';
 import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { HttpInterceptorService } from './auth/http-interceptor.service';
 import { RegisterComponent } from './auth/register/register.component';
+import { AuthGuard } from './auth/auth-guard.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { WebSocketService } from './web-socket/web-socket.service';
+import { PanelComponent } from './game-components/ui-components/panel/panel.component';
+import { JoinGamesComponent } from './game-components/ui-components/join-games/join-games.component';
 
 
 @NgModule({
@@ -31,7 +35,9 @@ import { RegisterComponent } from './auth/register/register.component';
     WebSocketComponent,
     LoginComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    PanelComponent,
+    JoinGamesComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +46,8 @@ import { RegisterComponent } from './auth/register/register.component';
     MatTooltipModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    FontAwesomeModule
   ],
   providers: [
     {
@@ -48,8 +55,9 @@ import { RegisterComponent } from './auth/register/register.component';
       useClass: HttpInterceptorService,
       multi: true
     },
-    GameService,
-    PieceBag
+    PieceBag,
+    AuthGuard,
+    WebSocketService
   ],
   bootstrap: [AppComponent]
 })

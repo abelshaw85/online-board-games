@@ -1,9 +1,11 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { Piece } from '../piece/piece.model';
-import { GameService } from '../services/game.service';
-import { RowColPosition } from './row-col-position.model';
-import { Square } from './square.model';
+import { AuthenticationService } from 'src/app/auth/auth.service';
+import { Game } from '../game-models/game.model';
+import { Piece } from '../game-models/piece.model';
+import { GameManagerService } from '../services/game-manager.service';
+import { RowColPosition } from '../game-models/row-col-position.model';
+import { Square } from '../game-models/square.model';
 
 @Component({
   selector: 'app-square',
@@ -12,8 +14,10 @@ import { Square } from './square.model';
 })
 export class SquareComponent implements OnInit {
   @Input() square: Square;
+  @Input() game: Game;
 
-  constructor(private gameService: GameService) {
+  constructor(private gameManager: GameManagerService,
+    private authService: AuthenticationService) {
   }
 
   ngOnInit(): void {
@@ -23,23 +27,24 @@ export class SquareComponent implements OnInit {
     let movingPiece: Piece = event["previousContainer"]["data"]["piece"];
     let from: RowColPosition = event.previousContainer.data["position"];
     let to: RowColPosition = event.container.data["position"]; //Could also just retrieve pos from local square variable!
-    if (this.gameService.isPossibleMove(to)) {
+    if (this.game.isPossibleMove(to)) {
       if (movingPiece.taken) {
-        this.gameService.dropPiece(movingPiece, to);
+        this.game.dropPiece(movingPiece, to);
       }
       else if (from != to) {
-        this.gameService.movePiece(from, to);
+        this.game.movePiece(from, to);
       } else {
         // invalid move
-        this.gameService.unhighlightPossibleMoves();
+        this.game.unhighlightPossibleMoves();
       }
     } else {
       // dropped in same pos
-      this.gameService.unhighlightPossibleMoves();
+      this.game.unhighlightPossibleMoves();
     }
   }
 
   hasActivePiece(): boolean {
-    return this.square.piece != null && this.square.piece.colour === this.gameService.getActiveColour();
+    let activeColour = this.game.activeColour;
+    return this.square.piece !== null && this.square.piece.colour === activeColour && this.game.getPlayerByColour(activeColour).name == this.authService.getLoggedInUserName();
   }
 }

@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
-import { Piece } from "../piece/piece.model";
-import { RowColPosition } from "../square/row-col-position.model";
+import { Piece } from "../game-models/piece.model";
+import { RowColPosition } from "../game-models/row-col-position.model";
 
 @Injectable()
 export class PieceBag {

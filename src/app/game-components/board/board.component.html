@@ -1,26 +1,38 @@
-<div class="row board-container" cdkDropListGroup>
+<div class="row board-container" cdkDropListGroup *ngIf="connected">
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
-      [heading]="'Taken by ' + whitePlayer.name + ' [White]'"
-      [takenPieces]="takenByWhite"
-      [showTurn]="!blacksTurn">
+      [heading]="'Taken by ' + this.game.player1.name + ' [White]'"
+      [takenPieces]="game.takenByWhite"
+      [showTurn]="game.activeColour == 'White'"
+      [game]="game">
     </app-taken-pieces>
   </div>
   <div class="col-md-8">
-    <div *ngFor="let row of squares" class="board-row">
-        <app-square *ngFor="let square of row" [square]="square"></app-square>
+    <h1>Game ID: {{game.gameId}}</h1>
+    <div *ngFor="let row of game.squares" class="board-row">
+        <app-square
+          *ngFor="let square of row"
+          [square]="square"
+          [game]="game"></app-square>
     </div>
     <div>
-      <textarea rows="5" disabled>{{gameLog.join('\n')}}</textarea>
+      <textarea rows="5" disabled>{{game.gameLog.join('\n')}}</textarea>
+      <button (click)="connect()">connect</button>
+      <button (click)="disconnect()">disconnect</button>
+      <button (click)="test()">test</button>
     </div>
   </div>
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
-      [heading]="'Taken by ' + blackPlayer.name + ' [Black]'"
-      [takenPieces]="takenByBlack"
-      [showTurn]="blacksTurn">
+      [heading]="'Taken by ' + game.player2.name + ' [Black]'"
+      [takenPieces]="game.takenByBlack"
+      [showTurn]="game.activeColour == 'Black'"
+      [game]="game">
     </app-taken-pieces>
   </div>
+</div>
+<div *ngIf="!connected">
+  <p>Connecting...</p>
 </div>
 
 

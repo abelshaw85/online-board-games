@@ -1,83 +1,67 @@
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Player } from '../player/player.model';
-import { GameService } from '../services/game.service';
-import { Square } from '../square/square.model';
+import { WebSocketService } from 'src/app/web-socket/web-socket.service';
+import { Game } from '../game-models/game.model';
+import { GameManagerService } from '../services/game-manager.service';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.css'],
-  providers: [GameService]
+  styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit, OnDestroy {
-  squares: Square[][];
-  takenByWhite: Square[] = [];
-  takenByBlack: Square[] = [];
-  blacksTurn: boolean;
-  gameLog: string[] = [];
-  takenByBlackSubscription: Subscription;
-  takenByWhiteSubscription: Subscription;
-  gameLogUpdatedSubscription: Subscription;
-  turnChangedSubscription: Subscription;
-  gameSubscription: Subscription;
-  playersSet: Subscription;
-  whitePlayer: Player;
-  blackPlayer: Player;
+  game: Game;
+  id: number;
+  subscriptions: Subscription[] = [];
 
+  connected: boolean;
 
-  constructor(private gameService: GameService) {
+  constructor(
+    private webSocketService: WebSocketService,
+    private route: ActivatedRoute,
+    private gameManager: GameManagerService) {
+  }
 
+  test() {
+    this.webSocketService.test();
   }
 
   ngOnInit(): void {
-    this.gameSubscription = this.gameService.gameUpdated.subscribe( //each time this subject emits a new array, change the array
-      (squares: Square[][]) => {
-        this.squares = squares;
+    this.game = new Game();
+    this.id = +this.route.snapshot.params["id"];
+    this.subscriptions.push(this.gameManager.gameReadyWithId.subscribe(
+      (gameId) => {
+        if (gameId == this.id) {
+          this.game = this.gameManager.getGame(this.id);
+          this.connected = true;
+        }
       }
-    );
+    ));
 
-    this.takenByBlackSubscription = this.gameService.takenByBlackUpdated.subscribe(
-      (squares: Square[]) => {
-        this.takenByBlack = squares;
-      }
-    );
+    //if route changes, change id and request the game with the new id
+    this.subscriptions.push(this.route.params.subscribe(routeParams => {
+      this.id = routeParams.id;
+      this.gameManager.requestGame(this.id);
+    }));
+  }
 
-    this.takenByWhiteSubscription = this.gameService.takenByWhiteUpdated.subscribe(
-      (squares: Square[]) => {
-        this.takenByWhite = squares;
-      }
-    );
+  connect() {
+    this.webSocketService._connect();
+  }
 
-    this.gameLogUpdatedSubscription = this.gameService.gameLogUpdated.subscribe(
-      (gameLog: string[]) => {
-        this.gameLog = gameLog.reverse();
-      }
-    );
+  disconnect() {
+    this.webSocketService._disconnect();
+  }
 
-    this.turnChangedSubscription = this.gameService.turnChanged.subscribe(
-      (blacksTurn: boolean) => {
-        this.blacksTurn = blacksTurn;
-      }
-    );
-
-    this.playersSet = this.gameService.playersSet.subscribe(
-      (players) => {
-        this.blackPlayer = players.Black,
-        this.whitePlayer = players.White
-      }
-    );
-    this.gameService.new(new Player("John"), new Player("Steve"));
-    this.squares = this.gameService.getSquares(); //required for initial setup
+  sendMove() {
+    this.webSocketService._sendMove();
   }
 
   ngOnDestroy(): void {
-    this.gameSubscription.unsubscribe();
-    this.takenByBlackSubscription.unsubscribe();
-    this.takenByWhiteSubscription.unsubscribe();
-    this.gameLogUpdatedSubscription.unsubscribe();
-    this.turnChangedSubscription.unsubscribe();
-    this.playersSet.unsubscribe();
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
   }
-
 }

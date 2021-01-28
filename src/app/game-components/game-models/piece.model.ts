@@ -1,4 +1,4 @@
-import { RowColPosition } from '../square/row-col-position.model';
+import { RowColPosition } from './row-col-position.model';
 
 export class Piece {
   constructor(

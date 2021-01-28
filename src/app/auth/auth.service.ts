@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 // https://www.javaguides.net/2019/04/spring-boot-spring-security-angular-example-tutorial.html
 
@@ -11,64 +12,63 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthenticationService {
-
-  // BASE_PATH: 'http://localhost:8080'
-  USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser';
-  API_URL = 'http://localhost:8080/api/v1/basicauth';
-
-  public username: String;
-  public password: String;
+  LOCALLY_STORED_USER_DATA = 'user';
+  username = null;
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   constructor(private http: HttpClient) {
-
   }
 
-  authenticationService(username: String, password: String) {
-    return this.http.get(this.API_URL,
-      { headers:
-        { authorization: this.createBasicAuthToken(username, password) }
-      }).pipe(map((res) => {
-        this.username = username;
-        this.password = password;
-        this.registerSuccessfulLogin(username, password);
-      }));
+  login(username: String, password: String) {
+    // let token = this.createBasicAuthToken(username, password);
+    return this.http.post(environment.serverUrl + "/auth/authenticate",
+      {
+        "username": username,
+        "password": password
+      }
+      ).pipe(
+        map((response) => {
+          let user = {username: username, token: response['jwt']};
+          this.username = username;
+          // Store user in local storage until they log out
+          localStorage.setItem(this.LOCALLY_STORED_USER_DATA, JSON.stringify(user));
+        })
+      );
   }
 
-  register(username: String, password: String, repeatPassword: String): Observable<any> {
-    return this.http.post(this.API_URL, {
-      username: username,
+  register(userName: String, password: String, matchingPassword: String): Observable<any> {
+    return this.http.post(environment.serverUrl + "/auth/registerUser", {
+      userName: userName,
       password: password,
-      repeatPassword: repeatPassword
+      matchingPassword: matchingPassword
     }, this.httpOptions);
   }
 
-  createBasicAuthToken(username: String, password: String) {
-    return 'Basic ' + window.btoa(username + ":" + password)
-  }
-
-  registerSuccessfulLogin(username, password) {
-    sessionStorage.setItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME, username)
-  }
-
   logout() {
-    sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
+    localStorage.removeItem(this.LOCALLY_STORED_USER_DATA);
     this.username = null;
-    this.password = null;
   }
 
   isUserLoggedIn() {
-    let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)
-    if (user === null) return false
-    return true
+    return this.username !== null || localStorage.getItem(this.LOCALLY_STORED_USER_DATA) !== null;
   }
 
   getLoggedInUserName() {
-    let user = sessionStorage.getItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME)
-    if (user === null) return ''
-    return user
+    if (this.username !== null) {
+      return this.username;
+    }
+    let user = JSON.parse(localStorage.getItem(this.LOCALLY_STORED_USER_DATA));
+    if (user === null) {
+      return '';
+    }
+    return user.username;
+  }
+
+  getLoggedInUserToken() {
+    let user = JSON.parse(localStorage.getItem(this.LOCALLY_STORED_USER_DATA));
+    return user === null ? null : user.token;
   }
 }

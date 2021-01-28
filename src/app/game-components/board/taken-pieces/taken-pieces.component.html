@@ -7,6 +7,8 @@
       cdkDropList
       cdkDropListSortingDisabled
       [cdkDropListData]="square"> -->
-      <app-square *ngFor="let square of takenPieces" [square]="square"></app-square>
+      <app-square *ngFor="let square of takenPieces"
+        [square]="square"
+        [game]="game"></app-square>
     <!-- </span> -->
 </div>

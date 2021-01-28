@@ -1,0 +1,24 @@
+<h1>Available Games</h1>
+<div *ngIf="joinGames.length > 0">
+  <table class="table table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col" style="text-align: center;">Game ID</th>
+        <th scope="col" style="text-align: center;">Type</th>
+        <th scope="col" style="text-align: center;">Player</th>
+        <th scope="col" style="text-align: center;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let joinGame of joinGames">
+        <th scope="row" style="text-align: center;">{{joinGame.gameId}}</th>
+        <td style="text-align: center;">{{joinGame.type}}</td>
+        <td style="text-align: center;">{{waitingPlayer(joinGame)}}</td>
+        <td style="text-align: center;">
+          <button class="btn btn-info" style="width: 100%;" (click)="joinGameById(joinGame.gameId)">Join Game</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p *ngIf="joinGames.length == 0">There are no available games to join.</p>

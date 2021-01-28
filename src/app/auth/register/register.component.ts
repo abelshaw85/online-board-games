@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from '../auth.service';
+import { ResponseMessage } from '../response-message.model';
 
 @Component({
   selector: 'app-register',
@@ -8,13 +10,13 @@ import { AuthenticationService } from '../auth.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  username: string;
+  userName: string;
   password : string;
-  repeatPassword : string;
-  errorMessage = 'No';
+  matchingPassword : string;
+  errorMessage: string;
   successMessage: string;
-  registrationFail = false;
-  registrationSuccess = false;
+  faUser = faUser;
+  faLock = faLock;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,13 +27,17 @@ export class RegisterComponent implements OnInit {
   }
 
   handleRegistration() {
-    this.authenticationService.register(this.username, this.password, this.repeatPassword).subscribe((result) => {
-      this.successMessage = 'Login Successful.';
-      this.registrationSuccess = true;
-      //this.router.navigate(['']);
-    }, () => {
-      console.log("whoops");
-      this.registrationFail = true;
+    this.authenticationService.register(this.userName, this.password, this.matchingPassword).subscribe((result) => {
+      let response: ResponseMessage = result;
+      if (response.type == "RegistrationSuccess") {
+        this.successMessage = response.message;
+        this.errorMessage = null;
+      } else {
+        this.errorMessage = response.message;
+        this.successMessage = null;
+      }
+    }, (response) => {
+      this.errorMessage = "Something went wrong.";
     });
   }
 

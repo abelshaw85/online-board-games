@@ -1,7 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { GameService } from '../services/game.service';
-import { RowColPosition } from '../square/row-col-position.model';
-import { Piece } from './piece.model';
+import { AuthenticationService } from 'src/app/auth/auth.service';
+import { Game } from '../game-models/game.model';
+import { Player } from '../game-models/player.model';
+import { GameManagerService } from '../services/game-manager.service';
+import { RowColPosition } from '../game-models/row-col-position.model';
+import { Piece } from '../game-models/piece.model';
 
 @Component({
   selector: 'app-piece',
@@ -11,17 +14,19 @@ import { Piece } from './piece.model';
 export class PieceComponent implements OnInit {
   @Input() piece: Piece;
   @Input() position: RowColPosition;
+  @Input() game: Game;
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameManager: GameManagerService,
+    private authService: AuthenticationService) { }
 
   ngOnInit(): void {
   }
 
   onDragStart(event) {
     if (this.piece.taken) {
-      this.gameService.highlightDrops(this.piece);
+      this.game.highlightDrops(this.piece);
     } else {
-      this.gameService.highlightPossibleMoves(this.position);
+      this.game.highlightPossibleMoves(this.position);
     }
   }
 
@@ -30,7 +35,9 @@ export class PieceComponent implements OnInit {
   }
 
   isActive(): boolean {
-    return this.gameService.getActiveColour() == this.piece.colour;
+    return this.piece !== null &&
+      this.piece.colour === this.gameManager.getTurnColour(this.game.gameId) &&
+      this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.piece.colour).name;
   }
 
 }
