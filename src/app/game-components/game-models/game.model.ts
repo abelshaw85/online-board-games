@@ -104,8 +104,8 @@ export class Game {
           console.log("Unknown move type");
           break;
       }
-      this.toggleTurn();
     }
+    this.toggleTurn();
   }
 
   toggleTurn() {
