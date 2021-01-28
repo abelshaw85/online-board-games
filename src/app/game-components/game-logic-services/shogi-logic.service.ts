@@ -84,7 +84,7 @@ export class ShogiLogicService implements IGameLogic {
   }
 
   makeMove(game: Game, from: RowColPosition, to: RowColPosition) {
-    game.squares[to.row][to.col].piece = game.squares[from.row][from.col].piece;
+    game.squares[to.row][to.col].piece = Object.assign({}, game.squares[from.row][from.col].piece);
     game.squares[from.row][from.col].piece = null;
   }
 
