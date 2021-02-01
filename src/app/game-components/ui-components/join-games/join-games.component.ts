@@ -12,6 +12,8 @@ import { GameManagerService } from '../../services/game-manager.service';
 })
 export class JoinGamesComponent implements OnInit {
   joinGames: GameDetails[] = [];
+  loadingMessage: string = "Loading...";
+  loading: boolean = true;
 
   constructor(private gameDetailsService: GameDetailsService,
     private gameManager: GameManagerService,
@@ -25,6 +27,7 @@ export class JoinGamesComponent implements OnInit {
         gamesDetails.push(gameDetails);
       }
       this.joinGames = gamesDetails;
+      this.loading = false;
     });
   }
 

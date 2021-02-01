@@ -1,4 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+/* NOTE: Bootstrap will override this (background colour for example will be white) */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-progress-spinner circle, .mat-spinner circle {
+  stroke: rgb(255, 72, 0)!important;
+}

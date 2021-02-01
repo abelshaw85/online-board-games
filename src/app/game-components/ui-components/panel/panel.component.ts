@@ -13,6 +13,7 @@ import { GameManagerService } from '../../services/game-manager.service';
 })
 export class PanelComponent implements OnInit, OnDestroy {
   playerGames = [];
+  playerGamesData = [];
   subscriptions: Subscription[] = [];
   connected: boolean;
   userGames: GameDetails[] = [];
@@ -32,6 +33,7 @@ export class PanelComponent implements OnInit, OnDestroy {
       for (var details of response["data"]) {
         let gameDetails: GameDetails = this.jsonToGameDetails(details);
         gamesDetails.push(gameDetails);
+        this.playerGamesData.push([gameDetails.gameId, gameDetails.type, this.gameStatus(gameDetails), 'MyAction']);
       }
       this.playerGames = gamesDetails;
       this.loading = false;

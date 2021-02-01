@@ -1,0 +1,13 @@
+body {
+  background-color: rgb(255, 240, 152);
+}
+
+.btn-info {
+  background-color :rgb(255, 72, 0);
+  border-color: rgb(255, 140, 94);
+}
+
+.btn-info:hover {
+  background-color: rgb(255, 140, 94);
+  border-color: rgb(255, 140, 94);
+}

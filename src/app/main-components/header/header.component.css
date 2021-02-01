@@ -1,0 +1,17 @@
+.header {
+  border-bottom: 3px solid orange;
+}
+
+.navbar a {
+  color: rgb(255, 72, 0);
+}
+
+.navbar a:hover {
+  color: rgb(255, 140, 94);
+  text-decoration: underline;
+}
+
+.navbar a:active {
+  color: rgb(255, 140, 94);
+  text-decoration: underline;
+}

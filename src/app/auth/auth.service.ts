@@ -1,12 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-
-// https://www.javaguides.net/2019/04/spring-boot-spring-security-angular-example-tutorial.html
-
-// https://bezkoder.com/angular-10-jwt-auth/
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +10,17 @@ import { environment } from '../../environments/environment';
 export class AuthenticationService {
   LOCALLY_STORED_USER_DATA = 'user';
   username = null;
+  isLoggedIn = new BehaviorSubject<boolean>(false);
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
   constructor(private http: HttpClient) {
+    this.username = this.getLoggedInUserName();
+    if (this.username != null) {
+      this.isLoggedIn.next(true);
+    }
   }
 
   login(username: String, password: String) {
@@ -35,6 +36,7 @@ export class AuthenticationService {
           this.username = username;
           // Store user in local storage until they log out
           localStorage.setItem(this.LOCALLY_STORED_USER_DATA, JSON.stringify(user));
+          this.isLoggedIn.next(true);
         })
       );
   }
@@ -50,19 +52,20 @@ export class AuthenticationService {
   logout() {
     localStorage.removeItem(this.LOCALLY_STORED_USER_DATA);
     this.username = null;
+    this.isLoggedIn.next(false);
   }
 
   isUserLoggedIn() {
     return this.username !== null || localStorage.getItem(this.LOCALLY_STORED_USER_DATA) !== null;
   }
 
-  getLoggedInUserName() {
+  getLoggedInUserName(): string {
     if (this.username !== null) {
       return this.username;
     }
     let user = JSON.parse(localStorage.getItem(this.LOCALLY_STORED_USER_DATA));
     if (user === null) {
-      return '';
+      return null;
     }
     return user.username;
   }

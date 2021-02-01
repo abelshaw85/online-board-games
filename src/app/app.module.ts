@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { BoardComponent } from './game-components/board/board.component';
 import { SquareComponent } from './game-components/square/square.component';
@@ -25,7 +24,8 @@ import { WebSocketService } from './web-socket/web-socket.service';
 import { PanelComponent } from './game-components/ui-components/panel/panel.component';
 import { JoinGamesComponent } from './game-components/ui-components/join-games/join-games.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
-
+import { HeaderComponent } from './main-components/header/header.component';
+import { CustomTableComponent } from './shared/custom-table/custom-table.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +40,9 @@ import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinne
     RegisterComponent,
     PanelComponent,
     JoinGamesComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    HeaderComponent,
+    CustomTableComponent
   ],
   imports: [
     BrowserModule,

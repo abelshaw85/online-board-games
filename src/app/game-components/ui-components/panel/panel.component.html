@@ -33,3 +33,7 @@
 <br>
 <button class="btn btn-info" [routerLink]="['..', 'join']">Find Games</button>
 </div>
+<app-custom-table
+  [columns]="['Game ID', 'Type', 'Status', 'Actions']"
+  [data]="playerGamesData">
+</app-custom-table>
