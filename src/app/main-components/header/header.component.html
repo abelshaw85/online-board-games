@@ -26,7 +26,7 @@
           <a class="nav-link text-uppercase" [routerLink]="['/register']" [routerLinkActive]="['activeLink']">Register</a>
         </li>
 
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown" *ngIf="isLoggedIn">
           <a class="nav-link dropdown-toggle text-uppercase" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <fa-icon [icon]="faUser"></fa-icon> {{getUsername()}}</a><div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item text-uppercase pl-2" href="#" (click)="handleLogout()"><fa-icon [icon]="faLogout"></fa-icon> Logout</a>

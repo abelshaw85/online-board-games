@@ -163,6 +163,9 @@ export class ShogiLogicService implements IGameLogic {
   }
 
   isPossibleMove(game: Game, to: RowColPosition): boolean {
+    if (to == null) {
+      return false;
+    }
     if (this.isWithinBoard(game.getBoardSize(), to.row, to.col)) {
       return (game.squares[to.row][to.col].active ||
             game.squares[to.row][to.col].danger);

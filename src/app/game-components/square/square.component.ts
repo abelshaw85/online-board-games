@@ -47,4 +47,8 @@ export class SquareComponent implements OnInit {
     let activeColour = this.game.activeColour;
     return this.square.piece !== null && this.square.piece.colour === activeColour && this.game.getPlayerByColour(activeColour).name == this.authService.getLoggedInUserName();
   }
+
+  squareVisible(): boolean {
+    return this.square.piece == null || (this.square.piece != null && !this.square.piece.taken);
+  }
 }

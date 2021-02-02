@@ -1,11 +1,14 @@
 .square {
   width: 3.7vw;
-  border: 1px solid black;
   text-align: center;
-  background-color: rgb(236, 220, 198);
   margin: 1px;
   display: inline-block;
   position: relative;
+}
+
+.squareVisible {
+  background-color: rgb(236, 220, 198);
+  border: 1px solid black;
 }
 
 .activeSquare {

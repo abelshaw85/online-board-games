@@ -1,11 +1,12 @@
 <div
-  class="square"
+  class="square square-visible"
   [ngClass]="{
-    'activeSquare': square.active,
-    'dangerSquare': square.danger,
-    'currentSquare': square.current,
-    'checkSquare': square.inCheck,
-    'hover': hasActivePiece() && !square.inCheck
+    'squareVisible': squareVisible(),
+    'activeSquare': squareVisible() && square.active,
+    'dangerSquare': squareVisible() && square.danger,
+    'currentSquare': squareVisible() && square.current,
+    'checkSquare': squareVisible() && square.inCheck,
+    'hover': squareVisible() && hasActivePiece() && !square.inCheck
   }">
   <span class="square-content align-middle"
     cdkDropList

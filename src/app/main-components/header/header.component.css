@@ -1,5 +1,6 @@
 .header {
   border-bottom: 3px solid orange;
+  background-color: rgb(255, 224, 162);
 }
 
 .navbar a {
