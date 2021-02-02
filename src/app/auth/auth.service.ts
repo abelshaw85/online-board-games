@@ -19,7 +19,14 @@ export class AuthenticationService {
   constructor(private http: HttpClient) {
     this.username = this.getLoggedInUserName();
     if (this.username != null) {
-      this.isLoggedIn.next(true);
+      let expiry = new Date(this.getLoggedInUserExpiry()).getTime();
+      let currentDate = new Date().getTime();
+      // token has not yet expired
+      if (expiry > currentDate) {
+        this.isLoggedIn.next(true);
+      } else {
+        this.logout();
+      }
     }
   }
 
@@ -32,7 +39,11 @@ export class AuthenticationService {
       }
       ).pipe(
         map((response) => {
-          let user = {username: username, token: response['jwt']};
+          let user = {
+            username: username,
+            token: response['jwt'],
+            expiry: response['expiry']
+          };
           this.username = username;
           // Store user in local storage until they log out
           localStorage.setItem(this.LOCALLY_STORED_USER_DATA, JSON.stringify(user));
@@ -73,5 +84,10 @@ export class AuthenticationService {
   getLoggedInUserToken() {
     let user = JSON.parse(localStorage.getItem(this.LOCALLY_STORED_USER_DATA));
     return user === null ? null : user.token;
+  }
+
+  getLoggedInUserExpiry() {
+    let user = JSON.parse(localStorage.getItem(this.LOCALLY_STORED_USER_DATA));
+    return user === null ? null : user.expiry;
   }
 }

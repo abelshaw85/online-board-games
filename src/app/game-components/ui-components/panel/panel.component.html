@@ -5,35 +5,22 @@
 </div>
 <div *ngIf="!loading">
 <div *ngIf="playerGames.length > 0">
-  <table class="table table-bordered">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col" style="text-align: center;">Game ID</th>
-        <th scope="col" style="text-align: center;">Type</th>
-        <th scope="col" style="text-align: center;">Status</th>
-        <th scope="col" style="text-align: center;">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let playerGame of playerGames">
-        <th scope="row" style="text-align: center;">{{playerGame.gameId}}</th>
-        <td style="text-align: center;">{{playerGame.type}}</td>
-        <td style="text-align: center;">{{gameStatus(playerGame)}}</td>
-        <td style="text-align: center;">
-          <button class="btn btn-info" style="width: 100%;" *ngIf='gameStatus(playerGame) !== "Awaiting Second Player"' [routerLink]="['..', playerGame.gameId]">Go</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <app-custom-table
+    [columns]="['Game ID', 'Type', 'Status', 'Actions']">
+    <tr *ngFor="let playerGame of playerGames">
+      <th scope="row">{{playerGame.gameId}}</th>
+      <td>{{playerGame.type}}</td>
+      <td>{{gameStatus(playerGame)}}</td>
+      <td class="p-1">
+        <button class="btn btn-custom mb-0" style="width: 100%;" *ngIf='gameStatus(playerGame) !== "Awaiting Second Player"' [routerLink]="['..', playerGame.gameId]">Go</button>
+      </td>
+    </tr>
+  </app-custom-table>
 </div>
 <p *ngIf="playerGames.length == 0">You have no active games.</p>
 <h1>Options</h1>
-<button class="btn btn-info mr-2" (click)="newShogiGame()">New Shogi Game</button>
+<button class="btn btn-custom mr-2" (click)="newShogiGame()">New Shogi Game</button>
 <label><input type="checkbox" [(ngModel)]="isSinglePlayer" name="singlePlayer"> Make Single-Player game</label>
 <br>
-<button class="btn btn-info" [routerLink]="['..', 'join']">Find Games</button>
+<button class="btn btn-custom" [routerLink]="['..', 'join']">Find Games</button>
 </div>
-<app-custom-table
-  [columns]="['Game ID', 'Type', 'Status', 'Actions']"
-  [data]="playerGamesData">
-</app-custom-table>

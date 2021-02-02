@@ -5,30 +5,28 @@
 <div class="row board-container" cdkDropListGroup *ngIf="!loading && connected">
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
-      [heading]="'Taken by ' + this.game.player1.name + ' [White]'"
-      [takenPieces]="game.takenByWhite"
-      [showTurn]="game.activeColour == 'White'"
-      [game]="game">
+      [player]="this.game.player1"
+      [takenPieces]="this.game.takenByWhite"
+      [game]="this.game">
     </app-taken-pieces>
   </div>
   <div class="col-md-8">
-    <h1>Game ID: {{game.gameId}}</h1>
+    <h2>{{this.gameText()}}</h2>
     <div *ngFor="let row of game.squares" class="board-row">
-        <app-square
-          *ngFor="let square of row"
-          [square]="square"
-          [game]="game"></app-square>
+      <app-square
+        *ngFor="let square of row"
+        [square]="square"
+        [game]="game"></app-square>
     </div>
     <div>
-      <textarea rows="5" disabled>{{game.gameLog.join('\n')}}</textarea>
-      <button (click)="test()">test</button>
+      <textarea rows="3" disabled>{{game.gameLog.join('\n')}}</textarea>
+      <!-- <button (click)="test()">test</button> -->
     </div>
   </div>
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
-      [heading]="'Taken by ' + game.player2.name + ' [Black]'"
+      [player]=this.game.player2
       [takenPieces]="game.takenByBlack"
-      [showTurn]="game.activeColour == 'Black'"
       [game]="game">
     </app-taken-pieces>
   </div>

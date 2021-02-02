@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CustomTableComponent implements OnInit {
   @Input() columns = [];
-  @Input() data = [];
 
   constructor() { }
 

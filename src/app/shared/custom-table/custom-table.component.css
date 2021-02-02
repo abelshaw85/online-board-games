@@ -1,0 +1,22 @@
+.table>thead>tr>td, .table>thead>tr>th {
+  border-bottom: 0;
+}
+
+.table>thead>tr>td, .table>thead>tr>th {
+  background-color: rgb(255, 123, 75);
+}
+
+:host /deep/ td, :host /deep/ th {
+  border: 1px solid orangered;
+  text-align: center;
+}
+
+:host /deep/ .table-striped>tbody>tr:nth-child(odd)>td,
+:host /deep/ .table-striped>tbody>tr:nth-child(odd)>th {
+  background-color: rgb(255, 218, 175);
+}
+
+:host /deep/ .table-striped>tbody>tr:nth-child(even)>td,
+:host /deep/ .table-striped>tbody>tr:nth-child(even)>th {
+  background-color: rgb(255, 230, 183);
+}

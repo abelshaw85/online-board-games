@@ -6,12 +6,19 @@
   color: rgb(255, 72, 0);
 }
 
-.navbar a:hover {
-  color: rgb(255, 140, 94);
-  text-decoration: underline;
+.navbar a:active {
+  color: rgb(255, 172, 139);
 }
 
-.navbar a:active {
-  color: rgb(255, 140, 94);
-  text-decoration: underline;
+.navbar a:hover {
+  color: rgb(255, 172, 139);
+}
+
+.navbar a:focus {
+  color: rgb(255, 72, 0);
+}
+
+.activeLink {
+  color: rgb(255, 72, 0);
+  font-weight: bold;
 }

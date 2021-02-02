@@ -1,6 +1,8 @@
 <div>
-  <h4>{{heading}}</h4>
-  <div class="turn"><img src="assets/img/turn-star.png" style="height: 100%; width: auto;" *ngIf="showTurn"></div>
+  <h4>{{this.headingText()}}</h4>
+  <div class="turn" >
+    <fa-icon [icon]="faStar" *ngIf="showTurn"></fa-icon>
+  </div>
   <hr>
 
     <!-- <span *ngFor="let square of takenPieces"

@@ -7,12 +7,12 @@
   margin-bottom: -5px;
 }
 
-.takenContainer {
-  background-color: rgb(241, 239, 239);
-  border: 1px solid black;
-}
-
 textarea {
   width: 100%;
   font-size: 1.5em;
+}
+
+.takenContainer {
+  background-color: rgb(241, 239, 239);
+  border: 1px solid black;
 }

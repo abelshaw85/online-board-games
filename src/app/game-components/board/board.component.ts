@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { AuthenticationService } from 'src/app/auth/auth.service';
 import { WebSocketService } from 'src/app/web-socket/web-socket.service';
 import { Game } from '../game-models/game.model';
 import { GameManagerService } from '../services/game-manager.service';
@@ -23,7 +24,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   constructor(
     private webSocketService: WebSocketService,
     private route: ActivatedRoute,
-    private gameManager: GameManagerService) {
+    private gameManager: GameManagerService,
+    private authenticationService: AuthenticationService) {
   }
 
   test() {
@@ -71,5 +73,15 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => {
       subscription.unsubscribe();
     });
+  }
+
+  gameText(): string {
+    let activeColour = this.game.activeColour;
+    let activePlayerName = this.game.getPlayerByColour(activeColour).name;
+    if (activePlayerName == this.authenticationService.getLoggedInUserName()) {
+      return "It is your turn";
+    } else {
+      return "Waiting for " + activePlayerName + " to make their turn";
+    }
   }
 }

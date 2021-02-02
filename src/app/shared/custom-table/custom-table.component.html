@@ -1,16 +1,10 @@
-hello
-<table class="table table-bordered">
-  <thead class="thead-dark">
+<table class="table table-striped">
+  <thead>
     <tr>
-      <th *ngFor="let column of columns" scope="col" style="text-align: center;">{{column}}</th>
+      <th *ngFor="let column of columns" scope="col">{{column}}</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let dataRow of data">
-      <th *ngFor="let dataElement of dataRow" scope="row" style="text-align: center;">{{dataElement}}</th>
-      <!-- <td style="text-align: center;">
-        <button class="btn btn-info" style="width: 100%;" (click)="joinGameById(joinGame.gameId)">Join Game</button>
-      </td> -->
-    </tr>
+    <ng-content></ng-content>
   </tbody>
 </table>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean;
   subscriptions: Subscription[] = [];
   faLogout = faSignOutAlt;
+  faUser = faUser;
 
   constructor(
     private router: Router,
