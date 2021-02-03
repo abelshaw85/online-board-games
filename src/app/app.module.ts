@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TakenPiecesComponent } from './game-components/board/taken-pieces/taken-pieces.component';
 import { PieceBag } from './game-components/services/piece-bag.service';
@@ -26,6 +27,7 @@ import { JoinGamesComponent } from './game-components/ui-components/join-games/j
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { HeaderComponent } from './main-components/header/header.component';
 import { CustomTableComponent } from './shared/custom-table/custom-table.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { CustomTableComponent } from './shared/custom-table/custom-table.compone
     DragDropModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
+    MatCheckboxModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,

@@ -1,3 +1,42 @@
+<script>
+  $('#btnCreate').click(function() {
+    $(this).parents('.dropdown').find('button.dropdown-toggle').dropdown('toggle')
+  });
+</script>
+<div class="dropdown offset-md-9 col-md-3">
+  <button class="btn btn-custom dropdown-toggle" style="width: 100%" type="button" data-toggle="dropdown">
+    Create New Game <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu col-md-7 p-2">
+
+    <div class="form-group mb-0">
+      <!--Prevents clicking this field from closing the dropdown-->
+      <mat-form-field id="gameType" onClick="event.stopPropagation();">
+        <mat-label>Game Type</mat-label>
+        <mat-select [(value)]="selectedGameType" onClick="event.stopPropagation();">
+          <mat-option *ngFor="let gameType of gameTypes" [value]="gameType.value" onClick="event.stopPropagation();">
+            {{gameType.viewValue}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group mb-0">
+      <mat-checkbox [(ngModel)]="singlePlayerSelected" name="singlePlayerSelect" onClick="event.stopPropagation();">Single player?</mat-checkbox>
+    </div>
+
+    <div class="form-group mb-0">
+      <button
+        class="btn btn-custom mr-2 mb-0"
+        id="btnCreate"
+        style="width: 100%;"
+        (click)="newGame()"
+        [disabled]="this.selectedGameType == null">Create Game</button>
+    </div>
+  </ul>
+</div>
+
+
 <h1>Your Games</h1>
 <div *ngIf="loading">
   <app-loading-spinner></app-loading-spinner>
@@ -18,9 +57,3 @@
   </app-custom-table>
 </div>
 <p *ngIf="playerGames.length == 0">You have no active games.</p>
-<h1>Options</h1>
-<button class="btn btn-custom mr-2" (click)="newShogiGame()">New Shogi Game</button>
-<label><input type="checkbox" [(ngModel)]="isSinglePlayer" name="singlePlayer"> Make Single-Player game</label>
-<br>
-<button class="btn btn-custom" [routerLink]="['..', 'join']">Find Games</button>
-</div>

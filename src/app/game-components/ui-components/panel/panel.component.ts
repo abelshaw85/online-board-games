@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
 import { GameDetails } from '../../game-models/game-details.model';
@@ -6,10 +7,16 @@ import { Player } from '../../game-models/player.model';
 import { GameDetailsService } from '../../services/game-details.service';
 import { GameManagerService } from '../../services/game-manager.service';
 
+interface GameType {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.css']
+  styleUrls: ['./panel.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class PanelComponent implements OnInit, OnDestroy {
   playerGames = [];
@@ -20,6 +27,13 @@ export class PanelComponent implements OnInit, OnDestroy {
   singlePlayerSelected: boolean = false;
   loadingMessage: string = "Loading...";
   loading: boolean = true;
+  gameTypes: GameType[] = [
+    {value: 'Shogi-0', viewValue: 'Shogi'},
+    {value: 'Chess-1', viewValue: 'Chess'},
+    {value: 'Draughts-2', viewValue: 'Draughts'}
+  ];
+  selectedGameType;
+  selectedSinglePlayer: boolean;
 
   constructor(
     private gameManagerService: GameManagerService,
@@ -54,16 +68,29 @@ export class PanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  newShogiGame() {
-    this.gameManagerService.newGame("Shogi", this.singlePlayerSelected).subscribe((response) => {
-      if (response['type'] == "NewGameSuccess") {
-        alert("New game created!");
-        let gameDetails: GameDetails = this.jsonToGameDetails(response['data']);
-        this.playerGames.push(gameDetails);
-      } else if (response['type'] == "NewGameFailure") {
-        alert(response['message']);
-      }
-    });
+  newGame() {
+    switch (this.selectedGameType) {
+      case "Shogi-0":
+        this.gameManagerService.newGame("Shogi", this.singlePlayerSelected).subscribe((response) => {
+          if (response['type'] == "NewGameSuccess") {
+            alert("New game created!");
+            let gameDetails: GameDetails = this.jsonToGameDetails(response['data']);
+            this.playerGames.push(gameDetails);
+          } else if (response['type'] == "NewGameFailure") {
+            alert(response['message']);
+          }
+        });
+        break;
+      case "Chess-1":
+        alert("Chess not yet implemented...");
+        break;
+      case "Draughts-2":
+        alert("No draughts yet");
+        break;
+      default:
+        break;
+    }
+
   }
 
   get isSinglePlayer(): boolean {

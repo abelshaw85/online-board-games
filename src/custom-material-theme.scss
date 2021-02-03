@@ -1,0 +1,20 @@
+@import '~@angular/material/theming'; //opens up functions
+
+@include mat-core(); //"mix in", allows us to add a block of code representing css
+
+$custom-theme-primary: mat-palette($mat-orange);
+$custom-theme-accent: mat-palette($mat-deep-orange);
+$custom-theme-warn: mat-palette($mat-red);
+
+//use the above 3 variables to create a new variable containing all 3 themes
+$custom-theme: mat-light-theme((
+  color: (
+    primary: $custom-theme-primary,
+    accent: $custom-theme-accent,
+    warn: $custom-theme-warn,
+  )
+));
+
+@include angular-material-theme($custom-theme); //merge/overwrite existing angular theme
+
+// To add this theme, change the styles link in angular.json
