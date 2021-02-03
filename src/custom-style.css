@@ -4,19 +4,14 @@ body {
 
 .btn-custom {
   background-color :rgb(255, 72, 0);
-  border-color: rgb(255, 140, 94);
+  border-color: rgb(70, 70, 70);
   color: white;
 }
 
-.btn-custom:hover {
-  background-color: rgb(255, 90, 24);
-  border-color: rgb(255, 140, 94);
-  color: white;
-}
-
+.btn-custom:hover,
 .btn-custom:active {
-  background-color: rgb(255, 90, 24);
-  border-color: rgb(255, 140, 94);
+  background-color: rgb(255, 108, 50);
+  color: white;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   successMessage: string;
   faUser = faUser;
   faLock = faLock;
+  sending = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,13 +35,16 @@ export class LoginComponent implements OnInit {
   }
 
   handleLogin() {
+    this.sending = true;
     this.authenticationService.login(this.username, this.password).subscribe((result) => {
       this.successMessage = "Login Successful.";
       this.errorMessage = null;
       this.router.navigate(['']);
+      this.sending = false;
     }, () => {
       this.errorMessage = "Error logging in, please check your credentials.";
       this.successMessage = null;
+      this.sending = false;
     });
   }
 

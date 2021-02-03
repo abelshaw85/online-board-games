@@ -4,56 +4,108 @@
 	    Register new account
 	  </div>
 	  <div class="card-body">
-	    <form class="form-group">
-      <!-- errors/success messages -->
-      <div class="input-group mb-3">
-        <div class="alert alert-warning" style="width: 100%;" *ngIf='errorMessage != null'>{{errorMessage}}</div>
-        <div class="alert alert-success" style="width: 100%;" *ngIf='successMessage != null'>{{successMessage}}</div>
-      </div>
-			<!-- User Name -->
-			<div class="input-group">
-			  <div class="input-group-prepend">
-			    <span class="input-group-text" id="basic-addon1"><fa-icon [icon]="faUser"></fa-icon></span>
-			  </div>
-			  <input
-          type="text"
-          name="userName"
-			  	class="form-control"
-			  	[(ngModel)]="userName"
-			  	placeholder="Username (*)">
-			</div>
-			<div class="mb-3"></div>
+      <form
+        [formGroup]="registrationForm"
+        (ngSubmit)="submitRegistration()"
+        class="form-group">
+        <!-- errors/success messages for server-side -->
+        <div class="input-group mb-3">
+          <div class="alert alert-warning" style="width: 100%;" *ngIf='errorMessage != null'>{{errorMessage}}</div>
+          <div class="alert alert-success" style="width: 100%;" *ngIf='successMessage != null'>{{successMessage}}</div>
+        </div>
 
-			<!-- Password -->
-			<div class="input-group">
-			  <div class="input-group-prepend">
-			    <span class="input-group-text" id="basic-addon1"><fa-icon [icon]="faLock"></fa-icon></span>
-			  </div>
-        <input
-          type="password"
-          name="password"
-          [(ngModel)]="password"
-          placeholder="Password (*)"
-          class="form-control">
-			</div>
-			<div class="mb-3"></div>
+        <!-- Username -->
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><fa-icon [icon]="faUser"></fa-icon></span>
+          </div>
+          <input
+            type="text"
+            name="username"
+            class="form-control"
+            formControlName="username"
+            placeholder="Username (*)">
+        </div>
+        <!--Username errors-->
+        <div
+          *ngIf="registrationForm.get('username').invalid && registrationForm.get('username').touched"
+          class="errorMessage ml-5">
+          <div *ngIf="registrationForm.get('username').errors.required">
+            Username is required.
+          </div>
+          <div *ngIf="registrationForm.get('username').errors.maxlength">
+            Username can be no more than 15 characters long.
+          </div>
+          <div *ngIf="registrationForm.get('username').errors.pattern">
+            Username can only contain letters, numbers, hyphens and underscores.
+          </div>
+        </div>
+        <div class="mb-3"></div>
 
-			<!-- Confirm Password -->
-			<div class="input-group">
-			  <div class="input-group-prepend">
-			    <span class="input-group-text" id="basic-addon1"><fa-icon [icon]="faLock"></fa-icon></span>
-			  </div>
-        <input
-          type="password"
-          name="matchingPassword"
-          [(ngModel)]="matchingPassword"
-          placeholder="Confirm Password (*)"
-          class="form-control">
-      </div>
+        <!-- Password -->
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><fa-icon [icon]="faLock"></fa-icon></span>
+          </div>
+          <input
+            type="password"
+            name="password"
+            formControlName="password"
+            placeholder="Password (*)"
+            class="form-control">
+        </div>
+        <div
+          *ngIf="registrationForm.get('password').invalid && registrationForm.get('password').touched"
+          class="errorMessage ml-5">
+          <div *ngIf="registrationForm.get('password').errors.required">
+            Password is required.
+          </div>
+          <div *ngIf="registrationForm.get('password').errors.minlength">
+            Password must be at least 8 characters long.
+          </div>
+          <div *ngIf="registrationForm.get('password').errors.pattern">
+            Password must contain a combination of capital and lower case letters, and at least one number and special character (@$!%*?&).
+          </div>
+        </div>
+        <div class="mb-3"></div>
+
+        <!-- Confirm Password -->
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><fa-icon [icon]="faLock"></fa-icon></span>
+          </div>
+          <input
+            type="password"
+            name="matchingPassword"
+            formControlName="matchingPassword"
+            placeholder="Confirm Password (*)"
+            class="form-control">
+        </div>
+        <div
+          *ngIf="registrationForm.get('matchingPassword').invalid && registrationForm.get('matchingPassword').touched"
+          class="errorMessage ml-5">
+          <div *ngIf="registrationForm.get('matchingPassword').errors.required">
+            Matching password is required.
+          </div>
+        </div>
+        <div
+          class="errorMessage ml-5"
+          *ngIf="registrationForm.get('matchingPassword').touched && registrationForm.errors.notSame">
+          Passwords do not match.
+        </div>
       <div class="mb-3"></div>
 
 			<div class="form-group">
-				<button  (click)="handleRegistration()" class="btn btn-custom" style="width: 100%;">Register</button>
+        <button
+          class="btn btn-custom"
+          type="submit"
+          style="width: 100%;">
+          Register
+        </button>
+        <div *ngIf="sending" style="text-align: center;" class="mt-2">
+          <app-loading-spinner></app-loading-spinner>
+          <p>Registering account...</p>
+        </div>
 			</div>
 		</form>
 		<div class="text-center">

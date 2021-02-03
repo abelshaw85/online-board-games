@@ -12,7 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TakenPiecesComponent } from './game-components/board/taken-pieces/taken-pieces.component';
 import { PieceBag } from './game-components/services/piece-bag.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { WebSocketComponent } from './web-socket/web-socket.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -57,6 +57,7 @@ import { MatSelectModule } from '@angular/material/select';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     FontAwesomeModule
   ],
   providers: [

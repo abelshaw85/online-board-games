@@ -26,7 +26,11 @@
 			</div>
 
 			<div class="form-group">
-				<button (click)="handleLogin()" class="btn btn-custom" style="width: 100%;">Login</button>
+        <button (click)="handleLogin()" class="btn btn-custom" style="width: 100%;">Login</button>
+        <div *ngIf="sending" style="text-align: center;" class="mt-2">
+          <app-loading-spinner></app-loading-spinner>
+          <p>Logging in...</p>
+        </div>
       </div>
       </form>
       <div class="text-center">

@@ -9,6 +9,7 @@ import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 export class LoadingSpinnerComponent implements OnInit {
   mode: ProgressSpinnerMode = 'indeterminate'; //determinate = not loading, set at value
   value = 0; //percent of bar loaded
+  size = 50;
 
   constructor() { }
 

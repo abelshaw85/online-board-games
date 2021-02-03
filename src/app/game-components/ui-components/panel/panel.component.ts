@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
 import { GameDetails } from '../../game-models/game-details.model';
@@ -20,20 +20,15 @@ interface GameType {
 })
 export class PanelComponent implements OnInit, OnDestroy {
   playerGames = [];
-  playerGamesData = [];
   subscriptions: Subscription[] = [];
   connected: boolean;
-  userGames: GameDetails[] = [];
-  singlePlayerSelected: boolean = false;
   loadingMessage: string = "Loading...";
   loading: boolean = true;
   gameTypes: GameType[] = [
-    {value: 'Shogi-0', viewValue: 'Shogi'},
-    {value: 'Chess-1', viewValue: 'Chess'},
-    {value: 'Draughts-2', viewValue: 'Draughts'}
+    {value: 'Shogi', viewValue: 'Shogi'},
+    {value: 'Chess', viewValue: 'Chess'},
+    {value: 'Draughts', viewValue: 'Draughts'}
   ];
-  selectedGameType;
-  selectedSinglePlayer: boolean;
 
   constructor(
     private gameManagerService: GameManagerService,
@@ -47,7 +42,6 @@ export class PanelComponent implements OnInit, OnDestroy {
       for (var details of response["data"]) {
         let gameDetails: GameDetails = this.jsonToGameDetails(details);
         gamesDetails.push(gameDetails);
-        this.playerGamesData.push([gameDetails.gameId, gameDetails.type, this.gameStatus(gameDetails), 'MyAction']);
       }
       this.playerGames = gamesDetails;
       this.loading = false;
@@ -68,10 +62,16 @@ export class PanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  newGame() {
-    switch (this.selectedGameType) {
-      case "Shogi-0":
-        this.gameManagerService.newGame("Shogi", this.singlePlayerSelected).subscribe((response) => {
+  submitGameCreate(form: NgForm) {
+    // Retrieve form data and bind to gameData object
+    let gameData = {
+      type: form.value.type,
+      isSinglePlayer: form.value.isSinglePlayer
+    };
+
+    switch (gameData.type) {
+      case "Shogi":
+        this.gameManagerService.newGame("Shogi", gameData.isSinglePlayer).subscribe((response) => {
           if (response['type'] == "NewGameSuccess") {
             alert("New game created!");
             let gameDetails: GameDetails = this.jsonToGameDetails(response['data']);
@@ -81,24 +81,16 @@ export class PanelComponent implements OnInit, OnDestroy {
           }
         });
         break;
-      case "Chess-1":
+      case "Chess":
         alert("Chess not yet implemented...");
         break;
-      case "Draughts-2":
+      case "Draughts":
         alert("No draughts yet");
         break;
       default:
+        alert(gameData.type + " is unknown type");
         break;
     }
-
-  }
-
-  get isSinglePlayer(): boolean {
-    return this.singlePlayerSelected;
-  }
-
-  set isSinglePlayer(val: boolean) {
-    this.singlePlayerSelected = val;
   }
 
   gameStatus(gameDetails: GameDetails): string {
