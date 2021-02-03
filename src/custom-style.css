@@ -9,16 +9,54 @@ body {
 }
 
 .btn-custom:hover {
-  background-color: rgb(255, 140, 94);
+  background-color: rgb(255, 90, 24);
   border-color: rgb(255, 140, 94);
   color: white;
 }
 
-.btn-custom:active:focus {
-  background-color: rgb(255, 140, 94);
+.btn-custom:active {
+  background-color: rgb(255, 90, 24);
   border-color: rgb(255, 140, 94);
 }
 
 h1, h2, h3, h4, h5, h6 {
   color: orangered;
+}
+
+a {
+  color: rgb(255, 72, 0);
+}
+
+a:active {
+  color: rgb(252, 134, 87);
+}
+
+a:hover {
+  color: rgb(252, 134, 87);
+}
+
+a:focus {
+  color: rgb(255, 72, 0);
+}
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.btn-custom:focus,
+.uneditable-input:focus {
+  border-color: rgba(255, 205, 131, 0.8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 187, 1, 0.6);
+  outline: 0 none;
 }

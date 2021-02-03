@@ -75,7 +75,6 @@ export class PieceBag {
   unpromotePiece(promotedPieceName: string, faceDown = false): Piece {
     let nameOfUnpromotedPiece = this.pieces.find(piece => piece.promotionPiece === promotedPieceName).name;
     let unpromotedPiece: Piece = this.getPieceByName(nameOfUnpromotedPiece, faceDown);
-    console.log(faceDown);
     return unpromotedPiece;
   }
 }
