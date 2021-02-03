@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from '../auth.service';
@@ -9,8 +10,6 @@ import { AuthenticationService } from '../auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  username: string;
-  password : string;
   errorMessage: string;
   successMessage: string;
   faUser = faUser;
@@ -34,9 +33,19 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  handleLogin() {
+  submitLogin(form: NgForm) {
+    console.log(form);
+    let userData = {
+      username: form.value.username,
+      password: form.value.password
+    };
+    this.handleLogin(userData.username, userData.password);
+  }
+
+
+  handleLogin(username, password) {
     this.sending = true;
-    this.authenticationService.login(this.username, this.password).subscribe((result) => {
+    this.authenticationService.login(username, password).subscribe((result) => {
       this.successMessage = "Login Successful.";
       this.errorMessage = null;
       this.router.navigate(['']);

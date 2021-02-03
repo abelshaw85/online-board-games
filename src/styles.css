@@ -11,3 +11,12 @@ body {
 .mat-progress-spinner circle, .mat-spinner circle {
   stroke: rgb(255, 72, 0)!important;
 }
+
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+.errorMessage {
+  color: red;
+}

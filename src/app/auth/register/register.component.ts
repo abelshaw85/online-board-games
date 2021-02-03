@@ -42,30 +42,33 @@ export class RegisterComponent implements OnInit {
   }
 
   submitRegistration() {
-    const username = this.registrationForm.get("username").value;
-    const password = this.registrationForm.get("password").value;
-    const matchingPassword = this.registrationForm.get("matchingPassword").value;
-    this.sending = true;
-    this.authenticationService.register(username, password, matchingPassword).subscribe((result) => {
-      let response: ResponseMessage = result;
-      if (response.type == "RegistrationSuccess") {
-        this.successMessage = response.message;
-        this.errorMessage = null;
-      } else {
-        this.errorMessage = response.message;
-        this.successMessage = null;
-      }
-      this.sending = false;
-    }, (response) => {
-      this.errorMessage = "Something went wrong.";
-    });
+    if (this.registrationForm.valid) {
+      const username = this.registrationForm.get("username").value;
+      const password = this.registrationForm.get("password").value;
+      const matchingPassword = this.registrationForm.get("matchingPassword").value;
+      this.sending = true;
+      this.authenticationService.register(username, password, matchingPassword).subscribe((result) => {
+        let response: ResponseMessage = result;
+        if (response.type == "RegistrationSuccess") {
+          this.successMessage = "Registration successful! You may now ";//response.message;
+          this.errorMessage = null;
+        } else {
+          this.errorMessage = response.message;
+          this.successMessage = null;
+        }
+        this.sending = false;
+      }, (response) => {
+        this.errorMessage = "Something went wrong, please check your internet connection or try again later.";
+        this.sending = false;
+      });
+    }
   }
 
   checkPasswords(group: FormGroup): {notSame: boolean} {
     const password = group.get('password').value;
     const matchingPassword = group.get('matchingPassword').value;
 
-    return password === matchingPassword ? { notSame: false } : { notSame: true };
+    return password === matchingPassword ? null : { notSame: true };
   }
 
 }

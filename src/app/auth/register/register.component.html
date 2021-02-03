@@ -11,7 +11,7 @@
         <!-- errors/success messages for server-side -->
         <div class="input-group mb-3">
           <div class="alert alert-warning" style="width: 100%;" *ngIf='errorMessage != null'>{{errorMessage}}</div>
-          <div class="alert alert-success" style="width: 100%;" *ngIf='successMessage != null'>{{successMessage}}</div>
+          <div class="alert alert-success" style="width: 100%;" *ngIf='successMessage != null'>{{successMessage}} <a [routerLink]="['login']">login</a></div>
         </div>
 
         <!-- Username -->
@@ -90,7 +90,7 @@
         </div>
         <div
           class="errorMessage ml-5"
-          *ngIf="registrationForm.get('matchingPassword').touched && registrationForm.errors.notSame">
+          *ngIf="registrationForm.get('matchingPassword').touched && registrationForm.errors?.notSame">
           Passwords do not match.
         </div>
       <div class="mb-3"></div>
@@ -99,7 +99,8 @@
         <button
           class="btn btn-custom"
           type="submit"
-          style="width: 100%;">
+          style="width: 100%;"
+          [disabled]="registrationForm.invalid">
           Register
         </button>
         <div *ngIf="sending" style="text-align: center;" class="mt-2">
