@@ -41,4 +41,24 @@ export class PieceComponent implements OnInit {
       this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.piece.colour).name;
   }
 
+  getPieceName() {
+    if (this.piece != null) {
+      return this.piece.name.split("-")[1]; //remove game-type prefix, only display piece name
+    }
+  }
+
+  getPieceUrl() {
+    const piecePrefix = this.piece.name.split("-")[0];
+    switch (piecePrefix) {
+      case "SHO":
+        return this.piece.imgUrl;
+      case "CHE":
+        if (this.piece.colour == "White") {
+          return this.piece.imgUrl + "-wht.svg";
+        } else {
+          return this.piece.imgUrl + "-blk.svg";
+        }
+    }
+  }
+
 }

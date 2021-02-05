@@ -1,8 +1,8 @@
 {
 	"Pieces": [
     {
-      "name": "King General",
-      "imgUrl": "assets/img/pieces-svg/king-general.svg",
+      "name": "SHO-King General",
+      "imgUrl": "assets/img/shogi-pieces-svg/king-general.svg",
       "size": 100,
       "promoted": false,
       "extended": false,
@@ -18,8 +18,8 @@
       ]
     },
     {
-      "name": "Jeweled General",
-      "imgUrl": "assets/img/pieces-svg/jeweled-general.svg",
+      "name": "SHO-Jeweled General",
+      "imgUrl": "assets/img/shogi-pieces-svg/jeweled-general.svg",
       "size": 100,
       "promoted": false,
       "extended": false,
@@ -35,8 +35,8 @@
       ]
     },
     {
-      "name": "Rook",
-      "imgUrl": "assets/img/pieces-svg/rook.svg",
+      "name": "SHO-Rook",
+      "imgUrl": "assets/img/shogi-pieces-svg/rook.svg",
       "size": 95,
       "promoted": false,
       "extended": true,
@@ -46,11 +46,11 @@
         {"row": 0, "col": 1},
         {"row": 0, "col": -1}
       ],
-      "promotionPiece": "Promoted Rook"
+      "promotionPiece": "SHO-Promoted Rook"
     },
     {
-      "name": "Bishop",
-      "imgUrl": "assets/img/pieces-svg/bishop.svg",
+      "name": "SHO-Bishop",
+      "imgUrl": "assets/img/shogi-pieces-svg/bishop.svg",
       "size": 95,
       "promoted": false,
       "extended": true,
@@ -60,11 +60,11 @@
         {"row": -1, "col": -1},
         {"row": -1, "col": 1}
       ],
-      "promotionPiece": "Promoted Bishop"
+      "promotionPiece": "SHO-Promoted Bishop"
     },
     {
-      "name": "Gold General",
-      "imgUrl": "assets/img/pieces-svg/gold-general.svg",
+      "name": "SHO-Gold General",
+      "imgUrl": "assets/img/shogi-pieces-svg/gold-general.svg",
       "size": 90,
       "promoted": false,
       "moves": [
@@ -77,8 +77,8 @@
       ]
     },
     {
-      "name": "Silver General",
-      "imgUrl": "assets/img/pieces-svg/silver-general.svg",
+      "name": "SHO-Silver General",
+      "imgUrl": "assets/img/shogi-pieces-svg/silver-general.svg",
       "size": 90,
       "promoted": false,
       "moves": [
@@ -88,104 +88,159 @@
         {"row": -1, "col": 1},
         {"row": -1, "col": 0}
       ],
-      "promotionPiece": "Promoted Silver"
+      "promotionPiece": "SHO-Promoted Silver"
     },
     {
-      "name": "Knight",
-      "imgUrl": "assets/img/pieces-svg/knight.svg",
+      "name": "SHO-Knight",
+      "imgUrl": "assets/img/shogi-pieces-svg/knight.svg",
       "size": 85,
       "promoted": false,
       "moves": [
         {"row": -2, "col": 1},
         {"row": -2, "col": -1}
       ],
-      "promotionPiece": "Promoted Knight",
+      "promotionPiece": "SHO-Promoted Knight",
       "enforcedPromotionRow": 1
     },
     {
-      "name": "Lance",
-      "imgUrl": "assets/img/pieces-svg/lance.svg",
+      "name": "SHO-Lance",
+      "imgUrl": "assets/img/shogi-pieces-svg/lance.svg",
       "size": 80,
       "promoted": false,
       "extended": true,
       "moves": [
         {"row": -1, "col": 0}
       ],
-      "promotionPiece": "Promoted Lance",
+      "promotionPiece": "SHO-Promoted Lance",
       "enforcedPromotionRow": 0
     },
     {
-      "name": "Pawn",
-      "imgUrl": "assets/img/pieces-svg/pawn.svg",
+      "name": "SHO-Pawn",
+      "imgUrl": "assets/img/shogi-pieces-svg/pawn.svg",
       "size": 75,
       "promoted": false,
       "extended": false,
       "moves": [
         {"row": -1, "col": 0}
       ],
-      "promotionPiece": "Promoted Pawn",
+      "promotionPiece": "SHO-Promoted Pawn",
       "enforcedPromotionRow": 0
     },
     {
-      "name": "Promoted Rook",
-      "imgUrl": "assets/img/pieces-svg/promoted-rook.svg",
+      "name": "SHO-Promoted Rook",
+      "imgUrl": "assets/img/shogi-pieces-svg/promoted-rook.svg",
       "size": 95,
       "promoted": true,
       "extended": false,
       "moves": [
-        "Rook",
-        "King General"
+        "SHO-Rook",
+        "SHO-King General"
       ]
     },
     {
-      "name": "Promoted Bishop",
-      "imgUrl": "assets/img/pieces-svg/promoted-bishop.svg",
+      "name": "SHO-Promoted Bishop",
+      "imgUrl": "assets/img/shogi-pieces-svg/promoted-bishop.svg",
       "size": 95,
       "promoted": true,
       "extended": false,
       "moves": [
-        "Bishop",
-        "King General"
+        "SHO-Bishop",
+        "SHO-King General"
       ]
     },
     {
-      "name": "Promoted Silver",
-      "imgUrl": "assets/img/pieces-svg/promoted-silver.svg",
+      "name": "SHO-Promoted Silver",
+      "imgUrl": "assets/img/shogi-pieces-svg/promoted-silver.svg",
       "size": 90,
       "promoted": true,
       "extended": false,
       "moves": [
-        "Gold General"
+        "SHO-Gold General"
       ]
     },
     {
-      "name": "Promoted Knight",
-      "imgUrl": "assets/img/pieces-svg/promoted-knight.svg",
+      "name": "SHO-Promoted Knight",
+      "imgUrl": "assets/img/shogi-pieces-svg/promoted-knight.svg",
       "size": 85,
       "promoted": true,
       "extended": false,
       "moves": [
-        "Gold General"
+        "SHO-Gold General"
       ]
     },
     {
-      "name": "Promoted Lance",
-      "imgUrl": "assets/img/pieces-svg/promoted-lance.svg",
+      "name": "SHO-Promoted Lance",
+      "imgUrl": "assets/img/shogi-pieces-svg/promoted-lance.svg",
       "size": 80,
       "promoted": true,
       "extended": false,
       "moves": [
-        "Gold General"
+        "SHO-Gold General"
       ]
     },
     {
-      "name": "Promoted Pawn",
-      "imgUrl": "assets/img/pieces-svg/promoted-pawn.svg",
+      "name": "SHO-Promoted Pawn",
+      "imgUrl": "assets/img/shogi-pieces-svg/promoted-pawn.svg",
       "size": 75,
       "promoted": true,
       "extended": false,
       "moves": [
-        "Gold General"
+        "SHO-Gold General"
+      ]
+    },
+    {
+      "name": "CHE-Pawn",
+      "imgUrl": "assets/img/chess-pieces-svg/pawn",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+        {"row": -1, "col": 0}
+      ]
+    },
+    {
+      "name": "CHE-Rook",
+      "imgUrl": "assets/img/chess-pieces-svg/rook",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+      ]
+    },
+    {
+      "name": "CHE-Knight",
+      "imgUrl": "assets/img/chess-pieces-svg/knight",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+      ]
+    },
+    {
+      "name": "CHE-Bishop",
+      "imgUrl": "assets/img/chess-pieces-svg/bishop",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+      ]
+    },
+    {
+      "name": "CHE-Queen",
+      "imgUrl": "assets/img/chess-pieces-svg/queen",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+      ]
+    },
+    {
+      "name": "CHE-King",
+      "imgUrl": "assets/img/chess-pieces-svg/king",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
       ]
     }
 	]

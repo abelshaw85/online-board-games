@@ -82,7 +82,15 @@ export class PanelComponent implements OnInit, OnDestroy {
         });
         break;
       case "Chess":
-        alert("Chess not yet implemented...");
+        this.gameManagerService.newGame("Chess", gameData.isSinglePlayer).subscribe((response) => {
+          if (response['type'] == "NewGameSuccess") {
+            alert("New game created!");
+            let gameDetails: GameDetails = this.jsonToGameDetails(response['data']);
+            this.playerGames.push(gameDetails);
+          } else if (response['type'] == "NewGameFailure") {
+            alert(response['message']);
+          }
+        });
         break;
       case "Draughts":
         alert("No draughts yet");

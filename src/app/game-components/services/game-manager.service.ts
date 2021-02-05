@@ -4,6 +4,7 @@ import { Subject, Subscription } from "rxjs";
 import { AuthenticationService } from "src/app/auth/auth.service";
 import { WebSocketService } from "src/app/web-socket/web-socket.service";
 import { environment } from "src/environments/environment";
+import { ChessLogicService } from "../game-logic-services/chess-logic.service";
 import { ShogiLogicService } from "../game-logic-services/shogi-logic.service";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
@@ -30,6 +31,7 @@ export class GameManagerService implements OnInit, OnDestroy {
               private http: HttpClient,
               private pieceBag: PieceBag,
               private shogiLogic: ShogiLogicService,
+              private chessLogic: ChessLogicService,
               private jsonToAction: JsonToActionService,
               private webSocketService: WebSocketService,
               private authenticationService: AuthenticationService) {
@@ -94,21 +96,29 @@ export class GameManagerService implements OnInit, OnDestroy {
           if (pData !== null) {
             let pieceName = pData['n'];
             let pieceColour = pData['c'];
-            piece = this.pieceBag.getPieceByName(pieceName, pieceColour == "White");
+            const piecePrefix = pieceName.split("-")[0];
+            let faceDown: boolean = false;
+            switch (piecePrefix) {
+              case "SHO":
+                faceDown = pieceColour == "White";
+                break;
+              case "CHE":
+                faceDown = pieceColour == "Black";
+            }
+            piece = this.pieceBag.getPieceByName(pieceName, faceDown);
             piece.colour = pieceColour;
           }
           squareRow.push(new Square(piece, new RowColPosition(row, col)));
         }
         squares.push(squareRow);
       }
-      let player1: Player = new Player(data['data']['p1']['username'], data['data']['p1']['colour']);
-      let player2: Player = new Player(data['data']['p2']['username'], data['data']['p2']['colour']);
-      let activeColour: string = data['data']['ac'];
-      let type: string = data['data']['t'];
-      let status: string = data['data']['st'];
-      let winnerName: string = data['data']['w'];
-      console.log(status);
-      let game = new Game();
+      const player1: Player = new Player(data['data']['p1']['username'], data['data']['p1']['colour']);
+      const player2: Player = new Player(data['data']['p2']['username'], data['data']['p2']['colour']);
+      const activeColour: string = data['data']['ac'];
+      const type: string = data['data']['t'];
+      const status: string = data['data']['st'];
+      const winnerName: string = data['data']['w'];
+      const game = new Game();
       game.gameId = id;
       game.type = type;
       game.status = status;
@@ -118,12 +128,22 @@ export class GameManagerService implements OnInit, OnDestroy {
       game.winnerName = winnerName;
       game.activeColour = activeColour;
       for (let takenPiece of data['data']['tp']) {
-        let pieceName = takenPiece['n'];
-        let pieceColour = takenPiece['c'];
-        let piece: Piece = this.pieceBag.getPieceByName(pieceName, pieceColour == "White"); //if white, face down
+        const pieceName = takenPiece['n'];
+        const pieceColour = takenPiece['c'];
+        const piecePrefix = pieceName.split("-")[0];
+        let faceDown: boolean = false;
+        switch (piecePrefix) {
+          case "SHO":
+            faceDown = pieceColour == "White";
+            break;
+          case "CHE":
+            faceDown = pieceColour == "Black";
+        }
+        console.log(pieceName + " is facedown: " + faceDown);
+        const piece: Piece = this.pieceBag.getPieceByName(pieceName, faceDown);
         piece.colour = pieceColour;
         piece.taken = true;
-        let square: Square = new Square(piece);
+        const square: Square = new Square(piece);
         if (pieceColour == "White") {
           game.takenByWhite.push(square);
         } else {
@@ -131,7 +151,16 @@ export class GameManagerService implements OnInit, OnDestroy {
         }
       }
       //inject shogi logic into game:
-      game.setGameLogic(this.shogiLogic);
+      switch(type) {
+        case "Shogi":
+          game.setGameLogic(this.shogiLogic);
+          break;
+        case "Chess":
+          game.setGameLogic(this.chessLogic);
+          break;
+        default:
+          console.log("Unable to inject logic - unknown game type.");
+      }
       let index: number = this.getIndexOfGame(id);
       // If game does not exist in loadedGames, push it to the loadedGames array. Otherwise, replace the game.
       if (index < 0) {

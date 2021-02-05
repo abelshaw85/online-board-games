@@ -8,13 +8,12 @@
   (cdkDragStarted)="onDragStart($event)"
   (cdkDragEnded)="onDragEnd($event)"
   cdkDragBoundary=".board-container"
-
   >
-  <img src="{{piece.imgUrl}}"
+  <img src="{{this.getPieceUrl()}}"
     [ngStyle]="{'width': piece.size + '%', 'height': piece.size + '%'}"
-    [ngClass]="{'white': piece.colour != null && piece.colour == 'White'}"
+    [ngClass]="{'white': (piece.colour != null && piece.colour == 'White' && piece.name.startsWith('SHO'))}"
     draggable="false"
-    matTooltip="{{piece.name + ' : [' + piece.colour + ']'}}"
+    matTooltip="{{this.getPieceName() + ' : [' + piece.colour + ']'}}"
     [matTooltipShowDelay]="500">
     <div class="" *cdkDragPlaceholder></div>
 </div>
