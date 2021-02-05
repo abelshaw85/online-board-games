@@ -65,9 +65,10 @@
           [disabled]="!f.valid">
           Login
         </button>
-        <div *ngIf="sending" style="text-align: center;" class="mt-2">
-          <app-loading-spinner></app-loading-spinner>
-          <p>Logging in...</p>
+        <div *ngIf="sending" class="mt-2">
+          <app-loading-spinner
+            [message]="'Logging in...'">
+          </app-loading-spinner>
         </div>
       </div>
       </form>

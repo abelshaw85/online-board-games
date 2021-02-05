@@ -1,7 +1,8 @@
 <h1>Available Games</h1>
 <div *ngIf="loading">
-  <app-loading-spinner></app-loading-spinner>
-  <p>{{loadingMessage}}</p>
+  <app-loading-spinner
+    [message]="loadingMessage">
+  </app-loading-spinner>
 </div>
 <div *ngIf="!loading">
   <div *ngIf="joinGames.length > 0">

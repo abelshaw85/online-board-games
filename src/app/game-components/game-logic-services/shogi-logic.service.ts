@@ -1,32 +1,32 @@
 import { Injectable } from "@angular/core";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
-import { PieceBag } from "../services/piece-bag.service";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
-import { IGameLogic } from "./game-logic.interface";
+import { GameLogic } from "./game-logic.class";
 import { Turn } from "../game-models/turn-actions/turn.model";
 import { Move } from "../game-models/turn-actions/move.model";
 import { Take } from "../game-models/turn-actions/take.model";
 import { Promote } from "../game-models/turn-actions/promote.model";
 import { HttpClient } from "@angular/common/http";
 import { Drop } from "../game-models/turn-actions/drop.model";
-import { environment } from '../../../environments/environment';
+import { PieceBag } from "../services/piece-bag.service";
+import { Winner } from "../game-models/turn-actions/winner.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ShogiLogicService implements IGameLogic {
+export class ShogiLogicService extends GameLogic {
+  player1InCheck = false;
+  player2InCheck = false;
 
-  constructor(private pieceBag: PieceBag,
-    private http: HttpClient) {}
+  constructor(protected http: HttpClient, protected pieceBag: PieceBag) {
+    super(pieceBag, http);
+  }
 
   movePiece(game: Game, from: RowColPosition, to: RowColPosition) {
-    //handle move
-    //handle promote
-
     let turn: Turn = new Turn(game.gameId); // Create new Turn object that will be populated by Actions.
-    let startedInCheck = this.isPlayerInCheck(game, game.activeColour);
+    let startedInCheck = this.isPlayerInCheck(game, game.activeColour); //used to customise losing message if active player doesnt get themselves out of check
 
     // If square has a piece to take, add it to player's hand
     if (game.squares[to.row][to.col].piece != null) {
@@ -53,7 +53,8 @@ export class ShogiLogicService implements IGameLogic {
     // replace piece with promoted piece if applicable
     let pieceToCheckForPromotion: Piece = game.squares[to.row][to.col].piece;
     if (this.canPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion)) {
-      if (this.isEnforcedPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion) || confirm("This piece can be promoted to " + pieceToCheckForPromotion.promotionPiece + ", would you like to promote this piece?")) {
+      if (this.isEnforcedPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion) ||
+          confirm("This piece can be promoted to " + pieceToCheckForPromotion.promotionPiece + ", would you like to promote this piece?")) {
         this.makePromote(game, to, pieceToCheckForPromotion.promotionPiece); //swaps piece for the promoted piece
         pieceToCheckForPromotion = game.squares[to.row][to.col].piece; //get updated piece
         // Add Promotion to the list of actions
@@ -62,19 +63,26 @@ export class ShogiLogicService implements IGameLogic {
       }
     }
 
-    this.unhighlightCheck(game);
-    if (this.checkForCheck(game)) {
-      if (this.isCheckMate(game)) {
-        alert("Checkmate!");
-      } else if (this.isPlayerInCheck(game, game.activeColour)) {
-        if (startedInCheck) {
-          alert("You failed to get yourself out of check! You have lost the game.");
-        } else {
-          alert("You put yourself in check! You have lost the game.");
-        }
-        return;
+    // Following checks if active player has accidentally checked themselves, which results in their loss
+    let activeColour = game.activeColour;
+    let inactiveColour = game.player1.colour == activeColour ? game.player2.colour : game.player1.colour;
+    if (this.checkForCheck(game, activeColour)) {
+      if (startedInCheck) {
+        alert("You failed to get yourself out of check! You have lost the game.");
       }
+      else {
+        alert("You put yourself in check! You have lost the game.");
+      }
+      //Get the INACTIVE player and make them the winner
+      let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.name : game.player2.name;
+      this.makeWinner(game, winningPlayerName);
+      let winnerAction: Winner = new Winner(winningPlayerName);
+      turn.addAction(winnerAction);
     }
+    // Check if active player has caused checkmate to opposing player
+    this.victoryStateCheck(game, turn, inactiveColour);
+
+    this.unhighlightPossibleMoves(game);
     game.toggleTurn();
 
     //Send full turn to the server
@@ -83,41 +91,22 @@ export class ShogiLogicService implements IGameLogic {
     });
   }
 
-  makeMove(game: Game, from: RowColPosition, to: RowColPosition) {
-    game.squares[to.row][to.col].piece = Object.assign({}, game.squares[from.row][from.col].piece);
-    game.squares[from.row][from.col].piece = null;
-    console.log(game.squares[to.row][to.col].piece.name);
-  }
-
-  makeTake(game: Game, takingColour: string, takenPieceName: string) {
-    let takenPiece = this.pieceBag.getPieceByName(takenPieceName, takingColour == "White");
-    takenPiece.colour = takingColour;
-    takenPiece.taken = true;
-    let square: Square = new Square(takenPiece);
-    if (takingColour == "White") {
-      game.takenByWhite.push(square);
-    } else {
-      game.takenByBlack.push(square);
+  // If checkmate, need to add Winner action to turn
+  victoryStateCheck(game: Game, turn: Turn, inactiveColour: string) {
+    if (this.checkForCheck(game, inactiveColour)) {
+      if (this.checkForCheckMate(game, inactiveColour)) {
+        alert("Checkmate! You have won!");
+        let winningPlayerName = game.player1.colour == game.activeColour ? game.player1.name : game.player2.name;
+        this.makeWinner(game, winningPlayerName);
+        let winnerAction: Winner = new Winner(winningPlayerName);
+        turn.addAction(winnerAction);
+      }
     }
-  }
-
-  makePromote(game: Game, pieceLocation: RowColPosition, promotionPieceName: string) {
-    let pieceColour = game.squares[pieceLocation.row][pieceLocation.col].piece.colour;
-    let promotedPiece = this.pieceBag.getPieceByName(promotionPieceName, pieceColour == "White");
-    promotedPiece.colour = pieceColour;
-    game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
-  }
-
-  makeDrop(game: Game, dropPos: RowColPosition, droppingColour: string, droppingPieceName: string) {
-    let pieceToDrop = this.pieceBag.getPieceByName(droppingPieceName, droppingColour == "White");
-    pieceToDrop.colour = droppingColour;
-    game.squares[dropPos.row][dropPos.col].piece = pieceToDrop;
-    this.removeFromHand(game, pieceToDrop);
   }
 
   highlightPossibleMoves(game: Game, startingPos: RowColPosition) {
     // set current square
-    let currentSquare = this.getSquare(game, startingPos);
+    let currentSquare = game.squares[startingPos.row][startingPos.col];
     currentSquare.current = true;
 
     this.getPossibleMoves(game, currentSquare).forEach(move => {
@@ -161,22 +150,13 @@ export class ShogiLogicService implements IGameLogic {
     }
   }
 
-  isPossibleMove(game: Game, to: RowColPosition): boolean {
-    if (to == null) {
-      return false;
-    }
-    if (this.isWithinBoard(game.getBoardSize(), to.row, to.col)) {
-      return (game.squares[to.row][to.col].active ||
-            game.squares[to.row][to.col].danger);
-    }
-    return false;
-  }
-
   dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition) {
     let turn: Turn = new Turn(game.gameId);
     if (this.isInHand(game, pieceToDrop) && game.squares[positionToDrop.row][positionToDrop.col].piece == null) {
       this.makeDrop(game, positionToDrop, pieceToDrop.colour, pieceToDrop.name); //drops piece and removes from player's hand
-      this.checkForCheck(game);
+      // Check if active player has caused checkmate to opposing player
+      let inactiveColour = game.player1.colour == game.activeColour ? game.player2.colour : game.player1.colour;
+      this.victoryStateCheck(game, turn, inactiveColour);
       game.toggleTurn();
 
       let dropAction: Drop = new Drop(positionToDrop, pieceToDrop.colour, pieceToDrop.name);
@@ -193,21 +173,6 @@ export class ShogiLogicService implements IGameLogic {
       return game.takenByWhite.find((square) => square.piece.name == piece.name) != undefined;
     } else {
       return game.takenByBlack.find((square) => square.piece.name == piece.name) != undefined;
-    }
-  }
-
-  private removeFromHand(game: Game, piece: Piece) {
-    if (piece.colour == "White") {
-      let index: number = game.takenByWhite.findIndex((square) => {
-        return square.piece.name == piece.name;
-      });
-      game.takenByWhite.splice(index, 1);
-
-    } else {
-      let index: number = game.takenByBlack.findIndex((square) => {
-        return square.piece.name == piece.name;
-      });
-      game.takenByBlack.splice(index, 1);
     }
   }
 
@@ -249,31 +214,6 @@ export class ShogiLogicService implements IGameLogic {
     return possibleMoves;
   }
 
-  unhighlightPossibleMoves(game: Game) {
-    let boardSize = game.getBoardSize();
-    for (let i = 0; i < boardSize; i++) {
-      for (let j = 0; j < boardSize; j++) {
-        game.squares[i][j].active = false;
-        game.squares[i][j].danger = false;
-        game.squares[i][j].current = false;
-      }
-    }
-    game.takenByBlack.forEach((square) => {
-      square.active = false;
-      square.danger = false;
-      square.current = false;
-    });
-    game.takenByWhite.forEach((square) => {
-      square.active = false;
-      square.danger = false;
-      square.current = false;
-    });
-  }
-
-  postTurn(turn: Turn) {
-    return this.http.post<Turn>(environment.serverUrl + "/makeTurn", turn);
-  }
-
   private canPromote(boardSize: number, row: number, piece: Piece): boolean {
     if (piece.promotionPiece != null) {
       // if a white piece is in the bottom 3 rows
@@ -287,31 +227,64 @@ export class ShogiLogicService implements IGameLogic {
     return false;
   }
 
-  private isCheckMate(game: Game): boolean {
-    let checkedColour: string;
-    for (let row of game.squares) {
-      for (let square of row) {
-        if (square.inCheck) {
-          checkedColour = square.piece.colour;
-          return;
+  private findKing(game: Game, colour: string): Square {
+    let kingSquare = null;
+
+    for (let row = 0; row < game.getBoardSize(); row++) {
+      for (let col = 0; col < game.getBoardSize(); col++) {
+        let kingSquareCandidate = game.squares[row][col];
+        let kingPiece = kingSquareCandidate.piece;
+        if (kingPiece != null && kingPiece.colour == colour && (kingPiece.name == "King General" || kingPiece.name == "Jeweled General")) {
+          kingSquare = kingSquareCandidate;
         }
       }
     }
-    for (let row of game.squares) {
-      for (let square of row) {
-        if (square.piece != null && square.piece.colour == checkedColour) {
-          let possibleMoves: RowColPosition[] = this.getPossibleMoves(game, Object.assign({}, square));
-          for (let move of possibleMoves) {
-            //make copy of the squares
-            let fromSquarePiece = Object.assign({}, square.piece);
+    return kingSquare;
+  }
+
+  //checks if player is in check, and sets the piece as "in check" if true
+  private checkForCheck(game: Game, colour: string): boolean {
+    //find the king's square so we can track it
+    let kingSquare = this.findKing(game, colour);
+    this.unhighlightCheck(game); // Remove check from king, will be re-applied if piece is actually in check
+
+    //highlight squares for every enemy piece
+    this.unhighlightPossibleMoves(game);
+    for (let row = 0; row < game.getBoardSize(); row++) {
+      for (let col = 0; col < game.getBoardSize(); col++) {
+        let square = game.squares[row][col];
+        let piece = square.piece;
+        //if we found a piece that is enemy to this player
+        if (piece != null && piece.colour != colour) {
+          this.highlightPossibleMoves(game, square.position);
+        }
+      }
+    }
+    if (kingSquare.danger) {
+      kingSquare.inCheck = true;
+    }
+    return kingSquare.danger;
+  }
+
+  private checkForCheckMate(game: Game, colour: string): boolean {
+    // Iterate over pieces
+    for (let row = 0; row < game.getBoardSize(); row++) {
+      for (let col = 0; col < game.getBoardSize(); col++) {
+        let fromSquare = game.squares[row][col];
+        // Found friendly piece, see if moving it would undo check
+        if (fromSquare.piece != null && fromSquare.piece.colour == colour) {
+          let moves = this.getPossibleMoves(game, fromSquare);
+          for (let move of moves) {
+            // Make copy of the squares
+            let fromSquarePiece = Object.assign({}, fromSquare.piece);
             let toSquarePiece = Object.assign({}, game.squares[move.row][move.col].piece);
 
             game.squares[move.row][move.col].piece = Object.assign({}, fromSquarePiece);
-            game.squares[square.position.row][square.position.col].piece = null;
+            game.squares[fromSquare.position.row][fromSquare.position.col].piece = null;
 
-            let stillInCheck: boolean = this.checkForCheck(game);
-            //set board back to previous state
-            game.squares[square.position.row][square.position.col].piece = Object.assign({}, fromSquarePiece);
+            let stillInCheck: boolean = this.checkForCheck(game, colour);
+            // Set board back to previous state
+            game.squares[fromSquare.position.row][fromSquare.position.col].piece = Object.assign({}, fromSquarePiece);
 
             // Will typically assign an empty object instead of null, so need to manually set null if object has no properties
             game.squares[move.row][move.col].piece = Object.keys(toSquarePiece).length > 0 ?
@@ -319,45 +292,14 @@ export class ShogiLogicService implements IGameLogic {
               game.squares[move.row][move.col].piece = null;
 
             if (!stillInCheck) {
-              this.checkForCheck(game); //re-applies check to checked piece
+              this.checkForCheck(game, colour); //re-applies check to checked piece
               return false; //if no longer check, then there is a move to escape check
             }
           }
         }
       }
     }
-    return true;
-  }
-
-  private checkForCheck(game: Game): boolean {
-    this.unhighlightPossibleMoves(game); //Reset board to remove previous highlights
-    let kingPositions: RowColPosition[] = [];
-    game.squares.forEach((row) => {
-      row.forEach((square) => {
-        if (square.piece != null && square.piece != undefined) {
-          this.highlightPossibleMoves(game, square.position);
-          if (square.piece.name == "King General" || square.piece.name == "Jeweled General") {
-            kingPositions.push(Object.assign({}, square.position));
-          }
-        }
-      });
-    });
-    let kingSquares: Square[] = [];
-    kingPositions.forEach((kingSquarePosition) => {
-      kingSquares.push(Object.assign({}, game.squares[kingSquarePosition.row][kingSquarePosition.col])); //make a copy of the king squares before removing highlight
-    });
-    this.unhighlightPossibleMoves(game); //clear board before applying in-check highlights
-    this.unhighlightCheck(game);
-    let boardContainsCheck = false;
-    kingSquares.forEach((kingSquare) => {
-      if (kingSquare.danger) { //if copy is in danger, add in-check to original
-        game.squares[kingSquare.position.row][kingSquare.position.col].inCheck = true;
-        boardContainsCheck = true;
-      } else {
-        game.squares[kingSquare.position.row][kingSquare.position.col].inCheck = false;
-      }
-    });
-    return boardContainsCheck;
+    return true; // If it gets here, no future piece movement was able to undo check and is therefore checkmate
   }
 
   private unhighlightCheck(game: Game) {
@@ -367,14 +309,6 @@ export class ShogiLogicService implements IGameLogic {
         game.squares[i][j].inCheck = false;
       }
     }
-  }
-
-  private isWithinBoard(boardSize: number, row: number, col: number): boolean {
-    return (row >= 0 && row < boardSize) && (col >= 0 && col < boardSize);
-  }
-
-  private getSquare(game: Game, position: RowColPosition): Square {
-    return game.squares[position.row][position.col];
   }
 
   private isPlayerInCheck(game: Game, colour: string): boolean {

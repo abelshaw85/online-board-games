@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 
 @Component({
@@ -7,9 +7,11 @@ import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
   styleUrls: ['./loading-spinner.component.css']
 })
 export class LoadingSpinnerComponent implements OnInit {
-  mode: ProgressSpinnerMode = 'indeterminate'; //determinate = not loading, set at value
-  value = 0; //percent of bar loaded
-  size = 50;
+  @Input() mode: ProgressSpinnerMode = 'indeterminate'; //determinate = not loading, set at value
+  @Input() value = 0; //percent of bar loaded
+  @Input() size = 50;
+  @Input() message: string = "";
+
 
   constructor() { }
 

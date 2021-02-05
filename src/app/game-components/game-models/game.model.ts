@@ -1,9 +1,8 @@
-import { IGameLogic } from "../game-logic-services/game-logic.interface";
+import { GameLogic } from "../game-logic-services/game-logic.class";
 import { Piece } from "./piece.model";
 import { Player } from "./player.model";
 import { RowColPosition } from "./row-col-position.model";
 import { Square } from "./square.model";
-import { IAction } from "./turn-actions/action.interface";
 import { Drop } from "./turn-actions/drop.model";
 import { Move } from "./turn-actions/move.model";
 import { Promote } from "./turn-actions/promote.model";
@@ -11,13 +10,15 @@ import { Take } from "./turn-actions/take.model";
 import { Turn } from "./turn-actions/turn.model";
 
 export class Game {
-  private gameLogic: IGameLogic;
+  private gameLogic: GameLogic;
   public gameLog: string[] = [];
   public gameId: number;
   public type: string;
+  public status: string;
   public squares: Square[][];
   public player1: Player;
   public player2: Player;
+  public winnerName: string;
   public activeColour: string;
   public takenByWhite: Square[] = [];
   public takenByBlack: Square[] = [];
@@ -31,7 +32,7 @@ export class Game {
     return null; //colour does not match either player
   }
 
-  setGameLogic(gameLogic: IGameLogic) {
+  setGameLogic(gameLogic: GameLogic) {
     this.gameLogic = gameLogic;
   }
 

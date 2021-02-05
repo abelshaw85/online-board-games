@@ -84,7 +84,7 @@ export class GameManagerService implements OnInit, OnDestroy {
       if (responseType === 'FetchGameError') {
         return;
       }
-      let gameSquaresData = data['data']['s'];
+      let gameSquaresData = data['data']['sq'];
       let squares: Square[][] = [];
       for (let row = 0; row < gameSquaresData.length; row++) {
         let squareRow: Square[] = [];
@@ -105,12 +105,17 @@ export class GameManagerService implements OnInit, OnDestroy {
       let player2: Player = new Player(data['data']['p2']['username'], data['data']['p2']['colour']);
       let activeColour: string = data['data']['ac'];
       let type: string = data['data']['t'];
+      let status: string = data['data']['st'];
+      let winnerName: string = data['data']['w'];
+      console.log(status);
       let game = new Game();
       game.gameId = id;
       game.type = type;
+      game.status = status;
       game.squares = squares;
       game.player1 = player1;
       game.player2 = player2;
+      game.winnerName = winnerName;
       game.activeColour = activeColour;
       for (let takenPiece of data['data']['tp']) {
         let pieceName = takenPiece['n'];

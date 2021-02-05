@@ -76,6 +76,9 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   gameText(): string {
+    if (this.game.status == "Closed") {
+      return "Game Over... \nWinner is [" + this.game.winnerName + "]!";
+    }
     let activeColour = this.game.activeColour;
     let activePlayerName = this.game.getPlayerByColour(activeColour).name;
     if (activePlayerName == this.authenticationService.getLoggedInUserName()) {

@@ -1,11 +1,11 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/app/auth/auth.service';
-import { Game } from '../game-models/game.model';
-import { Piece } from '../game-models/piece.model';
-import { GameManagerService } from '../services/game-manager.service';
-import { RowColPosition } from '../game-models/row-col-position.model';
-import { Square } from '../game-models/square.model';
+import { Game } from '../../game-models/game.model';
+import { Piece } from '../../game-models/piece.model';
+import { GameManagerService } from '../../services/game-manager.service';
+import { RowColPosition } from '../../game-models/row-col-position.model';
+import { Square } from '../../game-models/square.model';
 
 @Component({
   selector: 'app-square',
@@ -45,7 +45,7 @@ export class SquareComponent implements OnInit {
 
   hasActivePiece(): boolean {
     let activeColour = this.game.activeColour;
-    return this.square.piece !== null && this.square.piece.colour === activeColour && this.game.getPlayerByColour(activeColour).name == this.authService.getLoggedInUserName();
+    return this.game.status != "Closed" && this.square.piece !== null && this.square.piece.colour === activeColour && this.game.getPlayerByColour(activeColour).name == this.authService.getLoggedInUserName();
   }
 
   squareVisible(): boolean {

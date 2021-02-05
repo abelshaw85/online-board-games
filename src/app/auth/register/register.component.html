@@ -104,8 +104,9 @@
           Register
         </button>
         <div *ngIf="sending" style="text-align: center;" class="mt-2">
-          <app-loading-spinner></app-loading-spinner>
-          <p>Registering account...</p>
+          <app-loading-spinner
+            [message]="'Registering account...'">
+          </app-loading-spinner>
         </div>
 			</div>
 		</form>

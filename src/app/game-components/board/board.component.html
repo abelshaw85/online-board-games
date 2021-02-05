@@ -1,6 +1,8 @@
 <div *ngIf="loading || !connected">
-  <app-loading-spinner></app-loading-spinner>
-  <p>{{loadingMessage}}</p>
+  <app-loading-spinner
+    [size]="100"
+    [message]="loadingMessage">
+  </app-loading-spinner>
 </div>
 <div class="row board-container" cdkDropListGroup *ngIf="!loading && connected">
   <div class="col-md-2 col-sm-12 takenContainer">
@@ -20,6 +22,7 @@
     </div>
     <div>
       <textarea rows="3" disabled>{{game.gameLog.join('\n')}}</textarea>
+      <p>{{game.status}}</p>
       <!-- <button (click)="test()">test</button> -->
     </div>
   </div>
