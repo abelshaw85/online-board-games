@@ -34,14 +34,20 @@ export class ChessLogicService extends ChessLikeLogic {
     const squareRow = square.position.row;
     const squareCol = square.position.col;
 
+    // If there is a move, check if the piece on that square is empty
+    if (possibleMoves.length > 0) {
+      let move = possibleMoves[0];
+      // If there is a piece present on this square, remove the move
+      if (game.squares[move.row][move.col].piece != null) {
+        possibleMoves = [];
+      }
+    }
+
     if (square.piece.colour == "Black" && squareRow == 1 && game.squares[squareRow + 1][squareCol].piece == null && game.squares[squareRow + 2][squareCol].piece == null) {
       // If black, add an extra tile "down"
       possibleMoves.push(new RowColPosition(square.position.row + 2, square.position.col));
     } else if (square.piece.colour == "White" && squareRow == game.getBoardSize() - 2 && game.squares[squareRow - 1][squareCol].piece == null && game.squares[squareRow - 2][squareCol].piece == null) {
       possibleMoves.push(new RowColPosition(square.position.row -2, square.position.col));
-    } else {
-      // If pawn is not in starting position, treat it like normal piece
-      possibleMoves = super.getPossibleMoves(game, square);
     }
 
     // Add diagonals if opponent piece is present

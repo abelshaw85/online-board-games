@@ -47,8 +47,13 @@
     </ul>
   </div>
 </div>
+<div *ngIf="loading">
+  <app-loading-spinner
+    [message]="loadingMessage">
+  </app-loading-spinner>
+</div>
 <div class="row">
-  <div *ngIf="loading" style="text-align: center;">
+  <div *ngIf="loading">
     <app-loading-spinner
       [message]="loadingMessage">
     </app-loading-spinner>
