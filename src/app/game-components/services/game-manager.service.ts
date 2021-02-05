@@ -73,7 +73,7 @@ export class GameManagerService implements OnInit, OnDestroy {
   getGame(id): Game {
     let index: number = this.getIndexOfGame(id);
     if (index < 0) {
-      console.log("Error: Game is not yet loaded. Try subscribing to fetchGame().");
+      console.log("Error: Game is not yet loaded.");
       return null;
     }
     return this.loadedGames[index];
@@ -139,7 +139,6 @@ export class GameManagerService implements OnInit, OnDestroy {
           case "CHE":
             faceDown = pieceColour == "Black";
         }
-        console.log(pieceName + " is facedown: " + faceDown);
         const piece: Piece = this.pieceBag.getPieceByName(pieceName, faceDown);
         piece.colour = pieceColour;
         piece.taken = true;
@@ -168,7 +167,6 @@ export class GameManagerService implements OnInit, OnDestroy {
       } else {
         this.loadedGames[index] = game;
       }
-      console.log("Game successfully fetched.");
       this.gameReadyWithId.next(id);
     });
   }

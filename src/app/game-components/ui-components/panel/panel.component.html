@@ -53,11 +53,6 @@
   </app-loading-spinner>
 </div>
 <div class="row">
-  <div *ngIf="loading">
-    <app-loading-spinner
-      [message]="loadingMessage">
-    </app-loading-spinner>
-  </div>
   <div *ngIf="!loading" class="col-md-12 pl-0 pr-0">
     <div *ngIf="playerGames.length > 0">
       <app-custom-table

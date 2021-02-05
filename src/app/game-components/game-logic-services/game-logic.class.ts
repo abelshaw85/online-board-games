@@ -27,7 +27,6 @@ export abstract class GameLogic {
   makeMove(game: Game, from: RowColPosition, to: RowColPosition) {
     game.squares[to.row][to.col].piece = Object.assign({}, game.squares[from.row][from.col].piece);
     game.squares[from.row][from.col].piece = null;
-    console.log(game.squares[to.row][to.col].piece.name);
   }
 
   makeTake(game: Game, takingColour: string, takenPieceName: string) {

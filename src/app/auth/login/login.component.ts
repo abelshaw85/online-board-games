@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
   }
 
   submitLogin(form: NgForm) {
-    console.log(form);
     let userData = {
       username: form.value.username,
       password: form.value.password
