@@ -110,7 +110,7 @@ export abstract class ChessLikeLogic extends GameLogic {
     if (kingSquare.danger) {
       kingSquare.inCheck = true;
     }
-    return kingSquare.danger;
+    return kingSquare.inCheck;
   }
 
   protected checkForCheckMate(game: Game, colour: string): boolean {

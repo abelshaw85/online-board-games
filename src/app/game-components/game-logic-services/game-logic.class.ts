@@ -18,6 +18,7 @@ export abstract class GameLogic {
   //Used by components to handle moving and dropping
   abstract movePiece(game: Game, from: RowColPosition, to: RowColPosition);
   abstract dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition);
+  abstract isFaceDown(colour: string): boolean;
 
   constructor(pieceBag: PieceBag, http: HttpClient) {
     this.pieceBag = pieceBag;
@@ -30,7 +31,8 @@ export abstract class GameLogic {
   }
 
   makeTake(game: Game, takingColour: string, takenPieceName: string) {
-    let takenPiece = this.pieceBag.getPieceByName(takenPieceName, takingColour == "White");
+    let isFaceDown = this.isFaceDown(takingColour);
+    let takenPiece = this.pieceBag.getPieceByName(takenPieceName, isFaceDown);
     takenPiece.colour = takingColour;
     takenPiece.taken = true;
     let square: Square = new Square(takenPiece);
@@ -43,13 +45,15 @@ export abstract class GameLogic {
 
   makePromote(game: Game, pieceLocation: RowColPosition, promotionPieceName: string) {
     let pieceColour = game.squares[pieceLocation.row][pieceLocation.col].piece.colour;
-    let promotedPiece = this.pieceBag.getPieceByName(promotionPieceName, pieceColour == "White");
+    let isFaceDown = this.isFaceDown(pieceColour);
+    let promotedPiece = this.pieceBag.getPieceByName(promotionPieceName, isFaceDown);
     promotedPiece.colour = pieceColour;
     game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
   }
 
   makeDrop(game: Game, dropPos: RowColPosition, droppingColour: string, droppingPieceName: string) {
-    let pieceToDrop = this.pieceBag.getPieceByName(droppingPieceName, droppingColour == "White");
+    let isFaceDown = this.isFaceDown(droppingColour);
+    let pieceToDrop = this.pieceBag.getPieceByName(droppingPieceName, isFaceDown);
     pieceToDrop.colour = droppingColour;
     game.squares[dropPos.row][dropPos.col].piece = pieceToDrop;
     this.removeFromHand(game, pieceToDrop);

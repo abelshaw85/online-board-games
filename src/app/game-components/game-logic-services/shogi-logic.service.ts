@@ -165,4 +165,8 @@ export class ShogiLogicService extends ChessLikeLogic {
       }
     }
   }
+
+  isFaceDown(colour: string) {
+    return colour == "White";
+  }
 }

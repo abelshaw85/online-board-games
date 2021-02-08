@@ -116,4 +116,8 @@ export class Game {
       this.activeColour = this.player1.colour;
     }
   }
+
+  isFaceDown(colour: string) {
+    return this.gameLogic.isFaceDown(colour);
+  }
 }

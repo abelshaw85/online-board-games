@@ -196,6 +196,17 @@
       "extended": false,
       "moves": [
         {"row": -1, "col": 0}
+      ],
+      "promotionPiece": "CHE-Pawn-Moved"
+    },
+    {
+      "name": "CHE-Pawn-Moved",
+      "imgUrl": "assets/img/chess-pieces-svg/pawn",
+      "size": 100,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "CHE-Pawn"
       ]
     },
     {
@@ -203,8 +214,23 @@
       "imgUrl": "assets/img/chess-pieces-svg/rook",
       "size": 100,
       "promoted": false,
-      "extended": false,
+      "extended": true,
       "moves": [
+        {"row": 1, "col": 0},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": 0, "col": -1}
+      ],
+      "promotionPiece": "CHE-Rook-Moved"
+    },
+    {
+      "name": "CHE-Rook-Moved",
+      "imgUrl": "assets/img/chess-pieces-svg/rook",
+      "size": 100,
+      "promoted": true,
+      "extended": true,
+      "moves": [
+        "CHE-Rook"
       ]
     },
     {
@@ -214,6 +240,14 @@
       "promoted": false,
       "extended": false,
       "moves": [
+        {"row": -2, "col": 1},
+        {"row": -2, "col": -1},
+        {"row": 2, "col": 1},
+        {"row": 2, "col": -1},
+        {"row": 1, "col": 2},
+        {"row": 1, "col": -2},
+        {"row": -1, "col": 2},
+        {"row": -1, "col": -2}
       ]
     },
     {
@@ -221,8 +255,12 @@
       "imgUrl": "assets/img/chess-pieces-svg/bishop",
       "size": 100,
       "promoted": false,
-      "extended": false,
+      "extended": true,
       "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1}
       ]
     },
     {
@@ -230,8 +268,16 @@
       "imgUrl": "assets/img/chess-pieces-svg/queen",
       "size": 100,
       "promoted": false,
-      "extended": false,
+      "extended": true,
       "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1},
+        {"row": 1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": -1}
       ]
     },
     {
@@ -241,6 +287,25 @@
       "promoted": false,
       "extended": false,
       "moves": [
+        {"row": 1, "col": 1},
+        {"row": 1, "col": -1},
+        {"row": -1, "col": -1},
+        {"row": -1, "col": 1},
+        {"row": 1, "col": 0},
+        {"row": 0, "col": 1},
+        {"row": -1, "col": 0},
+        {"row": 0, "col": -1}
+      ],
+      "promotionPiece": "CHE-King-Moved"
+    },
+    {
+      "name": "CHE-King-Moved",
+      "imgUrl": "assets/img/chess-pieces-svg/king",
+      "size": 100,
+      "promoted": true,
+      "extended": false,
+      "moves": [
+        "CHE-King"
       ]
     }
 	]

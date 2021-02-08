@@ -17,8 +17,7 @@
             <mat-select
               ngModel
               name="type"
-              required
-              onClick="event.stopPropagation();">
+              required>
               <mat-option *ngFor="let gameType of gameTypes" [value]="gameType.value" onClick="event.stopPropagation();">
                 {{gameType.viewValue}}
               </mat-option>
@@ -29,8 +28,7 @@
         <div class="form-group mb-0">
           <mat-checkbox
             ngModel
-            name="isSinglePlayer"
-            onClick="event.stopPropagation();">
+            name="isSinglePlayer">
             Single player?
           </mat-checkbox>
         </div>
@@ -41,6 +39,7 @@
             id="btnCreate"
             type="submit"
             style="width: 100%;"
+            onclick="$(this).parents('.dropdown').find('button.dropdown-toggle').dropdown('toggle');"
             [disabled]="!f.valid">Create Game</button>
         </div>
       </form>

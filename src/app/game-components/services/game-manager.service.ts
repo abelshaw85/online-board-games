@@ -119,6 +119,17 @@ export class GameManagerService implements OnInit, OnDestroy {
       const status: string = data['data']['st'];
       const winnerName: string = data['data']['w'];
       const game = new Game();
+      //inject shogi logic into game:
+      switch(type) {
+        case "Shogi":
+          game.setGameLogic(this.shogiLogic);
+          break;
+        case "Chess":
+          game.setGameLogic(this.chessLogic);
+          break;
+        default:
+          console.log("Unable to inject logic - unknown game type.");
+      }
       game.gameId = id;
       game.type = type;
       game.status = status;
@@ -130,15 +141,7 @@ export class GameManagerService implements OnInit, OnDestroy {
       for (let takenPiece of data['data']['tp']) {
         const pieceName = takenPiece['n'];
         const pieceColour = takenPiece['c'];
-        const piecePrefix = pieceName.split("-")[0];
-        let faceDown: boolean = false;
-        switch (piecePrefix) {
-          case "SHO":
-            faceDown = pieceColour == "White";
-            break;
-          case "CHE":
-            faceDown = pieceColour == "Black";
-        }
+        let faceDown: boolean = game.isFaceDown(pieceColour);
         const piece: Piece = this.pieceBag.getPieceByName(pieceName, faceDown);
         piece.colour = pieceColour;
         piece.taken = true;
@@ -148,17 +151,6 @@ export class GameManagerService implements OnInit, OnDestroy {
         } else {
           game.takenByBlack.push(square);
         }
-      }
-      //inject shogi logic into game:
-      switch(type) {
-        case "Shogi":
-          game.setGameLogic(this.shogiLogic);
-          break;
-        case "Chess":
-          game.setGameLogic(this.chessLogic);
-          break;
-        default:
-          console.log("Unable to inject logic - unknown game type.");
       }
       let index: number = this.getIndexOfGame(id);
       // If game does not exist in loadedGames, push it to the loadedGames array. Otherwise, replace the game.

@@ -99,6 +99,7 @@ export class PanelComponent implements OnInit, OnDestroy {
         alert(gameData.type + " is unknown type");
         break;
     }
+    form.reset();
   }
 
   gameStatus(gameDetails: GameDetails): string {

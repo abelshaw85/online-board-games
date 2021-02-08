@@ -6,7 +6,7 @@
     'dangerSquare': squareVisible() && square.danger,
     'currentSquare': squareVisible() && square.current,
     'checkSquare': squareVisible() && square.inCheck,
-    'hover': squareVisible() && hasActivePiece() && !square.inCheck
+    'hover': squareVisible() && hasActivePiece() && !square.current && !square.inCheck
   }">
   <span class="square-content align-middle"
     cdkDropList
