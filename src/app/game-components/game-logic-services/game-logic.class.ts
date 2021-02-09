@@ -1,4 +1,6 @@
 import { HttpClient } from "@angular/common/http";
+import { MatDialog } from "@angular/material/dialog";
+import { CustomAlertDialogue } from "src/app/shared/custom-alert/custom-alert.component";
 import { environment } from "src/environments/environment";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
@@ -9,9 +11,6 @@ import { PieceBag } from "../services/piece-bag.service";
 
 export abstract class GameLogic {
 
-  protected http: HttpClient;
-  protected pieceBag: PieceBag;
-
   //Used by components to show/clear possible moves
   abstract highlightPossibleMoves(game: Game, startingPos:RowColPosition);
   abstract highlightPossibleDrops(game: Game, dropPiece: Piece);
@@ -20,10 +19,7 @@ export abstract class GameLogic {
   abstract dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition);
   abstract isFaceDown(colour: string): boolean;
 
-  constructor(pieceBag: PieceBag, http: HttpClient) {
-    this.pieceBag = pieceBag;
-    this.http = http;
-  }
+  constructor(protected pieceBag: PieceBag, protected http: HttpClient, protected dialog: MatDialog) {}
 
   makeMove(game: Game, from: RowColPosition, to: RowColPosition) {
     game.squares[to.row][to.col].piece = Object.assign({}, game.squares[from.row][from.col].piece);
@@ -116,6 +112,16 @@ export abstract class GameLogic {
       square.active = false;
       square.danger = false;
       square.current = false;
+    });
+  }
+
+  openAlert(heading: string, text: string) {
+    const dialogRef = this.dialog.open(CustomAlertDialogue, {
+      width: '30%',
+      data: {
+        heading: heading,
+        text: text
+      }
     });
   }
 }

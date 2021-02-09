@@ -11,6 +11,8 @@ import { Move } from "../game-models/turn-actions/move.model";
 import { Take } from "../game-models/turn-actions/take.model";
 import { Promote } from "../game-models/turn-actions/promote.model";
 import { Winner } from "../game-models/turn-actions/winner.model";
+import { MatDialog } from "@angular/material/dialog";
+import { ChessPromoteConfirmDialog } from "./dialogs/chess-promote-alert/chess-promote-confirm.component";
 
 /*
   Concrete class that implements Chess-specific logic. Uses ChessLike as a template for logic that is true across Shogi, Chess, and other chess-like games
@@ -19,9 +21,10 @@ import { Winner } from "../game-models/turn-actions/winner.model";
   providedIn: 'root'
 })
 export class ChessLogicService extends ChessLikeLogic {
+  private piecePromotionName;
 
-  constructor(protected http: HttpClient, protected pieceBag: PieceBag) {
-    super(pieceBag, http);
+  constructor(protected http: HttpClient, protected pieceBag: PieceBag, protected dialog: MatDialog) {
+    super(pieceBag, http, dialog);
     this.kingPieces.push("CHE-King");
     this.kingPieces.push("CHE-King-Moved");
   }
@@ -31,7 +34,7 @@ export class ChessLogicService extends ChessLikeLogic {
     // if king/rook, get special castling moves
     // else, get moves from superclass
     let possibleMoves: RowColPosition[] = [];
-    if (square.piece.name == "CHE-Pawn") {
+    if (square.piece.name.startsWith("CHE-Pawn")) {
       possibleMoves = this.getPossiblePawnMoves(game, square);
       return possibleMoves;
     } else if (square.piece.name == "CHE-King") {
@@ -49,7 +52,7 @@ export class ChessLogicService extends ChessLikeLogic {
     const squareRow = square.position.row;
     const squareCol = square.position.col;
 
-    // If there is a move, check if the piece on that square is empty
+    // Removes the 1 tile move if the pawn is attempting to take a piece infront of it
     if (possibleMoves.length > 0) {
       let move = possibleMoves[0];
       // If there is a piece present on this square, remove the move
@@ -58,11 +61,15 @@ export class ChessLogicService extends ChessLikeLogic {
       }
     }
 
-    if (square.piece.colour == "Black" && game.squares[squareRow + 1][squareCol].piece == null && game.squares[squareRow + 2][squareCol].piece == null) {
-      // If black, add an extra tile "down"
-      possibleMoves.push(new RowColPosition(square.position.row + 2, square.position.col));
-    } else if (square.piece.colour == "White" && game.squares[squareRow - 1][squareCol].piece == null && game.squares[squareRow - 2][squareCol].piece == null) {
-      possibleMoves.push(new RowColPosition(square.position.row -2, square.position.col));
+    //Only add 2nd tile if the piece has not been moved
+    if (!square.piece.name.endsWith("-Moved")) {
+      if (square.piece.colour == "Black" && game.squares[squareRow + 1][squareCol].piece == null && game.squares[squareRow + 2][squareCol].piece == null) {
+        // If black, add an extra tile "down"
+        possibleMoves.push(new RowColPosition(square.position.row + 2, square.position.col));
+      } else if (square.piece.colour == "White" && game.squares[squareRow - 1][squareCol].piece == null && game.squares[squareRow - 2][squareCol].piece == null) {
+        // If white, add an extra tile "up"
+        possibleMoves.push(new RowColPosition(square.position.row -2, square.position.col));
+      }
     }
 
     // Add diagonals if opponent piece is present
@@ -162,14 +169,13 @@ export class ChessLogicService extends ChessLikeLogic {
     }
   }
 
-  movePiece(game: Game, from: RowColPosition, to: RowColPosition) {
+  async movePiece(game: Game, from: RowColPosition, to: RowColPosition) {
     let turn: Turn = new Turn(game.gameId); // Create new Turn object that will be populated by Actions.
     let startedInCheck = this.isPlayerInCheck(game, game.activeColour); //used to customise losing message if active player doesnt get themselves out of check
 
     // If king made a castling move, also move rook
     if (game.squares[from.row][from.col].piece.name == "CHE-King") {
       if (from.col - 2 == to.col && from.row == to.row) {
-        console.log("left");
         let rookCurrentPos = new RowColPosition(from.row, 0);
         let rookToPos = new RowColPosition(from.row, from.col - 1);
         this.makeMove(game, rookCurrentPos, rookToPos);
@@ -178,7 +184,6 @@ export class ChessLogicService extends ChessLikeLogic {
         let moveAction: Move = new Move(rookCurrentPos, rookToPos);
         turn.addAction(moveAction);
       } else if (from.col + 2 == to.col && from.row == to.row) {
-        console.log("right");
         let rookCurrentPos = new RowColPosition(from.row, game.getBoardSize() - 1);
         let rookToPos = new RowColPosition(from.row, from.col + 1);
         this.makeMove(game, rookCurrentPos, rookToPos);
@@ -192,13 +197,6 @@ export class ChessLogicService extends ChessLikeLogic {
     // If square has a piece to take, add it to player's hand
     if (game.squares[to.row][to.col].piece != null) {
       let capturedPiece: Piece = game.squares[to.row][to.col].piece;
-
-      //Captured pieces must unpromote
-      if (capturedPiece.promoted) {
-        let unpromotedPieceName = this.pieceBag.unpromotePiece(capturedPiece.name).name;
-        this.makePromote(game, to, unpromotedPieceName); //swaps piece for the unpromoted piece
-        capturedPiece = game.squares[to.row][to.col].piece; //piece at this location will now be unpromoted piece
-      }
       this.makeTake(game, game.activeColour, capturedPiece.name); //adds piece to the capturing player's hand
 
       // Add Take to the list of actions
@@ -215,9 +213,23 @@ export class ChessLogicService extends ChessLikeLogic {
     let pieceToCheckForPromotion = game.squares[to.row][to.col].piece;
     //Promotes to its "Moved" counterpart to prevent future Castling
     if (pieceToCheckForPromotion.name == "CHE-King" || pieceToCheckForPromotion.name == "CHE-Rook" || pieceToCheckForPromotion.name == "CHE-Pawn") {
+      console.log("main check");
       this.makePromote(game, to, pieceToCheckForPromotion.promotionPiece);
-      let promoteAction: Promote = new Promote(to, pieceToCheckForPromotion.name);
+      let promoteAction: Promote = new Promote(to, pieceToCheckForPromotion.promotionPiece);
       turn.addAction(promoteAction);
+    } else if (pieceToCheckForPromotion.name == "CHE-Pawn-Moved") {
+      console.log("pawn moved check");
+      let rowToCheck = pieceToCheckForPromotion.colour == "White" ? 0 : game.getBoardSize() - 1;
+      //if pawn has reached the end of the board, change to another piece
+      if (to.row == rowToCheck) {
+
+        await this.openConfirmPromote(pieceToCheckForPromotion);
+        console.log(this.piecePromotionName);
+        // Fetch clicked piece, and promote pawn to that type
+        this.makePromote(game, to, this.piecePromotionName);
+        let promoteAction: Promote = new Promote(to, this.piecePromotionName);
+        turn.addAction(promoteAction);
+      }
     }
 
     // Following checks if active player has accidentally checked themselves, which results in their loss
@@ -225,10 +237,10 @@ export class ChessLogicService extends ChessLikeLogic {
     let inactiveColour = game.player1.colour == activeColour ? game.player2.colour : game.player1.colour;
     if (this.checkForCheck(game, activeColour)) {
       if (startedInCheck) {
-        alert("You failed to get yourself out of check! You have lost the game.");
+        this.openAlert("You lose.", "You failed to get yourself out of check! You have lost the game.");
       }
       else {
-        alert("You put yourself in check! You have lost the game.");
+        this.openAlert("You lose.", "You put yourself in check! You have lost the game.");
       }
       //Get the INACTIVE player and make them the winner
       let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.name : game.player2.name;
@@ -258,5 +270,19 @@ export class ChessLogicService extends ChessLikeLogic {
 
   isFaceDown(colour: string) {
     return colour == "Black";
+  }
+
+  async openConfirmPromote(piece: Piece) {
+    const dialogRef = this.dialog.open(ChessPromoteConfirmDialog, {
+      width: '50%',
+      disableClose: true,
+      data: {
+        piece: piece
+      }
+    });
+
+   await dialogRef.afterClosed().toPromise().then(result => {
+    this.piecePromotionName = result;
+   });
   }
 }

@@ -6,9 +6,6 @@ import { SquareComponent } from './game-components/board/square/square.component
 import { PieceComponent } from './game-components/board/piece/piece.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TakenPiecesComponent } from './game-components/board/taken-pieces/taken-pieces.component';
 import { PieceBag } from './game-components/services/piece-bag.service';
@@ -27,7 +24,17 @@ import { JoinGamesComponent } from './game-components/ui-components/join-games/j
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { HeaderComponent } from './main-components/header/header.component';
 import { CustomTableComponent } from './shared/custom-table/custom-table.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ShogiPromoteConfirmDialog } from './game-components/game-logic-services/dialogs/shogi-promote-confirm.component';
+import { ChessPromoteConfirmDialog } from './game-components/game-logic-services/dialogs/chess-promote-alert/chess-promote-confirm.component';
+import { SelectablePieceComponent } from './game-components/game-logic-services/dialogs/chess-promote-alert/selectable-piece/selectable-piece.component';
 
 @NgModule({
   declarations: [
@@ -44,21 +51,27 @@ import { MatSelectModule } from '@angular/material/select';
     JoinGamesComponent,
     LoadingSpinnerComponent,
     HeaderComponent,
-    CustomTableComponent
+    CustomTableComponent,
+    ShogiPromoteConfirmDialog,
+    ChessPromoteConfirmDialog,
+    SelectablePieceComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     DragDropModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatCheckboxModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [
     {
@@ -70,6 +83,7 @@ import { MatSelectModule } from '@angular/material/select';
     AuthGuard,
     WebSocketService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

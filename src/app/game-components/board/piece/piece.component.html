@@ -11,7 +11,7 @@
   >
   <img src="{{this.getPieceUrl()}}"
     [ngStyle]="{'width': piece.size + '%', 'height': piece.size + '%'}"
-    [ngClass]="{'white': (piece.colour != null && piece.colour == 'White' && piece.name.startsWith('SHO'))}"
+    [ngClass]="{'faceDown': (piece.colour != null && piece.colour == 'White' && piece.name.startsWith('SHO'))}"
     draggable="false"
     matTooltip="{{this.getPieceName() + ' : [' + piece.colour + ']'}}"
     [matTooltipShowDelay]="500">

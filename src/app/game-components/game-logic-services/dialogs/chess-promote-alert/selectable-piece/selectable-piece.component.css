@@ -1,0 +1,9 @@
+.pieceContainer {
+  background-color: lightsalmon;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.pieceContainer:hover {
+  background-color: rgb(255, 192, 167);
+}

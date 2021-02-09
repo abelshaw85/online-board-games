@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/app/auth/auth.service';
 import { Game } from '../../game-models/game.model';
-import { Player } from '../../game-models/player.model';
 import { GameManagerService } from '../../services/game-manager.service';
 import { RowColPosition } from '../../game-models/row-col-position.model';
 import { Piece } from '../../game-models/piece.model';
@@ -43,7 +42,8 @@ export class PieceComponent implements OnInit {
 
   getPieceName() {
     if (this.piece != null) {
-      return this.piece.name.split("-")[1]; //remove game-type prefix, only display piece name
+      return this.piece.name;
+      //return this.piece.name.split("-")[1]; //remove game-type prefix, only display piece name
     }
   }
 

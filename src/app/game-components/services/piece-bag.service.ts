@@ -54,6 +54,7 @@ export class PieceBag {
       let moveRow = move.row;
       let moveCol = move.col;
       if (faceDown) {
+        // If face down, reverse the row direction
         moveRow = moveRow * -1;
       }
       moves.push(new RowColPosition(moveRow, moveCol));

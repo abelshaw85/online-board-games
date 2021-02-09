@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { CustomAlertDialogue } from 'src/app/shared/custom-alert/custom-alert.component';
 import { GameDetails } from '../../game-models/game-details.model';
 import { Player } from '../../game-models/player.model';
 import { GameDetailsService } from '../../services/game-details.service';
@@ -17,7 +19,8 @@ export class JoinGamesComponent implements OnInit {
 
   constructor(private gameDetailsService: GameDetailsService,
     private gameManager: GameManagerService,
-    private router: Router) { }
+    private router: Router,
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.gameDetailsService.getGamesToJoinDetails().subscribe((response) => {
@@ -49,20 +52,39 @@ export class JoinGamesComponent implements OnInit {
 
   joinGameById(gameId: number) {
     this.gameManager.joinGameById(gameId).subscribe((response) => {
-      let responseType = response['type'];
-      switch (responseType) {
-        case "GameJoinFailure":
-          alert(response['message']);
-          let index = this.joinGames.findIndex(gameDetails => {
-            return gameDetails.gameId == gameId;
-          });
-          this.joinGames.splice(index, 1);
-          break;
-        case "GameJoinSuccess":
-          alert("Successfully joined game!");
-          this.router.navigate(['games', gameId]);
+      this.handleResponse(response, gameId);
+    });
+  }
+
+  async handleResponse(response, gameId) {
+    let responseType = response['type'];
+    switch (responseType) {
+      case "GameJoinFailure":
+        await this.openJoinGameAlert("Join Game Error", "Could not join game with id of " + gameId + " : " + response['message']);
+        // Remove game from list of games to join
+        let index = this.joinGames.findIndex(gameDetails => {
+          return gameDetails.gameId == gameId;
+        });
+        this.joinGames.splice(index, 1);
+        break;
+      case "GameJoinSuccess":
+        await this.openJoinGameAlert("Game Joined", "Successfully joined game!");
+        this.router.navigate(['games', gameId]);
+    }
+  }
+
+  async openJoinGameAlert(heading: string, text: string) {
+    const dialogRef = this.dialog.open(CustomAlertDialogue, {
+      width: '30%',
+      data: {
+        heading: heading,
+        text: text
       }
     });
+
+   await dialogRef.afterClosed().toPromise().then(result => {
+     //this.promotePiece = result;
+   });
   }
 
 }

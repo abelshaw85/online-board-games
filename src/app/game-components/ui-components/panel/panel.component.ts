@@ -1,7 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
+import { CustomAlertDialogue } from 'src/app/shared/custom-alert/custom-alert.component';
 import { GameDetails } from '../../game-models/game-details.model';
 import { Player } from '../../game-models/player.model';
 import { GameDetailsService } from '../../services/game-details.service';
@@ -33,7 +36,8 @@ export class PanelComponent implements OnInit, OnDestroy {
   constructor(
     private gameManagerService: GameManagerService,
     private gameDetailsService: GameDetailsService,
-    private authorisationService: AuthenticationService) { }
+    private authorisationService: AuthenticationService,
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadingMessage = "Fetching game details...";
@@ -72,31 +76,20 @@ export class PanelComponent implements OnInit, OnDestroy {
     switch (gameData.type) {
       case "Shogi":
         this.gameManagerService.newGame("Shogi", gameData.isSinglePlayer).subscribe((response) => {
-          if (response['type'] == "NewGameSuccess") {
-            alert("New game created!");
-            let gameDetails: GameDetails = this.jsonToGameDetails(response['data']);
-            this.playerGames.push(gameDetails);
-          } else if (response['type'] == "NewGameFailure") {
-            alert(response['message']);
-          }
+          this.handleNewGameResponse(response);
+
         });
         break;
       case "Chess":
         this.gameManagerService.newGame("Chess", gameData.isSinglePlayer).subscribe((response) => {
-          if (response['type'] == "NewGameSuccess") {
-            alert("New game created!");
-            let gameDetails: GameDetails = this.jsonToGameDetails(response['data']);
-            this.playerGames.push(gameDetails);
-          } else if (response['type'] == "NewGameFailure") {
-            alert(response['message']);
-          }
+          this.handleNewGameResponse(response);
         });
         break;
       case "Draughts":
-        alert("No draughts yet");
+        console.log("No draughts yet");
         break;
       default:
-        alert(gameData.type + " is unknown type");
+        console.log(gameData.type + " is unknown type");
         break;
     }
     form.reset();
@@ -112,5 +105,33 @@ export class PanelComponent implements OnInit, OnDestroy {
       let opposingPlayerName = gameDetails.player1.name != thisPlayerName ? gameDetails.player1.name : gameDetails.player2.name;
       return "In Progress Against " + opposingPlayerName;
     }
+  }
+
+  handleNewGameResponse(response) {
+    if (response['type'] == "NewGameSuccess") {
+      this.gameSuccess(response['data']);
+    } else if (response['type'] == "NewGameFailure") {
+      this.gameError(response['message']);
+    }
+  }
+
+  gameSuccess(gameDetailsData) {
+    this.openAlert("Game Created", "New game created!");
+    let gameDetails: GameDetails = this.jsonToGameDetails(gameDetailsData);
+    this.playerGames.push(gameDetails);
+  }
+
+  gameError(errorMessage) {
+    this.openAlert("Game Creation Error", "There was an issue creating your game: " + errorMessage);
+  }
+
+  openAlert(heading: string, text: string) {
+    const dialogRef = this.dialog.open(CustomAlertDialogue, {
+      width: '30%',
+      data: {
+        heading: heading,
+        text: text
+      }
+    });
   }
 }

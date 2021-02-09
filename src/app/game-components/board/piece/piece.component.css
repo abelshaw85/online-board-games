@@ -23,6 +23,6 @@ img {
   cursor: grab;
 }
 
-.white-shogi {
+.faceDown {
   transform: rotate(180deg);
 }

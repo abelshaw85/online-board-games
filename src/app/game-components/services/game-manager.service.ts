@@ -96,6 +96,7 @@ export class GameManagerService implements OnInit, OnDestroy {
           if (pData !== null) {
             let pieceName = pData['n'];
             let pieceColour = pData['c'];
+            console.log(pieceName);
             const piecePrefix = pieceName.split("-")[0];
             let faceDown: boolean = false;
             switch (piecePrefix) {
