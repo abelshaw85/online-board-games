@@ -1,11 +1,14 @@
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/auth/auth.service';
+import { CustomAlertDialogue } from 'src/app/shared/custom-alert/custom-alert.component';
 import { WebSocketService } from 'src/app/web-socket/web-socket.service';
 import { Game } from '../game-models/game.model';
+import { AlertService } from '../services/alert.service';
 import { GameManagerService } from '../services/game-manager.service';
 
 @Component({
@@ -25,7 +28,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     private webSocketService: WebSocketService,
     private route: ActivatedRoute,
     private gameManager: GameManagerService,
-    private authenticationService: AuthenticationService) {
+    private authenticationService: AuthenticationService,
+    public alertService: AlertService) {
   }
 
   test() {
@@ -44,6 +48,10 @@ export class BoardComponent implements OnInit, OnDestroy {
           this.loadingMessage = "Connecting to server...";
           this.connect();
         }
+      },
+      (error) => {
+        this.loading = false;
+        this.alertService.openAlert("Load Game Error", "Unable to load the game with id " + this.id + ": " + error.message);
       }
     ));
 
@@ -51,6 +59,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.route.params.subscribe(routeParams => {
       this.id = routeParams.id;
       this.gameManager.requestGame(this.id);
+    },
+    (error) => {
+      this.loading = false;
+      this.alertService.openAlert("Unknown Error", "An error has occured");
     }));
   }
 
@@ -62,6 +74,10 @@ export class BoardComponent implements OnInit, OnDestroy {
         if (!this.connected) {
           this.webSocketService._connect();
         }
+    },
+    (error) => {
+      this.loading = false;
+      this.alertService.openAlert("Connection Error", "Unable to connect to the game server : " + error.message);
     }));
   }
 
@@ -87,4 +103,14 @@ export class BoardComponent implements OnInit, OnDestroy {
       return "Waiting for " + activePlayerName + " to make their turn";
     }
   }
+
+  // openAlert(heading: string, text: string) {
+  //   const dialogRef = this.dialog.open(CustomAlertDialogue, {
+  //     width: '35%',
+  //     data: {
+  //       heading: heading,
+  //       text: text
+  //     }
+  //   });
+  // }
 }

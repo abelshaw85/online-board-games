@@ -147,6 +147,7 @@ export class ShogiLogicService extends ChessLikeLogic {
         console.log(response);
       });
     }
+    this.unhighlightPossibleMoves(game);
   }
 
   private canPromote(boardSize: number, row: number, piece: Piece): boolean {

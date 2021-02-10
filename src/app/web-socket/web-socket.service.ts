@@ -33,6 +33,9 @@ export class WebSocketService {
             _this.onDataReceived(data);
         });
       }, this.errorCallBack);
+      _this.stompClient.onclose = function() {
+        this.connectedSubject.next(false);
+      };
     } else {
       console.log("Unable to connect: must be logged in.");
     }
@@ -48,7 +51,6 @@ export class WebSocketService {
   // on error, schedule a reconnection attempt
   errorCallBack(error) {
     console.log("errorCallBack -> " + error);
-    this.connectedSubject.next(false);
     var self = this;
     setTimeout(() => {
         this._connect();

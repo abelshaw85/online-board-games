@@ -7,6 +7,7 @@ import { AuthenticationService } from 'src/app/auth/auth.service';
 import { CustomAlertDialogue } from 'src/app/shared/custom-alert/custom-alert.component';
 import { GameDetails } from '../../game-models/game-details.model';
 import { Player } from '../../game-models/player.model';
+import { AlertService } from '../../services/alert.service';
 import { GameDetailsService } from '../../services/game-details.service';
 import { GameManagerService } from '../../services/game-manager.service';
 
@@ -37,7 +38,7 @@ export class PanelComponent implements OnInit, OnDestroy {
     private gameManagerService: GameManagerService,
     private gameDetailsService: GameDetailsService,
     private authorisationService: AuthenticationService,
-    public dialog: MatDialog) { }
+    public alertService: AlertService) { }
 
   ngOnInit(): void {
     this.loadingMessage = "Fetching game details...";
@@ -49,6 +50,10 @@ export class PanelComponent implements OnInit, OnDestroy {
       }
       this.playerGames = gamesDetails;
       this.loading = false;
+    },
+    (error) => {
+      this.loading = false;
+      this.alertService.openAlert("Fetch game details error", "Unable to fetch game details: " + error.message);
     });
   }
 
@@ -86,7 +91,9 @@ export class PanelComponent implements OnInit, OnDestroy {
         });
         break;
       case "Draughts":
-        console.log("No draughts yet");
+        this.gameManagerService.newGame("Draughts", gameData.isSinglePlayer).subscribe((response) => {
+          this.handleNewGameResponse(response);
+        });
         break;
       default:
         console.log(gameData.type + " is unknown type");
@@ -116,22 +123,22 @@ export class PanelComponent implements OnInit, OnDestroy {
   }
 
   gameSuccess(gameDetailsData) {
-    this.openAlert("Game Created", "New game created!");
+    this.alertService.openAlert("Game Created", "New game created!");
     let gameDetails: GameDetails = this.jsonToGameDetails(gameDetailsData);
     this.playerGames.push(gameDetails);
   }
 
   gameError(errorMessage) {
-    this.openAlert("Game Creation Error", "There was an issue creating your game: " + errorMessage);
+    this.alertService.openAlert("Game Creation Error", "There was an issue creating your game: " + errorMessage);
   }
 
-  openAlert(heading: string, text: string) {
-    const dialogRef = this.dialog.open(CustomAlertDialogue, {
-      width: '30%',
-      data: {
-        heading: heading,
-        text: text
-      }
-    });
-  }
+  // openAlert(heading: string, text: string) {
+  //   const dialogRef = this.dialog.open(CustomAlertDialogue, {
+  //     width: '35%',
+  //     data: {
+  //       heading: heading,
+  //       text: text
+  //     }
+  //   });
+  // }
 }

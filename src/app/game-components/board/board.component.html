@@ -14,11 +14,12 @@
   </div>
   <div class="col-md-8">
     <h2>{{this.gameText()}}</h2>
-    <div *ngFor="let row of game.squares" class="board-row">
+    <div *ngFor="let row of game.squares; let i = index" class="board-row">
       <app-square
-        *ngFor="let square of row"
+        *ngFor="let square of row; let j = index"
         [square]="square"
-        [game]="game"></app-square>
+        [game]="game"
+        [indexValue]="i + j"></app-square>
     </div>
     <div>
       <textarea rows="3" disabled>{{game.gameLog.join('\n')}}</textarea>

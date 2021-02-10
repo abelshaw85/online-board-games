@@ -5,6 +5,7 @@ import { AuthenticationService } from "src/app/auth/auth.service";
 import { WebSocketService } from "src/app/web-socket/web-socket.service";
 import { environment } from "src/environments/environment";
 import { ChessLogicService } from "../game-logic-services/chess-logic.service";
+import { DraughtsLogicService } from "../game-logic-services/draughts-logic.service";
 import { ShogiLogicService } from "../game-logic-services/shogi-logic.service";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
@@ -32,6 +33,7 @@ export class GameManagerService implements OnInit, OnDestroy {
               private pieceBag: PieceBag,
               private shogiLogic: ShogiLogicService,
               private chessLogic: ChessLogicService,
+              private draughtsLogic: DraughtsLogicService,
               private jsonToAction: JsonToActionService,
               private webSocketService: WebSocketService,
               private authenticationService: AuthenticationService) {
@@ -96,7 +98,6 @@ export class GameManagerService implements OnInit, OnDestroy {
           if (pData !== null) {
             let pieceName = pData['n'];
             let pieceColour = pData['c'];
-            console.log(pieceName);
             const piecePrefix = pieceName.split("-")[0];
             let faceDown: boolean = false;
             switch (piecePrefix) {
@@ -105,6 +106,10 @@ export class GameManagerService implements OnInit, OnDestroy {
                 break;
               case "CHE":
                 faceDown = pieceColour == "Black";
+                break;
+              case "DRA":
+                faceDown = pieceColour == "White";
+                break;
             }
             piece = this.pieceBag.getPieceByName(pieceName, faceDown);
             piece.colour = pieceColour;
@@ -128,8 +133,12 @@ export class GameManagerService implements OnInit, OnDestroy {
         case "Chess":
           game.setGameLogic(this.chessLogic);
           break;
+        case "Draughts":
+          game.setGameLogic(this.draughtsLogic);
+          break;
         default:
           console.log("Unable to inject logic - unknown game type.");
+          break;
       }
       game.gameId = id;
       game.type = type;
@@ -161,6 +170,9 @@ export class GameManagerService implements OnInit, OnDestroy {
         this.loadedGames[index] = game;
       }
       this.gameReadyWithId.next(id);
+    },
+    (error) => {
+      alert("Error! " + error.message);
     });
   }
 

@@ -15,6 +15,7 @@ import { Square } from '../../game-models/square.model';
 export class SquareComponent implements OnInit {
   @Input() square: Square;
   @Input() game: Game;
+  @Input() indexValue: number;
 
   constructor(private gameManager: GameManagerService,
     private authService: AuthenticationService) {

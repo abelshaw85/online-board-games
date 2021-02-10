@@ -26,10 +26,53 @@ export abstract class GameLogic {
     game.squares[from.row][from.col].piece = null;
   }
 
+  protected getPossibleMoves(game: Game, square: Square): RowColPosition[] {
+    let possibleMoves: RowColPosition[] = [];
+    let position: RowColPosition = square.position;
+    square.piece.moves.forEach((move) => {
+      let moveRow = move.row;
+      let moveCol = move.col;
+      while (true) {
+        if (this.isWithinBoard(game.getBoardSize(), position.row + moveRow, position.col + moveCol)) {
+          let squareToMoveTo: Square = game.squares[position.row + moveRow][position.col + moveCol];
+          if (squareToMoveTo.piece != null && square.piece.colour == squareToMoveTo.piece.colour) {
+            // if square has a piece from the same player, cannot move to this square
+            return;
+          }
+          possibleMoves.push(new RowColPosition(position.row + moveRow, position.col + moveCol));
+          if (squareToMoveTo.piece == null && square.piece.extended) { //can only continue moving in this direction if the current square is empty
+            if (moveRow < 0) {
+              moveRow -= 1;
+            }
+            if (moveRow > 0) {
+              moveRow += 1;
+            }
+            if (moveCol < 0) {
+              moveCol -= 1;
+            }
+            if (moveCol > 0) {
+              moveCol += 1;
+            }
+          } else {
+            return; //acts like continue
+          }
+        } else {
+          return;
+        }
+      }
+    });
+    return possibleMoves;
+  }
+
   makeTake(game: Game, takingColour: string, takenPieceName: string) {
     let isFaceDown = this.isFaceDown(takingColour);
     let takenPiece = this.pieceBag.getPieceByName(takenPieceName, isFaceDown);
-    takenPiece.colour = takingColour;
+    // Only Shogi pieces change colour when taken
+    if (takenPieceName.startsWith("SHO")) {
+      takenPiece.colour = takingColour;
+    } else {
+      takenPiece.colour = takingColour == "White" ? "Black" : "White";
+    }
     takenPiece.taken = true;
     let square: Square = new Square(takenPiece);
     if (takingColour == "White") {

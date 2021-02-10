@@ -307,6 +307,31 @@
       "moves": [
         "CHE-King"
       ]
+    },
+    {
+      "name": "DRA-Piece",
+      "imgUrl": "assets/img/draughts-pieces-png/draughts",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+        { "row": -1, "col": 1 },
+        { "row": -1, "col": -1 }
+      ],
+      "promotionPiece": "DRA-King"
+    },
+    {
+      "name": "DRA-King",
+      "imgUrl": "assets/img/draughts-pieces-png/draughts-king",
+      "size": 100,
+      "promoted": false,
+      "extended": false,
+      "moves": [
+        { "row": -1, "col": 1 },
+        { "row": -1, "col": -1 },
+        { "row": 1, "col": 1 },
+        { "row": 1, "col": -1 }
+      ]
     }
 	]
 }

@@ -1,7 +1,8 @@
 <div
   class="square square-visible"
   [ngClass]="{
-    'squareVisible': squareVisible(),
+    'squareVisibleEven': squareVisible() && indexValue % 2 == 0,
+    'squareVisibleOdd': squareVisible() && indexValue % 2 != 0,
     'activeSquare': squareVisible() && square.active,
     'dangerSquare': squareVisible() && square.danger,
     'currentSquare': squareVisible() && square.current,

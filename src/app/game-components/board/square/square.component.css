@@ -1,31 +1,45 @@
 .square {
   width: 3.7vw;
   text-align: center;
-  margin: 1px;
+  margin: 0px;
   display: inline-block;
   position: relative;
 }
 
-.squareVisible {
+.squareVisibleEven {
   background-color: rgb(236, 220, 198);
-  border: 1px solid black;
+}
+
+.squareVisibleOdd {
+  background-color: rgb(202, 178, 130);
 }
 
 .activeSquare {
+  background-color: rgb(113, 233, 165);
+}
+
+.activeSquare:hover {
   background-color: rgb(149, 236, 186);
 }
 
 .hover:hover {
-  border: 1px solid rgb(32, 32, 32);
   background-color: rgb(240, 208, 163);
 }
 
 .dangerSquare {
+  background-color: rgb(248, 99, 99);
+}
+
+.dangerSquare:hover {
   background-color: rgb(248, 134, 134);
 }
 
 .currentSquare {
-  background-color: rgb(228, 227, 227);
+  background-color: rgb(209, 209, 209);
+}
+
+.currentSquare:hover {
+  background-color: rgb(227, 227, 227);
 }
 
 .checkSquare {
