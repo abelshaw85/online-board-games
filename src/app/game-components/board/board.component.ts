@@ -1,4 +1,5 @@
 
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -25,6 +26,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   loadingMessage: string = "Loading...";
 
   constructor(
+    private http: HttpClient,
     private webSocketService: WebSocketService,
     private route: ActivatedRoute,
     private gameManager: GameManagerService,
@@ -37,7 +39,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.game = new Game();
+    this.game = new Game(this.http);
     this.id = +this.route.snapshot.params["id"];
     this.loadingMessage = "Fetching game...";
     this.subscriptions.push(this.gameManager.gameReadyWithId.subscribe(

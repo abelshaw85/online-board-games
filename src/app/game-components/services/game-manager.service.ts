@@ -124,7 +124,7 @@ export class GameManagerService implements OnInit, OnDestroy {
       const type: string = data['data']['t'];
       const status: string = data['data']['st'];
       const winnerName: string = data['data']['w'];
-      const game = new Game();
+      const game = new Game(this.http);
       //inject shogi logic into game:
       switch(type) {
         case "Shogi":
@@ -150,13 +150,22 @@ export class GameManagerService implements OnInit, OnDestroy {
       game.activeColour = activeColour;
       for (let takenPiece of data['data']['tp']) {
         const pieceName = takenPiece['n'];
-        const pieceColour = takenPiece['c'];
+        const takenByColour = takenPiece['c'];
+
+        // Taken pieces in Shogi are the same colour as the player that captured them, other games need to reverse the colour
+        let pieceColour;
+        if (game.type == "Shogi") {
+          pieceColour = takenByColour;
+        } else {
+          pieceColour = takenByColour == "White" ? "Black" : "White";
+        }
         let faceDown: boolean = game.isFaceDown(pieceColour);
         const piece: Piece = this.pieceBag.getPieceByName(pieceName, faceDown);
         piece.colour = pieceColour;
         piece.taken = true;
         const square: Square = new Square(piece);
-        if (pieceColour == "White") {
+
+        if (takenByColour == "White") {
           game.takenByWhite.push(square);
         } else {
           game.takenByBlack.push(square);
@@ -201,33 +210,33 @@ export class GameManagerService implements OnInit, OnDestroy {
     let gameIndex = this.getIndexOfGame(gameId);
     //ignore turn if logged in player made the turn or if the game is not loaded.
     if (player != this.authenticationService.getLoggedInUserName() && gameIndex != -1) {
-      let turn: Turn = new Turn(gameId);
+      let game = this.loadedGames[gameIndex];
       const actions: any[] = turnData['actions'];
       for (let action of actions) {
         let actionType = action['type'];
         switch(actionType) {
           case "Move":
             let move: Move = this.jsonToAction.toMove(action);
-            turn.addAction(move);
+            game.addTurnAction(move);
             break;
           case "Take":
             let take: Take = this.jsonToAction.toTake(action);
-            turn.addAction(take);
+            game.addTurnAction(take);
             break;
           case "Drop":
             let drop: Drop = this.jsonToAction.toDrop(action);
-            turn.addAction(drop);
+            game.addTurnAction(drop);
             break;
           case "Promote":
             let promote: Promote = this.jsonToAction.toPromote(action);
-            turn.addAction(promote);
+            game.addTurnAction(promote);
             break;
           default:
             console.log("Unknown move type");
             break;
         }
       }
-      this.loadedGames[gameIndex].takeTurn(turn);
+      game.takeTurn();
     }
   }
 }

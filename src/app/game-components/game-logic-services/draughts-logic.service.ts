@@ -1,11 +1,13 @@
 import { HttpClient } from "@angular/common/http";
-import { calcPossibleSecurityContexts } from "@angular/compiler/src/template_parser/binding_parser";
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
+import { Move } from "../game-models/turn-actions/move.model";
+import { Promote } from "../game-models/turn-actions/promote.model";
+import { Take } from "../game-models/turn-actions/take.model";
 import { PieceBag } from "../services/piece-bag.service";
 import { GameLogic } from "./game-logic.class";
 
@@ -13,9 +15,10 @@ import { GameLogic } from "./game-logic.class";
   providedIn: 'root'
 })
 export class DraughtsLogicService extends GameLogic {
+  private activePiecePosition: RowColPosition = null;
 
   constructor(protected http: HttpClient, protected pieceBag: PieceBag, protected dialog: MatDialog) {
-    super(pieceBag, http, dialog);
+    super(pieceBag, dialog);
   }
 
   highlightPossibleMoves(game: Game, startingPos: RowColPosition) {
@@ -45,21 +48,52 @@ export class DraughtsLogicService extends GameLogic {
 
   movePiece(game: Game, from: RowColPosition, to: RowColPosition) {
     if (!game.squares[to.row][to.col].danger) {
+      // Move the piece
       this.makeMove(game, from, to);
+      let move = new Move(from, to);
+      game.addTurnAction(move);
+
+      // Promote to king if they reached the end of the board
+      let piece = game.squares[to.row][to.col].piece;
+      if (piece.name == "DRA-Piece" && (piece.colour == "White" && to.row == (game.getBoardSize() - 1)) || (piece.colour == "Black" && to.row == 0)) {
+        this.makePromote(game, to, piece.promotionPiece);
+        let promote = new Promote(to, piece.promotionPiece);
+        game.addTurnAction(promote);
+      }
+
       //If this is a jump move, take the piece between the jump positions
       if (Math.abs(from.row - to.row) > 1) {
         let betweenPos = this.getPositionBetween(from, to);
         let takenSquare = game.squares[betweenPos.row][betweenPos.col];
         console.log(takenSquare);
         this.makeTake(game, game.activeColour, takenSquare.piece.name);
-        takenSquare.piece = null;
+        let take = new Take(game.activeColour, takenSquare.piece.name);
+        game.addTurnAction(take);
+
+        //TODO: consider how this setting of null can be sent to server
+        this.makePromote(game, takenSquare.position, null);
+        let promote = new Promote(takenSquare.position, null);
+        game.addTurnAction(promote);
+
+        //check if the piece could take again
+        let newMoves: RowColPosition[] = this.getPossibleMoves(game, game.squares[to.row][to.col]);
+        this.activePiecePosition = null; //reset this to "empty" position
+        for(let newMove of newMoves) {
+          // Found a jump move, player can continue to move
+          if (Math.abs(to.row - newMove.row) > 1) {
+            this.activePiecePosition = to;
+            break;
+          }
+        }
       }
-      let piece = game.squares[to.row][to.col].piece;
-      if ((piece.colour == "White" && to.row == (game.getBoardSize() - 1)) || (piece.colour == "Black" && to.row == 0)) {
-        this.makePromote(game, to, piece.promotionPiece);
+      if (this.activePiecePosition == null) {
+        game.toggleTurn();
+        game.postTurn();
       }
-      game.toggleTurn();
     }
+    //post turn if action complete (no other pieces can be taken)
+
+
     this.unhighlightPossibleMoves(game);
   }
 
@@ -107,6 +141,13 @@ export class DraughtsLogicService extends GameLogic {
     return colour == "White";
   }
 
+  isActivePiece(game: Game, piece: Piece, position: RowColPosition): boolean {
+    return piece != null &&
+      !piece.taken &&
+      (this.activePiecePosition == null || position == this.activePiecePosition) &&
+      piece.colour == game.activeColour;
+  }
+
   protected getPossibleMoves(game: Game, square: Square): RowColPosition[] {
     let possibleMoves: RowColPosition[] = [];
     let position: RowColPosition = square.position;
@@ -124,8 +165,8 @@ export class DraughtsLogicService extends GameLogic {
             if (this.isWithinBoard(game.getBoardSize(), jumpPos.row, jumpPos.col) && game.squares[jumpPos.row][jumpPos.col].piece == null) {
               possibleMoves.push(jumpPos);
             }
-          }
-        } else {
+          } // Single step movement only allowed for initial moves, not during secondary jumps
+        } else if (this.activePiecePosition == null) {
           possibleMoves.push(movePosition);
         }
       }

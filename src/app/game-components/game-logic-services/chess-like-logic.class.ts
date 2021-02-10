@@ -2,7 +2,6 @@ import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
-import { Turn } from "../game-models/turn-actions/turn.model";
 import { Winner } from "../game-models/turn-actions/winner.model";
 import { GameLogic } from "./game-logic.class";
 
@@ -151,14 +150,14 @@ export abstract class ChessLikeLogic extends GameLogic {
 
 
   // If checkmate, need to add Winner action to turn
-  victoryStateCheck(game: Game, turn: Turn, inactiveColour: string) {
+  victoryStateCheck(game: Game, inactiveColour: string) {
     if (this.checkForCheck(game, inactiveColour)) {
       if (this.checkForCheckMate(game, inactiveColour)) {
         this.openAlert("Checkmate!", "Checkmate! You have won the game!");
         let winningPlayerName = game.player1.colour == game.activeColour ? game.player1.name : game.player2.name;
         this.makeWinner(game, winningPlayerName);
         let winnerAction: Winner = new Winner(winningPlayerName);
-        turn.addAction(winnerAction);
+        game.addTurnAction(winnerAction);
       }
     }
   }

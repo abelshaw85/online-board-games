@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
-import { Turn } from "../game-models/turn-actions/turn.model";
 import { Move } from "../game-models/turn-actions/move.model";
 import { Take } from "../game-models/turn-actions/take.model";
 import { Promote } from "../game-models/turn-actions/promote.model";
@@ -24,13 +23,12 @@ export class ShogiLogicService extends ChessLikeLogic {
   private promotePiece: boolean;
 
   constructor(protected http: HttpClient, protected pieceBag: PieceBag, protected dialog: MatDialog) {
-    super(pieceBag, http, dialog);
+    super(pieceBag, dialog);
     this.kingPieces.push("SHO-Jeweled General");
     this.kingPieces.push("SHO-King General");
   }
 
   async movePiece(game: Game, from: RowColPosition, to: RowColPosition) {
-    let turn: Turn = new Turn(game.gameId); // Create new Turn object that will be populated by Actions.
     let startedInCheck = this.isPlayerInCheck(game, game.activeColour); //used to customise losing message if active player doesnt get themselves out of check
 
     // If square has a piece to take, add it to player's hand
@@ -47,13 +45,13 @@ export class ShogiLogicService extends ChessLikeLogic {
 
       // Add Take to the list of actions
       let takeAction: Take = new Take(game.activeColour, capturedPiece.name);
-      turn.addAction(takeAction);
+      game.addTurnAction(takeAction);
     }
 
     this.makeMove(game, from, to); //replaces piece at "to" with piece from "from"
     //Add move to list of actions
     let moveAction: Move = new Move(from, to);
-    turn.addAction(moveAction);
+    game.addTurnAction(moveAction);
 
     // replace piece with promoted piece if applicable
     let pieceToCheckForPromotion: Piece = game.squares[to.row][to.col].piece;
@@ -68,7 +66,7 @@ export class ShogiLogicService extends ChessLikeLogic {
         pieceToCheckForPromotion = game.squares[to.row][to.col].piece; //get updated piece
         // Add Promotion to the list of actions
         let promoteAction: Promote = new Promote(to, pieceToCheckForPromotion.name);
-        turn.addAction(promoteAction);
+        game.addTurnAction(promoteAction);
       }
     }
 
@@ -86,18 +84,17 @@ export class ShogiLogicService extends ChessLikeLogic {
       let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.name : game.player2.name;
       this.makeWinner(game, winningPlayerName);
       let winnerAction: Winner = new Winner(winningPlayerName);
-      turn.addAction(winnerAction);
+      game.addTurnAction(winnerAction);
     }
     // Check if active player has caused checkmate to opposing player
-    this.victoryStateCheck(game, turn, inactiveColour);
+    this.victoryStateCheck(game, inactiveColour);
 
     this.unhighlightPossibleMoves(game);
+
     game.toggleTurn();
 
     //Send full turn to the server
-    this.postTurn(turn).subscribe((response) => {
-      console.log(response);
-    });
+    game.postTurn();
   }
 
   highlightPossibleDrops(game: Game, dropPiece: Piece) {
@@ -132,20 +129,17 @@ export class ShogiLogicService extends ChessLikeLogic {
   }
 
   dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition) {
-    let turn: Turn = new Turn(game.gameId);
     if (this.isInHand(game, pieceToDrop) && game.squares[positionToDrop.row][positionToDrop.col].piece == null) {
       this.makeDrop(game, positionToDrop, pieceToDrop.colour, pieceToDrop.name); //drops piece and removes from player's hand
       // Check if active player has caused checkmate to opposing player
       let inactiveColour = game.player1.colour == game.activeColour ? game.player2.colour : game.player1.colour;
-      this.victoryStateCheck(game, turn, inactiveColour);
+      this.victoryStateCheck(game, inactiveColour);
       game.toggleTurn();
 
       let dropAction: Drop = new Drop(positionToDrop, pieceToDrop.colour, pieceToDrop.name);
-      turn.addAction(dropAction);
+      game.addTurnAction(dropAction);
       //send drop turn to server
-      this.postTurn(turn).subscribe((response) => {
-        console.log(response);
-      });
+      game.postTurn();
     }
     this.unhighlightPossibleMoves(game);
   }
@@ -175,6 +169,11 @@ export class ShogiLogicService extends ChessLikeLogic {
 
   isFaceDown(colour: string) {
     return colour == "White";
+  }
+
+  isActivePiece(game: Game, piece: Piece, position: RowColPosition): boolean {
+    return piece != null &&
+      piece.colour == game.activeColour;
   }
 
   async openConfirmPromote(piece: Piece) {

@@ -1,12 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { CustomAlertDialogue } from "src/app/shared/custom-alert/custom-alert.component";
-import { environment } from "src/environments/environment";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
-import { Turn } from "../game-models/turn-actions/turn.model";
 import { PieceBag } from "../services/piece-bag.service";
 
 export abstract class GameLogic {
@@ -18,8 +16,9 @@ export abstract class GameLogic {
   abstract movePiece(game: Game, from: RowColPosition, to: RowColPosition);
   abstract dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition);
   abstract isFaceDown(colour: string): boolean;
+  abstract isActivePiece(game: Game, piece: Piece, position: RowColPosition): boolean;
 
-  constructor(protected pieceBag: PieceBag, protected http: HttpClient, protected dialog: MatDialog) {}
+  constructor(protected pieceBag: PieceBag, protected dialog: MatDialog) {}
 
   makeMove(game: Game, from: RowColPosition, to: RowColPosition) {
     game.squares[to.row][to.col].piece = Object.assign({}, game.squares[from.row][from.col].piece);
@@ -85,8 +84,11 @@ export abstract class GameLogic {
   makePromote(game: Game, pieceLocation: RowColPosition, promotionPieceName: string) {
     let pieceColour = game.squares[pieceLocation.row][pieceLocation.col].piece.colour;
     let isFaceDown = this.isFaceDown(pieceColour);
-    let promotedPiece = this.pieceBag.getPieceByName(promotionPieceName, isFaceDown);
-    promotedPiece.colour = pieceColour;
+    //Set promoted piece to null if name is null (to turn piece into empty square)
+    let promotedPiece = promotionPieceName == null ? null : this.pieceBag.getPieceByName(promotionPieceName, isFaceDown);
+    if (promotedPiece != null) {
+      promotedPiece.colour = pieceColour;
+    }
     game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
   }
 
@@ -131,10 +133,6 @@ export abstract class GameLogic {
 
   protected isWithinBoard(boardSize: number, row: number, col: number): boolean {
     return (row >= 0 && row < boardSize) && (col >= 0 && col < boardSize);
-  }
-
-  postTurn(turn: Turn) {
-    return this.http.post<Turn>(environment.serverUrl + "/makeTurn", turn);
   }
 
   unhighlightPossibleMoves(game: Game) {

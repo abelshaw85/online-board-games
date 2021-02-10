@@ -1,8 +1,11 @@
+import { HttpClient } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 import { GameLogic } from "../game-logic-services/game-logic.class";
 import { Piece } from "./piece.model";
 import { Player } from "./player.model";
 import { RowColPosition } from "./row-col-position.model";
 import { Square } from "./square.model";
+import { IAction } from "./turn-actions/action.interface";
 import { Drop } from "./turn-actions/drop.model";
 import { Move } from "./turn-actions/move.model";
 import { Promote } from "./turn-actions/promote.model";
@@ -10,7 +13,7 @@ import { Take } from "./turn-actions/take.model";
 import { Turn } from "./turn-actions/turn.model";
 
 export class Game {
-  private gameLogic: GameLogic;
+  public gameLogic: GameLogic;
   public gameLog: string[] = [];
   public gameId: number;
   public type: string;
@@ -22,6 +25,9 @@ export class Game {
   public activeColour: string;
   public takenByWhite: Square[] = [];
   public takenByBlack: Square[] = [];
+  public turn: Turn;
+
+  constructor(private http: HttpClient) {}
 
   getPlayerByColour(colour: string): Player {
     if (this.player1 !== null && this.player1.colour == colour) {
@@ -82,8 +88,15 @@ export class Game {
     this.gameLogic.dropPiece(this, movingPiece, to);
   }
 
-  takeTurn(turn: Turn) {
-    for (let action of turn.actions) {
+  addTurnAction(action: IAction) {
+    if (this.turn == null) {
+      this.turn = new Turn(this.gameId);
+    }
+    this.turn.addAction(action);
+  }
+
+  takeTurn() {
+    for (let action of this.turn.actions) {
       switch(action.type) {
         case "Move":
           let move: Move = <Move>action;
@@ -106,7 +119,20 @@ export class Game {
           break;
       }
     }
+    this.turn = null;
     this.toggleTurn();
+  }
+
+  postTurn() {
+    if (this.turn == null) {
+      return;
+    }
+    this.http.post<Turn>(environment.serverUrl + "/makeTurn", this.turn)
+      .subscribe((response) => {
+        console.log(response);
+        this.turn = null;
+      }
+    );
   }
 
   toggleTurn() {

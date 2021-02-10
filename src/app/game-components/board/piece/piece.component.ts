@@ -39,9 +39,7 @@ export class PieceComponent implements OnInit {
   //could this get active status from parent square object?
   isActive(): boolean {
     return this.game.status != "Closed" &&
-      this.piece != null &&
-      this.piece.colour == this.gameManager.getTurnColour(this.game.gameId) &&
-      (!this.piece.taken || this.piece.name.startsWith("SHO")) &&
+      this.game.gameLogic.isActivePiece(this.game, this.piece, this.position) &&
       this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.piece.colour).name;
   }
 

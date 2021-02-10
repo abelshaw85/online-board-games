@@ -7,10 +7,12 @@
 }
 
 .squareVisibleEven {
+  border: 1px solid black;
   background-color: rgb(236, 220, 198);
 }
 
 .squareVisibleOdd {
+  border: 1px solid black;
   background-color: rgb(202, 178, 130);
 }
 
