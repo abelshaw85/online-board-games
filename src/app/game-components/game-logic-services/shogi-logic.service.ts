@@ -5,13 +5,11 @@ import { RowColPosition } from "../game-models/row-col-position.model";
 import { Move } from "../game-models/turn-actions/move.model";
 import { Take } from "../game-models/turn-actions/take.model";
 import { Promote } from "../game-models/turn-actions/promote.model";
-import { HttpClient } from "@angular/common/http";
 import { Drop } from "../game-models/turn-actions/drop.model";
-import { PieceBag } from "../services/piece-bag.service";
 import { Winner } from "../game-models/turn-actions/winner.model";
 import { ChessLikeLogic } from "./chess-like-logic.class";
-import { MatDialog } from "@angular/material/dialog";
 import { ShogiPromoteConfirmDialog } from "./dialogs/shogi-promote-confirm.component";
+import { MatDialog } from "@angular/material/dialog";
 
 /*
   Concrete class that implements Shogi-specific logic. Uses ChessLike as a template for logic that is true across Shogi, Chess, and other chess-like games
@@ -22,8 +20,8 @@ import { ShogiPromoteConfirmDialog } from "./dialogs/shogi-promote-confirm.compo
 export class ShogiLogicService extends ChessLikeLogic {
   private promotePiece: boolean;
 
-  constructor(protected http: HttpClient, protected pieceBag: PieceBag, protected dialog: MatDialog) {
-    super(pieceBag, dialog);
+  constructor(private dialog: MatDialog) {
+    super();
     this.kingPieces.push("SHO-Jeweled General");
     this.kingPieces.push("SHO-King General");
   }
@@ -57,11 +55,10 @@ export class ShogiLogicService extends ChessLikeLogic {
     let pieceToCheckForPromotion: Piece = game.squares[to.row][to.col].piece;
     if (this.canPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion)) {
       let enforcedPromote = this.isEnforcedPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion);
-      let promotePiece = true;
       if (!enforcedPromote) {
         await this.openConfirmPromote(pieceToCheckForPromotion);
       }
-      if (enforcedPromote || promotePiece) { //If the piece is forced to promote, or if the user has chosen to promote an optional promotion piece
+      if (enforcedPromote || this.promotePiece) { //If the piece is forced to promote, or if the user has chosen to promote an optional promotion piece
         this.makePromote(game, to, pieceToCheckForPromotion.promotionPiece); //swaps piece for the promoted piece
         pieceToCheckForPromotion = game.squares[to.row][to.col].piece; //get updated piece
         // Add Promotion to the list of actions
@@ -75,10 +72,10 @@ export class ShogiLogicService extends ChessLikeLogic {
     let inactiveColour = game.player1.colour == activeColour ? game.player2.colour : game.player1.colour;
     if (this.checkForCheck(game, activeColour)) {
       if (startedInCheck) {
-        this.openAlert("You lose.", "You failed to get yourself out of check! You have lost the game.");
+        this.alertService.openAlert("You lose.", "You failed to get yourself out of check! You have lost the game.");
       }
       else {
-        this.openAlert("You lose.", "You put yourself in check! You have lost the game.");
+        this.alertService.openAlert("You lose.", "You put yourself in check! You have lost the game.");
       }
       //Get the INACTIVE player and make them the winner
       let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.name : game.player2.name;

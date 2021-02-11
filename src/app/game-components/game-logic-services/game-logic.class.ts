@@ -1,13 +1,18 @@
-import { HttpClient } from "@angular/common/http";
-import { MatDialog } from "@angular/material/dialog";
-import { CustomAlertDialogue } from "src/app/shared/custom-alert/custom-alert.component";
+import { AppInjector } from "src/app/app-injector";
+import { AuthenticationService } from "src/app/auth/auth.service";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
+import { AlertService } from "../services/alert.service";
 import { PieceBag } from "../services/piece-bag.service";
+import { Sound, SoundService } from "../services/sound.service";
 
 export abstract class GameLogic {
+  protected authService: AuthenticationService;
+  protected pieceBag: PieceBag;
+  protected alertService: AlertService;
+  protected soundService: SoundService;
 
   //Used by components to show/clear possible moves
   abstract highlightPossibleMoves(game: Game, startingPos:RowColPosition);
@@ -18,11 +23,17 @@ export abstract class GameLogic {
   abstract isFaceDown(colour: string): boolean;
   abstract isActivePiece(game: Game, piece: Piece, position: RowColPosition): boolean;
 
-  constructor(protected pieceBag: PieceBag, protected dialog: MatDialog) {}
+  constructor() {
+    this.authService = AppInjector.get(AuthenticationService);
+    this.pieceBag = AppInjector.get(PieceBag);
+    this.alertService = AppInjector.get(AlertService);
+    this.soundService = AppInjector.get(SoundService);
+  }
 
   makeMove(game: Game, from: RowColPosition, to: RowColPosition) {
     game.squares[to.row][to.col].piece = Object.assign({}, game.squares[from.row][from.col].piece);
     game.squares[from.row][from.col].piece = null;
+    this.soundService.playAudio(Sound.Move);
   }
 
   protected getPossibleMoves(game: Game, square: Square): RowColPosition[] {
@@ -90,6 +101,9 @@ export abstract class GameLogic {
       promotedPiece.colour = pieceColour;
     }
     game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
+    if (promotionPieceName != null) {
+      this.soundService.playAudio(Sound.Promote);
+    }
   }
 
   makeDrop(game: Game, dropPos: RowColPosition, droppingColour: string, droppingPieceName: string) {
@@ -103,6 +117,14 @@ export abstract class GameLogic {
   makeWinner(game: Game, winnerName: string) {
     game.winnerName = winnerName;
     game.status = "Closed";
+    let loserName = game.player1.name == winnerName ? game.player2.name : game.player1.name;
+    if (this.authService.getLoggedInUserName() == winnerName) {
+      this.alertService.openAlert("Congratulations!", "You have won the game!");
+      this.soundService.playAudio(Sound.Winner);
+    } else if (this.authService.getLoggedInUserName() == loserName) {
+      this.alertService.openAlert("You Lose", "You have lost the game.");
+      this.soundService.playAudio(Sound.Loser);
+    }
   }
 
   private removeFromHand(game: Game, piece: Piece) {
@@ -153,16 +175,6 @@ export abstract class GameLogic {
       square.active = false;
       square.danger = false;
       square.current = false;
-    });
-  }
-
-  openAlert(heading: string, text: string) {
-    const dialogRef = this.dialog.open(CustomAlertDialogue, {
-      width: '30%',
-      data: {
-        heading: heading,
-        text: text
-      }
     });
   }
 }

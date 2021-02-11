@@ -3,7 +3,6 @@ import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
-import { PieceBag } from "../services/piece-bag.service";
 import { ChessLikeLogic } from "./chess-like-logic.class";
 import { Move } from "../game-models/turn-actions/move.model";
 import { Take } from "../game-models/turn-actions/take.model";
@@ -21,8 +20,8 @@ import { ChessPromoteConfirmDialog } from "./dialogs/chess-promote-alert/chess-p
 export class ChessLogicService extends ChessLikeLogic {
   private piecePromotionName;
 
-  constructor(protected pieceBag: PieceBag, protected dialog: MatDialog) {
-    super(pieceBag, dialog);
+  constructor(private dialog: MatDialog) {
+    super();
     this.kingPieces.push("CHE-King");
     this.kingPieces.push("CHE-King-Moved");
   }
@@ -234,10 +233,10 @@ export class ChessLogicService extends ChessLikeLogic {
     let inactiveColour = game.player1.colour == activeColour ? game.player2.colour : game.player1.colour;
     if (this.checkForCheck(game, activeColour)) {
       if (startedInCheck) {
-        this.openAlert("You lose.", "You failed to get yourself out of check! You have lost the game.");
+        this.alertService.openAlert("You lose.", "You failed to get yourself out of check! You have lost the game.");
       }
       else {
-        this.openAlert("You lose.", "You put yourself in check! You have lost the game.");
+        this.alertService.openAlert("You lose.", "You put yourself in check! You have lost the game.");
       }
       //Get the INACTIVE player and make them the winner
       let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.name : game.player2.name;

@@ -153,7 +153,6 @@ export abstract class ChessLikeLogic extends GameLogic {
   victoryStateCheck(game: Game, inactiveColour: string) {
     if (this.checkForCheck(game, inactiveColour)) {
       if (this.checkForCheckMate(game, inactiveColour)) {
-        this.openAlert("Checkmate!", "Checkmate! You have won the game!");
         let winningPlayerName = game.player1.colour == game.activeColour ? game.player1.name : game.player2.name;
         this.makeWinner(game, winningPlayerName);
         let winnerAction: Winner = new Winner(winningPlayerName);

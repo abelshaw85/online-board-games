@@ -1,6 +1,4 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
@@ -8,7 +6,8 @@ import { Square } from "../game-models/square.model";
 import { Move } from "../game-models/turn-actions/move.model";
 import { Promote } from "../game-models/turn-actions/promote.model";
 import { Take } from "../game-models/turn-actions/take.model";
-import { PieceBag } from "../services/piece-bag.service";
+import { Winner } from "../game-models/turn-actions/winner.model";
+
 import { GameLogic } from "./game-logic.class";
 
 @Injectable({
@@ -16,10 +15,6 @@ import { GameLogic } from "./game-logic.class";
 })
 export class DraughtsLogicService extends GameLogic {
   private activePiecePosition: RowColPosition = null;
-
-  constructor(protected http: HttpClient, protected pieceBag: PieceBag, protected dialog: MatDialog) {
-    super(pieceBag, dialog);
-  }
 
   highlightPossibleMoves(game: Game, startingPos: RowColPosition) {
     // set current square
@@ -87,6 +82,14 @@ export class DraughtsLogicService extends GameLogic {
         }
       }
       if (this.activePiecePosition == null) {
+        let opposingColour = game.activeColour == "White" ? "Black" : "White";
+        // if player has won
+        if (this.checkForLoss(game, opposingColour)) {
+          let thisPlayer = game.getPlayerByColour(game.activeColour).name;
+          let winner: Winner = new Winner(thisPlayer);
+          game.addTurnAction(winner);
+          this.makeWinner(game, thisPlayer);
+        }
         game.toggleTurn();
         game.postTurn();
       }
@@ -115,6 +118,25 @@ export class DraughtsLogicService extends GameLogic {
       nextCol -= 1;
     }
     return new RowColPosition(nextRow, nextCol);
+  }
+
+  checkForLoss(game: Game, colour: string): boolean {
+    let pieceCount = 0;
+    let hasPossibleMove = false;
+
+    for (let row = 0; row < game.getBoardSize(); row++) {
+      for (let col = 0; col < game.getBoardSize(); col++) {
+        let piece = game.squares[row][col].piece;
+        if (piece != null && piece.colour == colour) {
+          pieceCount++;
+          if (this.getPossibleMoves(game, game.squares[row][col]).length > 0) {
+            hasPossibleMove = true; //enemy player has at least 1 piece with possible moves
+            break;
+          }
+        }
+      }
+    }
+    return pieceCount == 0 && !hasPossibleMove; //if no pieces or moves, player has lost
   }
 
   getPositionBetween(from: RowColPosition, to: RowColPosition) {

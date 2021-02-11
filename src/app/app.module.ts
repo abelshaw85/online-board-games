@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './game-components/board/board.component';
 import { SquareComponent } from './game-components/board/square/square.component';
@@ -31,10 +31,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ShogiPromoteConfirmDialog } from './game-components/game-logic-services/dialogs/shogi-promote-confirm.component';
 import { ChessPromoteConfirmDialog } from './game-components/game-logic-services/dialogs/chess-promote-alert/chess-promote-confirm.component';
 import { SelectablePieceComponent } from './game-components/game-logic-services/dialogs/chess-promote-alert/selectable-piece/selectable-piece.component';
+import { setAppInjector } from './app-injector';
+
 
 @NgModule({
   declarations: [
@@ -71,7 +74,8 @@ import { SelectablePieceComponent } from './game-components/game-logic-services/
     MatCheckboxModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatButtonToggleModule
   ],
   providers: [
     {
@@ -86,4 +90,12 @@ import { SelectablePieceComponent } from './game-components/game-logic-services/
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { }
+export class AppModule {
+/**
+ * Allows for retrieving singletons using `AppModule.injector.get(MyService)`
+ * This is good to prevent injecting the service as constructor parameter.
+ */
+  constructor(injector: Injector) {
+    setAppInjector(injector);
+  }
+}

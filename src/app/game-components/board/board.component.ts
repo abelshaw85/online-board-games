@@ -1,16 +1,15 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/auth/auth.service';
-import { CustomAlertDialogue } from 'src/app/shared/custom-alert/custom-alert.component';
 import { WebSocketService } from 'src/app/web-socket/web-socket.service';
 import { Game } from '../game-models/game.model';
 import { AlertService } from '../services/alert.service';
 import { GameManagerService } from '../services/game-manager.service';
+import { faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
+import { SoundService } from '../services/sound.service';
 
 @Component({
   selector: 'app-board',
@@ -24,6 +23,8 @@ export class BoardComponent implements OnInit, OnDestroy {
   connected: boolean;
   loading: boolean = true;
   loadingMessage: string = "Loading...";
+  faAudioOn = faVolumeUp;
+  faAudioOff = faVolumeMute;
 
   constructor(
     private http: HttpClient,
@@ -31,7 +32,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private gameManager: GameManagerService,
     private authenticationService: AuthenticationService,
-    public alertService: AlertService) {
+    private alertService: AlertService,
+    public soundService: SoundService) {
   }
 
   test() {

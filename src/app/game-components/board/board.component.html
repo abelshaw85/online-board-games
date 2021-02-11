@@ -21,10 +21,17 @@
         [game]="game"
         [indexValue]="i + j"></app-square>
     </div>
+    <!-- Area under board -->
     <div>
-      <textarea rows="3" disabled>{{game.gameLog.join('\n')}}</textarea>
-      <p>{{game.status}}</p>
-      <!-- <button (click)="test()">test</button> -->
+      <span class="mr-3">Game Status: {{game.status}}</span>
+      <mat-button-toggle
+        class="btn-custom"
+        style="width: 50px;"
+        [checked]="!this.soundService.mute"
+        (change)="this.soundService.mute = !this.soundService.mute">
+        <fa-icon *ngIf="!this.soundService.mute" [icon]="faAudioOn"></fa-icon>
+        <fa-icon *ngIf="this.soundService.mute" [icon]="faAudioOff"></fa-icon>
+      </mat-button-toggle>
     </div>
   </div>
   <div class="col-md-2 col-sm-12 takenContainer">

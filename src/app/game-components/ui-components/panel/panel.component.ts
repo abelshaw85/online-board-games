@@ -1,10 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
-import { CustomAlertDialogue } from 'src/app/shared/custom-alert/custom-alert.component';
 import { GameDetails } from '../../game-models/game-details.model';
 import { Player } from '../../game-models/player.model';
 import { AlertService } from '../../services/alert.service';
@@ -131,14 +128,4 @@ export class PanelComponent implements OnInit, OnDestroy {
   gameError(errorMessage) {
     this.alertService.openAlert("Game Creation Error", "There was an issue creating your game: " + errorMessage);
   }
-
-  // openAlert(heading: string, text: string) {
-  //   const dialogRef = this.dialog.open(CustomAlertDialogue, {
-  //     width: '35%',
-  //     data: {
-  //       heading: heading,
-  //       text: text
-  //     }
-  //   });
-  // }
 }

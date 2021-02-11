@@ -14,7 +14,6 @@ import { Turn } from "./turn-actions/turn.model";
 
 export class Game {
   public gameLogic: GameLogic;
-  public gameLog: string[] = [];
   public gameId: number;
   public type: string;
   public status: string;
