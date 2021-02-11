@@ -209,18 +209,15 @@ export class ChessLogicService extends ChessLikeLogic {
     let pieceToCheckForPromotion = game.squares[to.row][to.col].piece;
     //Promotes to its "Moved" counterpart to prevent future Castling
     if (pieceToCheckForPromotion.name == "CHE-King" || pieceToCheckForPromotion.name == "CHE-Rook" || pieceToCheckForPromotion.name == "CHE-Pawn") {
-      console.log("main check");
       this.makePromote(game, to, pieceToCheckForPromotion.promotionPiece);
       let promoteAction: Promote = new Promote(to, pieceToCheckForPromotion.promotionPiece);
       game.addTurnAction(promoteAction);
     } else if (pieceToCheckForPromotion.name == "CHE-Pawn-Moved") {
-      console.log("pawn moved check");
       let rowToCheck = pieceToCheckForPromotion.colour == "White" ? 0 : game.getBoardSize() - 1;
       //if pawn has reached the end of the board, change to another piece
       if (to.row == rowToCheck) {
 
         await this.openConfirmPromote(pieceToCheckForPromotion);
-        console.log(this.piecePromotionName);
         // Fetch clicked piece, and promote pawn to that type
         this.makePromote(game, to, this.piecePromotionName);
         let promoteAction: Promote = new Promote(to, this.piecePromotionName);
