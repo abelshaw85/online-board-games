@@ -50,7 +50,7 @@ export class DraughtsLogicService extends GameLogic {
 
       // Promote to king if they reached the end of the board
       let piece = game.squares[to.row][to.col].piece;
-      if (piece.name == "DRA-Piece" && (piece.colour == "White" && to.row == (game.getBoardSize() - 1)) || (piece.colour == "Black" && to.row == 0)) {
+      if (piece.name == "DRA-Piece" && (piece.colour == "White" && to.row == (game.getBoardSize() - 1) || (piece.colour == "Black" && to.row == 0))) {
         this.makePromote(game, to, piece.promotionPiece);
         let promote = new Promote(to, piece.promotionPiece);
         game.addTurnAction(promote);
@@ -60,15 +60,14 @@ export class DraughtsLogicService extends GameLogic {
       if (Math.abs(from.row - to.row) > 1) {
         let betweenPos = this.getPositionBetween(from, to);
         let takenSquare = game.squares[betweenPos.row][betweenPos.col];
-        console.log(takenSquare);
         this.makeTake(game, game.activeColour, takenSquare.piece.name);
         let take = new Take(game.activeColour, takenSquare.piece.name);
         game.addTurnAction(take);
 
         //TODO: consider how this setting of null can be sent to server
         this.makePromote(game, takenSquare.position, null);
-        let promote = new Promote(takenSquare.position, null);
-        game.addTurnAction(promote);
+        let takenToNull = new Promote(takenSquare.position, null);
+        game.addTurnAction(takenToNull);
 
         //check if the piece could take again
         let newMoves: RowColPosition[] = this.getPossibleMoves(game, game.squares[to.row][to.col]);
@@ -81,6 +80,7 @@ export class DraughtsLogicService extends GameLogic {
           }
         }
       }
+
       if (this.activePiecePosition == null) {
         let opposingColour = game.activeColour == "White" ? "Black" : "White";
         // if player has won
@@ -122,7 +122,7 @@ export class DraughtsLogicService extends GameLogic {
 
   checkForLoss(game: Game, colour: string): boolean {
     let pieceCount = 0;
-    let hasPossibleMove = false;
+    let isStalemate = true;
 
     for (let row = 0; row < game.getBoardSize(); row++) {
       for (let col = 0; col < game.getBoardSize(); col++) {
@@ -130,13 +130,13 @@ export class DraughtsLogicService extends GameLogic {
         if (piece != null && piece.colour == colour) {
           pieceCount++;
           if (this.getPossibleMoves(game, game.squares[row][col]).length > 0) {
-            hasPossibleMove = true; //enemy player has at least 1 piece with possible moves
+            isStalemate = false; //enemy player has at least 1 piece with possible moves
             break;
           }
         }
       }
     }
-    return pieceCount == 0 && !hasPossibleMove; //if no pieces or moves, player has lost
+    return pieceCount == 0 || isStalemate; //if no pieces or moves, player has lost
   }
 
   getPositionBetween(from: RowColPosition, to: RowColPosition) {
