@@ -50,7 +50,10 @@ export class DraughtsLogicService extends GameLogic {
 
       // Promote to king if they reached the end of the board
       let piece = game.squares[to.row][to.col].piece;
-      if (piece.name == "DRA-Piece" && (piece.colour == "White" && to.row == (game.getBoardSize() - 1) || (piece.colour == "Black" && to.row == 0))) {
+      if (piece.name == "DRA-Piece" &&
+          (piece.colour == "White" && to.row == (game.getBoardSize() - 1) ||
+            (piece.colour == "Black" && to.row == 0)
+          )) {
         this.makePromote(game, to, piece.promotionPiece);
         let promote = new Promote(to, piece.promotionPiece);
         game.addTurnAction(promote);
@@ -91,11 +94,9 @@ export class DraughtsLogicService extends GameLogic {
           this.makeWinner(game, thisPlayer);
         }
         game.toggleTurn();
-        game.postTurn();
+        game.postTurn();//post turn if action complete (no other pieces can be taken)
       }
     }
-    //post turn if action complete (no other pieces can be taken)
-
 
     this.unhighlightPossibleMoves(game);
   }
