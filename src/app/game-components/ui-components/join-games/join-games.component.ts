@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameDetails } from '../../game-models/game-details.model';
 import { Player } from '../../game-models/player.model';
-import { AlertService } from '../../services/alert.service';
+import { AlertService } from '../../../shared/alert.service';
 import { GameDetailsService } from '../../services/game-details.service';
 import { GameManagerService } from '../../services/game-manager.service';
 
@@ -41,6 +41,7 @@ export class JoinGamesComponent implements OnInit {
     return new GameDetails(
       details['gameId'],
       details['type'],
+      details['status'],
       new Player(details['player1']['username'], details['player1']['colour']),
       new Player(details['player2']['username'], details['player2']['colour']));
   }

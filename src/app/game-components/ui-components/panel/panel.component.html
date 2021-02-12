@@ -62,11 +62,24 @@
           <td>{{playerGame.type}}</td>
           <td>{{gameStatus(playerGame)}}</td>
           <td class="p-1">
-            <button class="btn btn-custom mb-0" style="width: 100%;" *ngIf='gameStatus(playerGame) !== "Awaiting Second Player"' [routerLink]="['..', playerGame.gameId]">Go</button>
+            <button class="btn btn-custom mb-0" style="width: 50%;" *ngIf='gameStatus(playerGame) !== "Awaiting Second Player"' [routerLink]="['..', playerGame.gameId]">Go</button>
+            <button class="btn btn-custom mb-0" style="width: 50%;" (click)="resign(playerGame.gameId)">Resign</button>
           </td>
         </tr>
       </app-custom-table>
     </div>
     <p *ngIf="playerGames.length == 0">You have no active games.</p>
+
+    <div *ngIf="closedGames.length > 0">
+      <h2>Closed Games</h2>
+      <app-custom-table
+        [columns]="['Game ID', 'Type', 'Status']">
+        <tr *ngFor="let closedGame of closedGames">
+          <th scope="row">{{closedGame.gameId}}</th>
+          <td>{{closedGame.type}}</td>
+          <td>Closed</td>
+        </tr>
+      </app-custom-table>
+    </div>
   </div>
 </div>

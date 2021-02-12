@@ -58,6 +58,13 @@ export class GameManagerService implements OnInit, OnDestroy {
     });
   }
 
+  resign(gameId: number, resigningPlayer: string) {
+    return this.http.post(environment.serverUrl + "/resignGame", {
+      gameId: gameId,
+      resigningPlayer: resigningPlayer
+    });
+  }
+
   //tells the service to either fetch the game or confirm the game is already loaded
   requestGame(id) {
     let index: number = this.getIndexOfGame(id);

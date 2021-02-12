@@ -4,7 +4,7 @@ import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 import { Square } from "../game-models/square.model";
-import { AlertService } from "../services/alert.service";
+import { AlertService } from "../../shared/alert.service";
 import { PieceBag } from "../services/piece-bag.service";
 import { Sound, SoundService } from "../services/sound.service";
 

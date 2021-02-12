@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
 import { WebSocketService } from 'src/app/web-socket/web-socket.service';
 import { Game } from '../game-models/game.model';
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '../../shared/alert.service';
 import { GameManagerService } from '../services/game-manager.service';
 import { faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import { SoundService } from '../services/sound.service';
@@ -108,13 +108,24 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // openAlert(heading: string, text: string) {
-  //   const dialogRef = this.dialog.open(CustomAlertDialogue, {
-  //     width: '35%',
-  //     data: {
-  //       heading: heading,
-  //       text: text
-  //     }
-  //   });
-  // }
+  resign() {
+    let resigningPlayerName = this.authenticationService.getLoggedInUserName();
+    this.alertService.openConfirm(
+      "Resign?",
+      "You will forfeit the game and your opponent will be declared the winner. Really resign?",
+      "Resign",
+      "Cancel",
+      "50").then((result) => {
+        if (result) {
+          this.gameManager.resign(this.id, resigningPlayerName).subscribe((response) => {
+            if (response['type'] == "GameResignSuccess") {
+              this.game.status = "Closed";
+              let winningPlayer = this.game.player1.name == resigningPlayerName ? this.game.player2.name : this.game.player1.name;
+              this.game.winnerName = winningPlayer;
+              this.alertService.openAlert("You Resigned", "You have resigned from the game with id of " + this.id);
+            }
+          });
+        }
+      });
+  }
 }

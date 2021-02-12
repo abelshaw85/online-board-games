@@ -8,7 +8,7 @@ import { Promote } from "../game-models/turn-actions/promote.model";
 import { Drop } from "../game-models/turn-actions/drop.model";
 import { Winner } from "../game-models/turn-actions/winner.model";
 import { ChessLikeLogic } from "./chess-like-logic.class";
-import { ShogiPromoteConfirmDialog } from "./dialogs/shogi-promote-confirm.component";
+// import { ShogiPromoteConfirmDialog } from "./dialogs/shogi-promote-confirm.component";
 import { MatDialog } from "@angular/material/dialog";
 
 /*
@@ -56,7 +56,15 @@ export class ShogiLogicService extends ChessLikeLogic {
     if (this.canPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion)) {
       let enforcedPromote = this.isEnforcedPromote(game.getBoardSize(), to.row, pieceToCheckForPromotion);
       if (!enforcedPromote) {
-        await this.openConfirmPromote(pieceToCheckForPromotion);
+        //await this.openConfirmPromote(pieceToCheckForPromotion);
+        await this.alertService.openConfirm(
+          "Promote " + pieceToCheckForPromotion.name.split("-")[1],
+          "You can promote your " + pieceToCheckForPromotion.name.split("-")[1] + " to a " + pieceToCheckForPromotion.promotionPiece.split("-")[1] + ".",
+          "Promote",
+          "Don't Promote",
+          "50").then((result) => {
+            this.promotePiece = result;
+          });
       }
       if (enforcedPromote || this.promotePiece) { //If the piece is forced to promote, or if the user has chosen to promote an optional promotion piece
         this.makePromote(game, to, pieceToCheckForPromotion.promotionPiece); //swaps piece for the promoted piece
@@ -173,17 +181,17 @@ export class ShogiLogicService extends ChessLikeLogic {
       piece.colour == game.activeColour;
   }
 
-  async openConfirmPromote(piece: Piece) {
-    const dialogRef = this.dialog.open(ShogiPromoteConfirmDialog, {
-      width: '50%',
-      disableClose: true,
-      data: {
-        piece: piece
-      }
-    });
+  // async openConfirmPromote(piece: Piece) {
+  //   const dialogRef = this.dialog.open(ShogiPromoteConfirmDialog, {
+  //     width: '50%',
+  //     disableClose: true,
+  //     data: {
+  //       piece: piece
+  //     }
+  //   });
 
-   await dialogRef.afterClosed().toPromise().then(result => {
-     this.promotePiece = result;
-   });
-  }
+  //  await dialogRef.afterClosed().toPromise().then(result => {
+  //    this.promotePiece = result;
+  //  });
+  // }
 }
