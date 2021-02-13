@@ -16,6 +16,7 @@ import { Drop } from "../game-models/turn-actions/drop.model";
 import { Move } from "../game-models/turn-actions/move.model";
 import { Promote } from "../game-models/turn-actions/promote.model";
 import { Take } from "../game-models/turn-actions/take.model";
+import { Winner } from "../game-models/turn-actions/winner.model";
 import { JsonToActionService } from "./json-action.service";
 import { PieceBag } from "./piece-bag.service";
 
@@ -235,6 +236,10 @@ export class GameManagerService implements OnInit, OnDestroy {
             break;
           case "Promote":
             let promote: Promote = this.jsonToAction.toPromote(action);
+            game.addTurnAction(promote);
+            break;
+          case "Winner":
+            let winner: Winner = this.jsonToAction.toWinner(action);
             game.addTurnAction(promote);
             break;
           default:
