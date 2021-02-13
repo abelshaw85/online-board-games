@@ -17,7 +17,9 @@ export class CustomConfirmDialogue {
 
   constructor(
     public dialogRef: MatDialogRef<CustomConfirmDialogue>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmData) {}
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmData) {
+      dialogRef.disableClose = true;
+    }
 
   onOKClick(): void {
     this.dialogRef.close();

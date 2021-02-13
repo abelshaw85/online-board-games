@@ -62,7 +62,7 @@ export class ShogiLogicService extends ChessLikeLogic {
           "You can promote your " + pieceToCheckForPromotion.name.split("-")[1] + " to a " + pieceToCheckForPromotion.promotionPiece.split("-")[1] + ".",
           "Promote",
           "Don't Promote",
-          "50").then((result) => {
+          "40").then((result) => {
             this.promotePiece = result;
           });
       }

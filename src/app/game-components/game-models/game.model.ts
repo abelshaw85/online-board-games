@@ -11,6 +11,7 @@ import { Move } from "./turn-actions/move.model";
 import { Promote } from "./turn-actions/promote.model";
 import { Take } from "./turn-actions/take.model";
 import { Turn } from "./turn-actions/turn.model";
+import { Winner } from "./turn-actions/winner.model";
 
 export class Game {
   public gameLogic: GameLogic;
@@ -79,6 +80,10 @@ export class Game {
     this.gameLogic.makeTake(this, takingColour, takenPieceName);
   }
 
+  makeWinner(winnerName: string) {
+    this.gameLogic.makeWinner(this, winnerName);
+  }
+
   isPossibleMove(to: RowColPosition): boolean {
     return this.gameLogic.isPossibleMove(this, to);
   }
@@ -112,6 +117,10 @@ export class Game {
         case "Promote":
           let promote: Promote = <Promote>action;
           this.makePromote(promote.promoteLocation, promote.promotionPieceName);
+          break;
+        case "Winner":
+          let winner: Winner = <Winner>action;
+          this.makeWinner(winner.winnerName);
           break;
         default:
           console.log("Unknown move type");
