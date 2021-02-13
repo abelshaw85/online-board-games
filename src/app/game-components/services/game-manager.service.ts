@@ -240,7 +240,7 @@ export class GameManagerService implements OnInit, OnDestroy {
             break;
           case "Winner":
             let winner: Winner = this.jsonToAction.toWinner(action);
-            game.addTurnAction(promote);
+            game.addTurnAction(winner);
             break;
           default:
             console.log("Unknown move type");
