@@ -1,10 +1,10 @@
 {
   "News": [
     {
-      "heading": "Added news component",
-      "type": "Update",
+      "heading": "Tutorial Section Added",
+      "type": "News",
       "date": "02/15/2021",
-      "content": "This is a <b>fantastic</b> news update with lots of <i>formatting!</i>"
+      "content": "Please find a new Tutorial section at the navigation above. This will help new users learn how to use the site, as well as provide external resources for how to play the available games."
     }
   ]
 }

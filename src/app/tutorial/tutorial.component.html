@@ -1,0 +1,113 @@
+<div class="accordion" id="accordionTutorial">
+  <h1>Guides and Tutorials</h1>
+  <p>Here you can learn how to use the site and where to find rules for the games available.</p>
+  <div class="card">
+    <div class="card-header" id="headingMakeAndJoin">
+      <h5 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseMakeAndJoin" aria-expanded="true" aria-controls="collapseMakeAndJoin">
+          Making and Joining Games
+        </button>
+      </h5>
+    </div>
+    <!--Add "show" class to make a card open by default-->
+    <div id="collapseMakeAndJoin" class="collapse" aria-labelledby="headingMakeAndJoin" data-parent="#accordionTutorial">
+      <div class="card-body">
+        <p>There are two ways you can play a game: single player or against an online opponent.</p>
+        <h5>Single Player</h5>
+        <p>To play a single player game, go to <a [routerLink]="['..', 'games', 'home']">your games panel</a> an select <b>Create New Game</b>. From there you can select the type of game you
+        wish to make, and select <b>Single Player</b>. You will see a message saying that the new game has been created. Now, select <b>Go</b> next to this game in your list and you will be taken
+        to that game.</p>
+        <h5>Two Player Online</h5>
+        <p>To play an opponent online, you can either create your own game in the same manner as above, only this time leave the <b>Single Player</b> option <b>unchecked</b>. You can then give your
+        friend the ID of the game for them to join, or wait for a stranger to find and join your game.</p>
+        <p>Alternatively, you can <a [routerLink]="['..', 'games', 'join']">join someone else's game</a> if there are any available to join. Just find the game you wish to join and select
+        the <b>Join Game</b> button and you will be redirected to that game if there is still an available player slot.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingHowToUse">
+      <h5 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseHowToUse" aria-expanded="true" aria-controls="collapseHowToUse">
+          How to Play Games
+        </button>
+      </h5>
+    </div>
+    <div id="collapseHowToUse" class="collapse" aria-labelledby="headingHowToUse" data-parent="#accordionTutorial">
+      <div class="card-body">
+        <h5>Moving Pieces</h5>
+        <p>A <fa-icon [icon]="faStar" style="color: orange;"></fa-icon> icon will be displayed under the user whose turn it is. If it is your turn, then you will be able to move your
+          pieces.</p>
+        <p>To move a piece, left click the piece and drag it to where you want to move it. You can see the movement options depending on the square's colour once the piece is picked up:</p>
+        <ul>
+          <li><span class="badge badge-moveable">Green</span> squares are ones that can be moved to. Drag your piece onto them to move the piece there.</li>
+          <li><span class="badge badge-danger">Light red</span> squares show opponent pieces that can be taken. You can either move your piece to this square, or jump over the piece to
+          take it (see game-specific rules on which option is available).</li>
+          <li><span class="badge badge-check">Red</span> squares represent pieces that can end a game if they remain in danger, which can be either your own or opponent pieces. An example
+          of this are King pieces in Chess and Shogi. If these pieces have red squares, then they are in check and must get out of check in the next round, or that player will lose.</li>
+        </ul>
+        <h5>Dropping Pieces</h5>
+        <p>A <b>drop</b> is when a piece that has been taken is then placed back onto the board. This is similar to moving pieces, though most games do not have an option to drop (currently only
+        Shogi). To drop a piece, drag it from the <b>Taken Pieces</b> panel under your name and drag it to a highlighted square.</p>
+        <h5>Resigning</h5>
+        <p>To end a game before a winner is determined, you can click the <b>Resign</b> button. Note that this will count as a forfeight and declare the opponent as the winner.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingChess">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseChess" aria-expanded="false" aria-controls="collapseChess">
+          Rules of Play: Chess
+        </button>
+      </h5>
+    </div>
+    <div id="collapseChess" class="collapse" aria-labelledby="headingChess" data-parent="#accordionTutorial">
+      <div class="card-body">
+        <p><a href="https://en.wikipedia.org/wiki/Chess#Rules" target="_blank">How to play Chess</a>. Once a player is in Checkmate, then it is game over and the player in checkmate
+          loses the game.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingShogi">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseShogi" aria-expanded="false" aria-controls="collapseShogi">
+          Rules of Play: Shogi
+        </button>
+      </h5>
+    </div>
+    <div id="collapseShogi" class="collapse" aria-labelledby="headingShogi" data-parent="#accordionTutorial">
+      <div class="card-body">
+        <p><a href="https://en.wikipedia.org/wiki/Shogi#Rules" target="_blank">How to play Shogi</a>. Once a player is in Checkmate, then it is game over and the player in checkmate
+          loses the game. Note that unlike Chess, pieces can be <b>promoted</b> if they get far enough across the board.</p>
+          <h5>Promoting Pieces</h5>
+          <p>Some pieces that reach a certain distance across the board can be promoted. Note that there is <b>optional promotion</b> and <b>enforced promotion</b>. You can choose whether
+          an optional promotion takes place, but for an enforced promotion the piece will be promoted automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" id="headingDraughts">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseDraughts" aria-expanded="false" aria-controls="collapseDraughts">
+          Rules of Play: Draughts/Checkers
+        </button>
+      </h5>
+    </div>
+    <div id="collapseDraughts" class="collapse" aria-labelledby="headingDraughts" data-parent="#accordionTutorial">
+      <div class="card-body">
+        <p><a href="https://en.wikipedia.org/wiki/Draughts#General_rules" target="_blank">How to play Draughts/Checkers</a>. The game is won either by taking all of the opponent's pieces, or
+          when the opposing player is unable to move. Note that capturing pieces requires the player to jump over the piece rather than land on it.
+          <p>Players can and must jump over all pieces in a turn - for example, if there is another chance to take a piece once a jump has been made, then the turn will not end until the player
+            has jumped over it and all subsequent pieces.
+          </p>
+      </div>
+    </div>
+  </div>
+
+</div>

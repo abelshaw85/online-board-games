@@ -15,6 +15,9 @@
           <li class="nav-item" *ngIf="isLoggedIn">
             <a class="nav-link text-uppercase" [routerLink]="['games', 'join']" [routerLinkActive]="['activeLink']">Find Games</a>
           </li>
+          <li class="nav-item" *ngIf="isLoggedIn">
+            <a class="nav-link text-uppercase" [routerLink]="['tutorial']" [routerLinkActive]="['activeLink']">Tutorial</a>
+          </li>
         </ul>
 
       <!--Right-aligned links-->

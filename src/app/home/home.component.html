@@ -1,3 +1,6 @@
-<h1>Welcome!</h1>
-hello
+<h1>Welcome to STRATGAMES</h1>
+<p>STRATGAMES allows you to play classic board games online, alone or against an opponenent.</p>
+<p>Available games are <b>Chess</b>, <b>Shogi</b> and <b>Draughts</b> (Checkers in the US). Not sure where to start? Have a look at the [tutorial] page for instructions on how to use this site and the rules for the games.</p>
+<h3>News and Updates</h3>
 <app-news *ngFor="let news of newsList" [news]="news"></app-news>
+<p *ngIf="newsList.length == 0">There are no news updates at this time.</p>

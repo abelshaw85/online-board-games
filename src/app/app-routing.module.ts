@@ -7,10 +7,12 @@ import { BoardComponent } from './game-components/board/board.component';
 import { JoinGamesComponent } from './game-components/ui-components/join-games/join-games.component';
 import { PanelComponent } from './game-components/ui-components/panel/panel.component';
 import { HomeComponent } from './home/home.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
 import { WebSocketComponent } from './web-socket/web-socket.component';
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
+  { path: "tutorial", component: TutorialComponent },
   { path: "board", canActivate: [AuthGuard], component: BoardComponent },
   { path: "games/home", canActivate: [AuthGuard], component: PanelComponent },
   { path: "games/join", canActivate: [AuthGuard], component: JoinGamesComponent },

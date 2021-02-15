@@ -40,6 +40,7 @@ import { CustomConfirmDialogue } from './shared/custom-confirm/custom-confirm.co
 import { NewsComponent } from './news/news.component';
 import { FooterComponent } from './footer/footer.component';
 import { LogoComponent } from './footer/logo/logo.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { LogoComponent } from './footer/logo/logo.component';
     SelectablePieceComponent,
     NewsComponent,
     FooterComponent,
-    LogoComponent
+    LogoComponent,
+    TutorialComponent
   ],
   imports: [
     BrowserModule,
