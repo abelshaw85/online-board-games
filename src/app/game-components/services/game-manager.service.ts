@@ -7,6 +7,7 @@ import { environment } from "src/environments/environment";
 import { ChessLogicService } from "../game-logic-services/chess-logic.service";
 import { DraughtsLogicService } from "../game-logic-services/draughts-logic.service";
 import { ShogiLogicService } from "../game-logic-services/shogi-logic.service";
+import { GameDetails } from "../game-models/game-details.model";
 import { Game } from "../game-models/game.model";
 import { Piece } from "../game-models/piece.model";
 import { Player } from "../game-models/player.model";
@@ -53,7 +54,7 @@ export class GameManagerService implements OnInit, OnDestroy {
   }
 
   newGame(type: string, singlePlayer: boolean) {
-    return this.http.post(environment.serverUrl + "/newGame", {
+    return this.http.post<GameDetails>(environment.serverUrl + "/newGame", {
       type: type,
       singlePlayer: singlePlayer
     });

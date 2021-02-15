@@ -21,7 +21,7 @@ export class TakenPiecesComponent implements OnInit {
   }
 
   headingText(): string {
-    return this.player.name + "\n" + "[" + this.player.colour + "]"
+    return this.player.username + "\n" + "[" + this.player.colour + "]"
   }
 
   get showTurn(): boolean {

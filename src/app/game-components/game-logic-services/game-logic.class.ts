@@ -94,6 +94,7 @@ export abstract class GameLogic {
 
   makePromote(game: Game, pieceLocation: RowColPosition, promotionPieceName: string) {
     let pieceColour = game.squares[pieceLocation.row][pieceLocation.col].piece.colour;
+    let unpromotedPieceName = game.squares[pieceLocation.row][pieceLocation.col].piece.name;
     let isFaceDown = this.isFaceDown(pieceColour);
     //Set promoted piece to null if name is null (to turn piece into empty square)
     let promotedPiece = promotionPieceName == null ? null : this.pieceBag.getPieceByName(promotionPieceName, isFaceDown);
@@ -101,7 +102,8 @@ export abstract class GameLogic {
       promotedPiece.colour = pieceColour;
     }
     game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
-    if (promotionPieceName != null) {
+    if (promotionPieceName != null && !promotionPieceName.endsWith("-Moved") && (promotedPiece.promoted || unpromotedPieceName.startsWith("CHE-Pawn"))) {
+      console.log(promotionPieceName);
       this.soundService.playAudio(Sound.Promote);
     }
   }
@@ -117,7 +119,7 @@ export abstract class GameLogic {
   makeWinner(game: Game, winnerName: string) {
     game.winnerName = winnerName;
     game.status = "Closed";
-    let loserName = game.player1.name == winnerName ? game.player2.name : game.player1.name;
+    let loserName = game.player1.username == winnerName ? game.player2.username : game.player1.username;
     if (this.authService.getLoggedInUserName() == winnerName) {
       this.alertService.openAlert("Congratulations!", "You have won the game!");
       this.soundService.playAudio(Sound.Winner);

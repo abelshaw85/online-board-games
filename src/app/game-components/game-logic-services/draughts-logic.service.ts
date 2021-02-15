@@ -88,7 +88,7 @@ export class DraughtsLogicService extends GameLogic {
         let opposingColour = game.activeColour == "White" ? "Black" : "White";
         // if player has won
         if (this.checkForLoss(game, opposingColour)) {
-          let thisPlayer = game.getPlayerByColour(game.activeColour).name;
+          let thisPlayer = game.getPlayerByColour(game.activeColour).username;
           let winner: Winner = new Winner(thisPlayer);
           game.addTurnAction(winner);
           this.makeWinner(game, thisPlayer);

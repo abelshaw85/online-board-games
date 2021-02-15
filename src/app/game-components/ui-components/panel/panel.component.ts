@@ -42,11 +42,11 @@ export class PanelComponent implements OnInit, OnDestroy {
     this.loadingMessage = "Fetching game details...";
     this.gameDetailsService.getGameDetails().subscribe((response) => {
       for (var details of response["data"]) {
-        let gameDetails: GameDetails = this.jsonToGameDetails(details);
-        if (gameDetails.status != "Closed") {
-          this.playerGames.push(gameDetails);
+        //let gameDetails: GameDetails = this.jsonToGameDetails(details);
+        if (details.status != "Closed") {
+          this.playerGames.push(details);
         } else {
-          this.closedGames.push(gameDetails);
+          this.closedGames.push(details);
         }
       }
       this.loading = false;
@@ -57,14 +57,14 @@ export class PanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  private jsonToGameDetails(details): GameDetails {
-    return new GameDetails(
-      details['gameId'],
-      details['type'],
-      details['status'],
-      new Player(details['player1']['username'], details['player1']['colour']),
-      new Player(details['player2']['username'], details['player2']['colour']));
-  }
+  // private jsonToGameDetails(details): GameDetails {
+  //   return new GameDetails(
+  //     details['gameId'],
+  //     details['type'],
+  //     details['status'],
+  //     new Player(details['player1']['username'], details['player1']['colour']),
+  //     new Player(details['player2']['username'], details['player2']['colour']));
+  // }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => {
@@ -105,11 +105,11 @@ export class PanelComponent implements OnInit, OnDestroy {
 
   gameStatus(gameDetails: GameDetails): string {
     if (gameDetails.status == "Ongoing") {
-      if (gameDetails.player1.name == gameDetails.player2.name) {
+      if (gameDetails.player1.username == gameDetails.player2.username) {
         return "Ongoing (Single Player)";
       } else {
         let thisPlayerName = this.authorisationService.getLoggedInUserName();
-        let opposingPlayerName = gameDetails.player1.name != thisPlayerName ? gameDetails.player1.name : gameDetails.player2.name;
+        let opposingPlayerName = gameDetails.player1.username != thisPlayerName ? gameDetails.player1.username : gameDetails.player2.username;
         return "Ongoing VS " + opposingPlayerName;
       }
     } else if (gameDetails.status == "Awaiting") {
@@ -127,10 +127,10 @@ export class PanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  gameSuccess(gameDetailsData) {
+  gameSuccess(gameDetailsData: GameDetails) {
     this.alertService.openAlert("Game Created", "New game created!");
-    let gameDetails: GameDetails = this.jsonToGameDetails(gameDetailsData);
-    this.playerGames.push(gameDetails);
+    //let gameDetails: GameDetails = this.jsonToGameDetails(gameDetailsData);
+    this.playerGames.push(gameDetailsData);
   }
 
   gameError(errorMessage) {

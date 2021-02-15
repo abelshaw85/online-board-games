@@ -1,0 +1,12 @@
+.newsContent {
+  border: 1px solid orange;
+}
+
+.newsType {
+  font-size: 1.1em;
+}
+
+.newsDate {
+  float: right;
+  opacity: 0.5;
+}

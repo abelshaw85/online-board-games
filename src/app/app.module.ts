@@ -22,7 +22,7 @@ import { WebSocketService } from './web-socket/web-socket.service';
 import { PanelComponent } from './game-components/ui-components/panel/panel.component';
 import { JoinGamesComponent } from './game-components/ui-components/join-games/join-games.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
-import { HeaderComponent } from './main-components/header/header.component';
+import { HeaderComponent } from './header/header.component';
 import { CustomTableComponent } from './shared/custom-table/custom-table.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -37,6 +37,9 @@ import { ChessPromoteConfirmDialog } from './game-components/game-logic-services
 import { SelectablePieceComponent } from './game-components/game-logic-services/dialogs/chess-promote-alert/selectable-piece/selectable-piece.component';
 import { setAppInjector } from './app-injector';
 import { CustomConfirmDialogue } from './shared/custom-confirm/custom-confirm.component';
+import { NewsComponent } from './news/news.component';
+import { FooterComponent } from './footer/footer.component';
+import { LogoComponent } from './footer/logo/logo.component';
 
 
 @NgModule({
@@ -57,7 +60,10 @@ import { CustomConfirmDialogue } from './shared/custom-confirm/custom-confirm.co
     CustomTableComponent,
     ChessPromoteConfirmDialog,
     CustomConfirmDialogue,
-    SelectablePieceComponent
+    SelectablePieceComponent,
+    NewsComponent,
+    FooterComponent,
+    LogoComponent
   ],
   imports: [
     BrowserModule,

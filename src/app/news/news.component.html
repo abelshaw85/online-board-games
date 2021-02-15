@@ -1,0 +1,9 @@
+<div class="newsContent mt-2 mb-2">
+  <div class="card">
+	  <div class="card-header bg-dark text-light">
+	    <span class="newsType">{{news.type}}: {{news.heading}} </span> <span class="newsDate">{{news.date | date:'dd MMMM yyyy'}}</span>
+    </div>
+	  <div class="card-body" [innerHTML]="news.content">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+.logo {
+	filter: grayscale(100%);
+	-webkit-filter: grayscale(100%);
+}
+
+.logo:hover {
+	filter: grayscale(0%);
+	-webkit-filter: grayscale(0%);
+}

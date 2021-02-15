@@ -100,7 +100,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       return "Game Over... \nWinner is [" + this.game.winnerName + "]!";
     }
     let activeColour = this.game.activeColour;
-    let activePlayerName = this.game.getPlayerByColour(activeColour).name;
+    let activePlayerName = this.game.getPlayerByColour(activeColour).username;
     if (activePlayerName == this.authenticationService.getLoggedInUserName()) {
       return "It is your turn";
     } else {
@@ -120,7 +120,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           this.gameManager.resign(this.id, resigningPlayerName).subscribe((response) => {
             if (response['type'] == "GameResignSuccess") {
               this.game.status = "Closed";
-              let winningPlayer = this.game.player1.name == resigningPlayerName ? this.game.player2.name : this.game.player1.name;
+              let winningPlayer = this.game.player1.username == resigningPlayerName ? this.game.player2.username : this.game.player1.username;
               this.game.winnerName = winningPlayer;
               this.alertService.openAlert("You Resigned", "You have resigned from the game with id of " + this.id);
             }

@@ -1,0 +1,15 @@
+<p>The following technologies were used in the making on this web app:</p>
+<app-logo
+*ngFor="let logo of this.logos"
+  [url]="logo.url"
+  [imgSrc]="logo.imgSrc"
+  [tooltip]="logo.tooltip">
+</app-logo>
+<div class="mb-2"></div>
+<span *ngFor="let textLink of textLinks; let i = index">
+  <a *ngIf="textLink.url != null" href="{{textLink.url}}" target="_blank">
+    {{textLink.name}}
+  </a>
+  <span *ngIf="textLink.url == null">{{textLink.name}}</span>
+  <span *ngIf="i < textLinks.length - 1"> | </span>
+</span>

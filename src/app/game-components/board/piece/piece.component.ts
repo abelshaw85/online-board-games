@@ -40,7 +40,7 @@ export class PieceComponent implements OnInit {
   isActive(): boolean {
     return this.game.status != "Closed" &&
       this.game.gameLogic.isActivePiece(this.game, this.piece, this.position) &&
-      this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.piece.colour).name;
+      this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.piece.colour).username;
   }
 
   getPieceName() {

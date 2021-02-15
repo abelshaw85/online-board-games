@@ -47,7 +47,7 @@ export class SquareComponent implements OnInit {
   hasActivePiece(): boolean {
     return this.game.status != "Closed" &&
       this.game.gameLogic.isActivePiece(this.game, this.square.piece, this.square.position) &&
-      this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.square.piece.colour).name;
+      this.authService.getLoggedInUserName() == this.gameManager.getPlayerByColour(this.game.gameId, this.square.piece.colour).username;
     // let activeColour = this.game.activeColour;
     // return this.game.status != "Closed" && this.square.piece !== null && this.square.piece.colour === activeColour &&
     //   this.game.getPlayerByColour(activeColour).name == this.authService.getLoggedInUserName();

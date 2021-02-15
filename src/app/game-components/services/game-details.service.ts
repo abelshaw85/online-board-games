@@ -12,10 +12,10 @@ export class GameDetailsService {
   }
 
   getGameDetails() {
-    return this.http.get(environment.serverUrl + "/gameDetails");
+    return this.http.get<GameDetails[]>(environment.serverUrl + "/gameDetails");
   }
 
   getGamesToJoinDetails() {
-    return this.http.get(environment.serverUrl + "/gamesToJoin");
+    return this.http.get<GameDetails[]>(environment.serverUrl + "/gamesToJoin");
   }
 }

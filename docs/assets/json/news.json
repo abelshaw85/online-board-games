@@ -1,0 +1,10 @@
+{
+  "News": [
+    {
+      "heading": "Added news component",
+      "type": "Update",
+      "date": "02/15/2021",
+      "content": "This is a <b>fantastic</b> news update with lots of <i>formatting!</i>"
+    }
+  ]
+}

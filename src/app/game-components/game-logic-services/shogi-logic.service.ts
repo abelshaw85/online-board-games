@@ -86,7 +86,7 @@ export class ShogiLogicService extends ChessLikeLogic {
         this.alertService.openAlert("You lose.", "You put yourself in check! You have lost the game.");
       }
       //Get the INACTIVE player and make them the winner
-      let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.name : game.player2.name;
+      let winningPlayerName = game.player1.colour == inactiveColour ? game.player1.username : game.player2.username;
       this.makeWinner(game, winningPlayerName);
       let winnerAction: Winner = new Winner(winningPlayerName);
       game.addTurnAction(winnerAction);
