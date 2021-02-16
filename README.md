@@ -1,27 +1,25 @@
-# Shogi
+# Online Board Games
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.1.
+This is the frontend repository for an online board game application. The frontend is made using Angular and associated libraries whilst the backend is made using Spring Boot.
+The site allows players to compete online in games such as Chess, Shogi and Draughts/Checkers. Games are updated live using Websockets when the opposing player makes a move.
 
-## Development server
+A demo of this application can be found here: https://abelshaw85.github.io/online-board-games/
+
+## Installation
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Note that the backend server is CORS protected, and so your local installation will likely not allow for server data to be sent and received. You will have to download the backend Spring Boot application and make modifications to both the frontend environment variables and the backend application.properties file.
+If you wish to design your own backend, note that the app uses JWTs for authentication and to authorise Websocket connections. The designed backend stores users in an online database, but generates games in-memory. If you wish to persist games, you may want to create your own Game database and tables.
 
-## Code scaffolding
+## Usage
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Navigate to `http://localhost:4200/` to see the local version of the site. 
 
-## Build
+## Credits
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+For the most part the code is my own, though there are some exceptions when dealing with new concepts where the code is mostly unchanged:
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+* Java Guides: https://www.javaguides.net/2019/06/spring-boot-angular-8-websocket-example-tutorial.html was used heavily when creating the Websocket service.
+* Java Brains: https://www.youtube.com/watch?v=X80nJ5T7YpE used for managing JWTs, mostly similar on the backend.
+* Chess and Shogi svg files were taken from Wikipedia: https://en.wikipedia.org/
+* Sounds used for victory/defeat are from ZapSplat: https://www.zapsplat.com/
