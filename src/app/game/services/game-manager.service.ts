@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, OnDestroy, OnInit } from "@angular/core";
 import { Subject, Subscription } from "rxjs";
 import { AuthenticationService } from "src/app/auth/auth.service";
-import { WebSocketService } from "src/app/web-socket/web-socket.service";
 import { environment } from "src/environments/environment";
 import { ChessLogicService } from "../game-logic-services/chess-logic.service";
 import { DraughtsLogicService } from "../game-logic-services/draughts-logic.service";
@@ -20,6 +19,7 @@ import { Take } from "../game-models/turn-actions/take.model";
 import { Winner } from "../game-models/turn-actions/winner.model";
 import { JsonToActionService } from "./json-action.service";
 import { PieceBag } from "./piece-bag.service";
+import { WebSocketService } from "./web-socket.service";
 
 @Injectable({
   providedIn: 'root'

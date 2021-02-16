@@ -5,6 +5,12 @@
       "type": "News",
       "date": "02/15/2021",
       "content": "Please find a new Tutorial section at the navigation above. This will help new users learn how to use the site, as well as provide external resources for how to play the available games."
+    },
+    {
+      "heading": "Games Now Available",
+      "type": "News",
+      "date": "02/13/2021",
+      "content": "Three games are available for playing: Chess, Shogi and Draughts/Checkers."
     }
   ]
 }

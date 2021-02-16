@@ -4,7 +4,9 @@ import { environment } from "src/environments/environment";
 import { Piece } from "../game-models/piece.model";
 import { RowColPosition } from "../game-models/row-col-position.model";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PieceBag {
   private pieces: Piece[] = [];
 

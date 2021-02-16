@@ -1,6 +1,6 @@
 import { Component, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Piece } from "src/app/game-components/game-models/piece.model";
+import { Piece } from "src/app/game/game-models/piece.model";
 
 export interface PieceData {
   piece: Piece;

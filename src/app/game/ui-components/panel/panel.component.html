@@ -62,7 +62,7 @@
           <td>{{playerGame.type}}</td>
           <td>{{gameStatus(playerGame)}}</td>
           <td class="p-1">
-            <button class="btn btn-custom mb-0" style="width: 50%;" *ngIf='gameStatus(playerGame) !== "Awaiting Second Player"' [routerLink]="['..', playerGame.gameId]">Go</button>
+            <button class="btn btn-custom mb-0" style="width: 50%;" *ngIf='gameStatus(playerGame) !== "Awaiting Second Player"' [routerLink]="['/games', playerGame.gameId]">Go</button>
             <button class="btn btn-custom mb-0" style="width: 50%;" (click)="resign(playerGame.gameId)">Resign</button>
           </td>
         </tr>

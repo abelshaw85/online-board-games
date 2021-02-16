@@ -4,12 +4,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
-import { WebSocketService } from 'src/app/web-socket/web-socket.service';
 import { Game } from '../game-models/game.model';
 import { AlertService } from '../../shared/alert.service';
 import { GameManagerService } from '../services/game-manager.service';
 import { faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import { SoundService } from '../services/sound.service';
+import { WebSocketService } from '../services/web-socket.service';
 
 @Component({
   selector: 'app-board',

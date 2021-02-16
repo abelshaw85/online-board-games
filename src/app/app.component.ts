@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { WebSocketService } from './web-socket/web-socket.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +6,5 @@ import { WebSocketService } from './web-socket/web-socket.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'shogi';
+  title = '';
 }

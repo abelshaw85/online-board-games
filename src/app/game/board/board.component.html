@@ -21,9 +21,10 @@
         [game]="game"
         [indexValue]="i + j"></app-square>
     </div>
+
     <!-- Area under board -->
     <div>
-      <span class="mr-3">Game Status: {{game.status}}</span>
+      <span class="mr-3">Game Status: {{game.status}}</span><br>
       <span
         style="width: 50px;"
         class="mr-3"
@@ -34,6 +35,7 @@
       <button class="btn btn-custom" [disabled]="game.status == 'Closed'" (click)="resign()">Resign</button>
     </div>
   </div>
+
   <div class="col-md-2 col-sm-12 takenContainer">
     <app-taken-pieces
       [player]=this.game.player2

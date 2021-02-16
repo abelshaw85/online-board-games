@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
-import { Piece } from "src/app/game-components/game-models/piece.model";
+import { Piece } from "src/app/game/game-models/piece.model";
 import { PieceDetails } from "../chess-promote-confirm.component";
 
 export interface PieceData {
   piece: Piece;
 }
 
-// REMEMBER: Add an import to this component in the module imports!
 @Component({
   selector: 'app-selectable-piece',
   templateUrl: 'selectable-piece.component.html',

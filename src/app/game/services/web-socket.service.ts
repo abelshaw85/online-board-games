@@ -2,10 +2,12 @@ import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AuthenticationService } from '../auth/auth.service';
+import { AuthenticationService } from '../../auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WebSocketService {
 
   webSocketEndPoint: string = environment.serverUrl + "/ws";
