@@ -35,7 +35,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   constructor(
     private gameManagerService: GameManagerService,
     private gameDetailsService: GameDetailsService,
-    private authorisationService: AuthenticationService,
+    private authService: AuthenticationService,
     public alertService: AlertService) { }
 
   ngOnInit(): void {
@@ -108,7 +108,7 @@ export class PanelComponent implements OnInit, OnDestroy {
       if (gameDetails.player1.username == gameDetails.player2.username) {
         return "Ongoing (Single Player)";
       } else {
-        let thisPlayerName = this.authorisationService.getLoggedInUserName();
+        let thisPlayerName = this.authService.getLoggedInUserName();
         let opposingPlayerName = gameDetails.player1.username != thisPlayerName ? gameDetails.player1.username : gameDetails.player2.username;
         return "Ongoing VS " + opposingPlayerName;
       }
@@ -138,7 +138,7 @@ export class PanelComponent implements OnInit, OnDestroy {
   }
 
   resign(gameId: number) {
-    let resigningPlayerName = this.authorisationService.getLoggedInUserName();
+    let resigningPlayerName = this.authService.getLoggedInUserName();
     this.alertService.openConfirm(
       "Resign?",
       "You will forfeit the game and your opponent will be declared the winner. Really resign?",

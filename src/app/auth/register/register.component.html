@@ -11,7 +11,7 @@
         <!-- errors/success messages for server-side -->
         <div class="input-group mb-3">
           <div class="alert alert-warning" style="width: 100%;" *ngIf='errorMessage != null'>{{errorMessage}}</div>
-          <div class="alert alert-success" style="width: 100%;" *ngIf='successMessage != null'>{{successMessage}} <a [routerLink]="['login']">login</a></div>
+          <div class="alert alert-success" style="width: 100%;" *ngIf='successMessage != null'>{{successMessage}} <a [routerLink]="['auth', 'login']">login</a></div>
         </div>
 
         <!-- Username -->
@@ -111,7 +111,7 @@
 			</div>
 		</form>
 		<div class="text-center">
-		<a [routerLink]="['/login']">Back to Login.</a>
+		<a [routerLink]="['/auth', 'login']">Back to Login.</a>
 		</div>
 	  </div>
 	</div>

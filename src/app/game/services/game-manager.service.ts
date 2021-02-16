@@ -37,7 +37,7 @@ export class GameManagerService implements OnInit, OnDestroy {
               private draughtsLogic: DraughtsLogicService,
               private jsonToAction: JsonToActionService,
               private webSocketService: WebSocketService,
-              private authenticationService: AuthenticationService) {
+              private authService: AuthenticationService) {
     this.subscriptions.push(this.webSocketService.turnReceived.subscribe((turnData) => {
       this.manageTurn(turnData);
     }));
@@ -186,6 +186,7 @@ export class GameManagerService implements OnInit, OnDestroy {
       } else {
         this.loadedGames[index] = game;
       }
+      game.initGameLogic();
       this.gameReadyWithId.next(id);
     },
     (error) => {
@@ -217,7 +218,7 @@ export class GameManagerService implements OnInit, OnDestroy {
     let player: string = turnData['player'];
     let gameIndex = this.getIndexOfGame(gameId);
     //ignore turn if logged in player made the turn or if the game is not loaded.
-    if (player != this.authenticationService.getLoggedInUserName() && gameIndex != -1) {
+    if (player != this.authService.getLoggedInUserName() && gameIndex != -1) {
       let game = this.loadedGames[gameIndex];
       const actions: any[] = turnData['actions'];
       for (let action of actions) {

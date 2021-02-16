@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit {
   sending = false;
 
   constructor(
-    private authenticationService: AuthenticationService) {   }
+    private authService: AuthenticationService) {   }
 
   ngOnInit() {
     this.registrationForm = new FormGroup({
@@ -47,10 +47,10 @@ export class RegisterComponent implements OnInit {
       const password = this.registrationForm.get("password").value;
       const matchingPassword = this.registrationForm.get("matchingPassword").value;
       this.sending = true;
-      this.authenticationService.register(username, password, matchingPassword).subscribe((result) => {
+      this.authService.register(username, password, matchingPassword).subscribe((result) => {
         let response: ResponseMessage = result;
         if (response.type == "RegistrationSuccess") {
-          this.successMessage = "Registration successful! You may now ";//response.message;
+          this.successMessage = "Registration successful! You may now login.";
           this.errorMessage = null;
         } else {
           this.errorMessage = response.message;

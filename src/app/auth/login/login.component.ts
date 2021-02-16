@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService) {   }
+    private authService: AuthenticationService) {   }
 
   ngOnInit() {
     // Set the error message if one exists.
@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
 
   handleLogin(username, password) {
     this.sending = true;
-    this.authenticationService.login(username, password).subscribe((result) => {
+    this.authService.login(username, password).subscribe((result) => {
       this.successMessage = "Login Successful.";
       this.errorMessage = null;
       this.router.navigate(['']);

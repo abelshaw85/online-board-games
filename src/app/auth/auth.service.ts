@@ -31,7 +31,6 @@ export class AuthenticationService {
   }
 
   login(username: String, password: String) {
-    // let token = this.createBasicAuthToken(username, password);
     return this.http.post(environment.serverUrl + "/auth/authenticate",
       {
         "username": username,

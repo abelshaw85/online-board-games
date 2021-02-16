@@ -9,8 +9,15 @@ import { GameLogic } from "./game-logic.class";
   Abstract class that contains methods and logic that is true across all chess-like games (Chess, Shogi, etc).
  */
 export abstract class ChessLikeLogic extends GameLogic {
-  //list of piece names that could be king
+  // List of piece names that could be king
   protected kingPieces: string[] = [];
+
+  init(game: any) {
+    //Used to show "in-check" pieces if the game is loaded while in check
+    this.checkForCheck(game, "White");
+    this.checkForCheck(game, "Black");
+    this.unhighlightPossibleMoves(game);
+  }
 
   protected findKing(game: Game, colour: string): Square {
     let kingSquare = null;

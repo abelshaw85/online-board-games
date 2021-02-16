@@ -18,17 +18,17 @@ export class WebSocketService {
   turnReceived = new Subject<any>();
   connectedSubject = new BehaviorSubject<boolean>(false); //BehaviourSubject keeps track of last result, unlike Subject
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(private authService: AuthenticationService) {}
 
   _connect() {
     console.log("Initialize WebSocket Connection");
-    if (this.authenticationService.isUserLoggedIn()) {
+    if (this.authService.isUserLoggedIn()) {
       let ws = new SockJS(this.webSocketEndPoint);
       this.stompClient = Stomp.over(ws);
       const _this = this;
       _this.stompClient.connect({
-        'Authorization': "Bearer " + this.authenticationService.getLoggedInUserToken(),
-        'username': this.authenticationService.getLoggedInUserName()
+        'Authorization': "Bearer " + this.authService.getLoggedInUserToken(),
+        'username': this.authService.getLoggedInUserName()
       }, function (frame) {
         _this.connectedSubject.next(true);
         _this.stompClient.subscribe(_this.topicTest, function (data) {
@@ -65,10 +65,5 @@ export class WebSocketService {
       let turnData = body['data'];
       this.turnReceived.next(turnData);
     }
-    // other websocket data types go here
-  }
-
-  test() {
-    this.stompClient.send("/app/test", {}, JSON.stringify("Hello"));
   }
 }

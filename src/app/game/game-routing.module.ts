@@ -6,9 +6,9 @@ import { JoinGamesComponent } from "./ui-components/join-games/join-games.compon
 import { PanelComponent } from "./ui-components/panel/panel.component";
 
 const routes: Routes = [
-  { path: "games", canActivate: [AuthGuard], component: PanelComponent },
-  { path: "games/join", canActivate: [AuthGuard], component: JoinGamesComponent },
-  { path: "games/:id", canActivate: [AuthGuard], component: BoardComponent }
+  { path: "", canActivate: [AuthGuard], component: PanelComponent },
+  { path: "join", canActivate: [AuthGuard], component: JoinGamesComponent },
+  { path: ":id", canActivate: [AuthGuard], component: BoardComponent }
 ];
 
 @NgModule({

@@ -14,6 +14,11 @@ import { GameLogic } from "./game-logic.class";
   providedIn: 'root'
 })
 export class DraughtsLogicService extends GameLogic {
+
+  init(game: any) {
+    //not required
+  }
+
   private activePiecePosition: RowColPosition = null;
 
   highlightPossibleMoves(game: Game, startingPos: RowColPosition) {
@@ -34,11 +39,11 @@ export class DraughtsLogicService extends GameLogic {
   }
 
   highlightPossibleDrops(game: Game, dropPiece: Piece) {
-    return; // cannot drop pieces in draughts
+    // Dropping not used in Draughts
   }
 
   dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition) {
-    return; // cannot drop pieces in draughts
+    // Dropping not used in Draughts
   }
 
   movePiece(game: Game, from: RowColPosition, to: RowColPosition) {
@@ -67,7 +72,6 @@ export class DraughtsLogicService extends GameLogic {
         let take = new Take(game.activeColour, takenSquare.piece.name);
         game.addTurnAction(take);
 
-        //TODO: consider how this setting of null can be sent to server
         this.makePromote(game, takenSquare.position, null);
         let takenToNull = new Promote(takenSquare.position, null);
         game.addTurnAction(takenToNull);

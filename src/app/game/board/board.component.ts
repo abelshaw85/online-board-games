@@ -31,13 +31,9 @@ export class BoardComponent implements OnInit, OnDestroy {
     private webSocketService: WebSocketService,
     private route: ActivatedRoute,
     private gameManager: GameManagerService,
-    private authenticationService: AuthenticationService,
+    private authService: AuthenticationService,
     private alertService: AlertService,
     public soundService: SoundService) {
-  }
-
-  test() {
-    this.webSocketService.test();
   }
 
   ngOnInit(): void {
@@ -101,7 +97,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
     let activeColour = this.game.activeColour;
     let activePlayerName = this.game.getPlayerByColour(activeColour).username;
-    if (activePlayerName == this.authenticationService.getLoggedInUserName()) {
+    if (activePlayerName == this.authService.getLoggedInUserName()) {
       return "It is your turn";
     } else {
       return "Waiting for " + activePlayerName + " to make their turn";
@@ -109,7 +105,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   resign() {
-    let resigningPlayerName = this.authenticationService.getLoggedInUserName();
+    let resigningPlayerName = this.authService.getLoggedInUserName();
     this.alertService.openConfirm(
       "Resign?",
       "You will forfeit the game and your opponent will be declared the winner. Really resign?",

@@ -38,6 +38,10 @@ export class Game {
     return null; //colour does not match either player
   }
 
+  initGameLogic() {
+    this.gameLogic.init(this);
+  }
+
   setGameLogic(gameLogic: GameLogic) {
     this.gameLogic = gameLogic;
   }

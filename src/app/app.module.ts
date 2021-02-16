@@ -11,13 +11,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { setAppInjector } from './app-injector';
 import { NewsComponent } from './home/news/news.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
-import { NotFoundComponent } from './home/not-found/not-found.component';
-import { AuthModule } from './auth/auth.module';
-import { WildcardRoutingModule } from './wildcard-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { FooterComponent } from './home/footer/footer.component';
 import { LogoComponent } from './home/footer/logo/logo.component';
 import { GameModule } from './game/game.module';
+import { WildcardRoutingModule } from './wildcard-routing.module';
 
 @NgModule({
   declarations: [
@@ -27,15 +25,13 @@ import { GameModule } from './game/game.module';
     NewsComponent,
     FooterComponent,
     LogoComponent,
-    TutorialComponent,
-    NotFoundComponent
+    TutorialComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    AuthModule,
     SharedModule,
     GameModule,
     WildcardRoutingModule

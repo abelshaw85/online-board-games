@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/auth/auth.service';
 import { faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -17,7 +16,6 @@ export class HeaderComponent implements OnInit {
   faUser = faUser;
 
   constructor(
-    private router: Router,
     private authService: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -28,13 +26,9 @@ export class HeaderComponent implements OnInit {
 
   handleLogout() {
     this.authService.logout();
-    //this.openDialog();
   }
 
   getUsername() {
     return this.authService.getLoggedInUserName();
   }
-
-
-
 }

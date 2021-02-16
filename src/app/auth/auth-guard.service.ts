@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
 
     if (!this.authService.isUserLoggedIn()) {
       // Adds an error message to the login page to inform the user
-      this.router.navigate(['/login'], {
+      this.router.navigate(['/auth/login'], {
         queryParams: {error: 'unauthorised'}
       });
       return false;

@@ -6,6 +6,7 @@ export interface PieceData {
   piece: Piece;
 }
 
+/* Used in the Chess promotion alert */
 @Component({
   selector: 'app-selectable-piece',
   templateUrl: 'selectable-piece.component.html',

@@ -8,8 +8,6 @@ import { Promote } from "../game-models/turn-actions/promote.model";
 import { Drop } from "../game-models/turn-actions/drop.model";
 import { Winner } from "../game-models/turn-actions/winner.model";
 import { ChessLikeLogic } from "./chess-like-logic.class";
-// import { ShogiPromoteConfirmDialog } from "./dialogs/shogi-promote-confirm.component";
-import { MatDialog } from "@angular/material/dialog";
 
 /*
   Concrete class that implements Shogi-specific logic. Uses ChessLike as a template for logic that is true across Shogi, Chess, and other chess-like games
@@ -20,7 +18,7 @@ import { MatDialog } from "@angular/material/dialog";
 export class ShogiLogicService extends ChessLikeLogic {
   private promotePiece: boolean;
 
-  constructor(private dialog: MatDialog) {
+  constructor() {
     super();
     this.kingPieces.push("SHO-Jeweled General");
     this.kingPieces.push("SHO-King General");
@@ -180,18 +178,4 @@ export class ShogiLogicService extends ChessLikeLogic {
     return piece != null &&
       piece.colour == game.activeColour;
   }
-
-  // async openConfirmPromote(piece: Piece) {
-  //   const dialogRef = this.dialog.open(ShogiPromoteConfirmDialog, {
-  //     width: '50%',
-  //     disableClose: true,
-  //     data: {
-  //       piece: piece
-  //     }
-  //   });
-
-  //  await dialogRef.afterClosed().toPromise().then(result => {
-  //    this.promotePiece = result;
-  //  });
-  // }
 }

@@ -252,11 +252,11 @@ export class ChessLogicService extends ChessLikeLogic {
   }
 
   highlightPossibleDrops(game: Game, dropPiece: Piece) {
-
+    //Dropping not used in Chess
   }
 
   dropPiece(game: Game, pieceToDrop: Piece, positionToDrop: RowColPosition) {
-
+    //Dropping not used in Chess
   }
 
   isFaceDown(colour: string) {

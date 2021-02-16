@@ -31,12 +31,12 @@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link text-uppercase"
-            [routerLink]="['/login']"
+            [routerLink]="['/auth', 'login']"
             [routerLinkActive]="['activeLink']">Login</a>
         </li>
         <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link text-uppercase"
-            [routerLink]="['/register']"
+            [routerLink]="['/auth', 'register']"
             [routerLinkActive]="['activeLink']">Register</a>
         </li>
 

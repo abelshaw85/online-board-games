@@ -32,11 +32,6 @@ export class PieceComponent implements OnInit {
     }
   }
 
-  onDragEnd(event) {
-
-  }
-
-  //could this get active status from parent square object?
   isActive(): boolean {
     return this.game.status != "Closed" &&
       this.game.gameLogic.isActivePiece(this.game, this.piece, this.position) &&

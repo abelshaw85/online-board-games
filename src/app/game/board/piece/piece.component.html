@@ -6,7 +6,6 @@
   cdkDrag
   [cdkDragDisabled]="!isActive()"
   (cdkDragStarted)="onDragStart($event)"
-  (cdkDragEnded)="onDragEnd($event)"
   cdkDragBoundary=".board-container"
   >
   <img src="{{this.getPieceUrl()}}"
