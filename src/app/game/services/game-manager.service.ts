@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, OnDestroy, OnInit } from "@angular/core";
 import { Subject, Subscription } from "rxjs";
 import { AuthenticationService } from "src/app/auth/auth.service";
+import { AlertService } from "src/app/shared/alert.service";
 import { environment } from "src/environments/environment";
 import { ChessLogicService } from "../game-logic-services/chess-logic.service";
 import { DraughtsLogicService } from "../game-logic-services/draughts-logic.service";
@@ -32,6 +33,7 @@ export class GameManagerService implements OnInit, OnDestroy {
   constructor(
               private http: HttpClient,
               private pieceBag: PieceBag,
+              private alertService: AlertService,
               private shogiLogic: ShogiLogicService,
               private chessLogic: ChessLogicService,
               private draughtsLogic: DraughtsLogicService,
@@ -190,7 +192,7 @@ export class GameManagerService implements OnInit, OnDestroy {
       this.gameReadyWithId.next(id);
     },
     (error) => {
-      alert("Error! " + error.message);
+      this.alertService.openAlert("Error Fetching Game", "There was an error fetching the game: " + error.message);
     });
   }
 

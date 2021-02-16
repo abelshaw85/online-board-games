@@ -103,8 +103,7 @@ export abstract class GameLogic {
       promotedPiece.colour = pieceColour;
     }
     game.squares[pieceLocation.row][pieceLocation.col].piece = promotedPiece; //replace piece with promoted piece
-    if (promotionPieceName != null && !promotionPieceName.endsWith("-Moved") && (promotedPiece.promoted || unpromotedPieceName.startsWith("CHE-Pawn"))) {
-      console.log(promotionPieceName);
+    if (promotionPieceName != null && !promotionPieceName.endsWith("-Moved") && (promotedPiece.promoted || unpromotedPieceName.startsWith("CHE-Pawn") || unpromotedPieceName.startsWith("DRA-Piece"))) {
       this.soundService.playAudio(Sound.Promote);
     }
   }
