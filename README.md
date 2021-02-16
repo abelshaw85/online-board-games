@@ -22,3 +22,4 @@ For the most part the code is my own, though there are some exceptions when deal
 * Java Guides: https://www.javaguides.net/2019/06/spring-boot-angular-8-websocket-example-tutorial.html was used heavily when creating the Websocket service.
 * Java Brains: https://www.youtube.com/watch?v=X80nJ5T7YpE used for managing JWTs, mostly similar on the backend.
 * Chess and Shogi svg files were taken from Wikipedia: https://en.wikipedia.org/
+* Sounds used for victory/defeat are from ZapSplat: https://www.zapsplat.com/
