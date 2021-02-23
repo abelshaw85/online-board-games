@@ -95,6 +95,7 @@ export class ShogiLogicService extends ChessLikeLogic {
     this.unhighlightPossibleMoves(game);
 
     game.toggleTurn();
+    game.gameLogic.afterTurn(game);
 
     //Send full turn to the server
     game.postTurn();

@@ -245,8 +245,9 @@ export class ChessLogicService extends ChessLikeLogic {
     this.victoryStateCheck(game, inactiveColour);
 
     this.unhighlightPossibleMoves(game);
-    game.toggleTurn();
 
+    game.toggleTurn();
+    game.gameLogic.afterTurn(game);
     //Send full turn to the server
     game.postTurn();
   }

@@ -15,6 +15,7 @@ export abstract class GameLogic {
   protected soundService: SoundService;
 
   abstract init(game);
+  abstract afterTurn(game);
   //Used by components to show/clear possible moves
   abstract highlightPossibleMoves(game: Game, startingPos:RowColPosition);
   abstract highlightPossibleDrops(game: Game, dropPiece: Piece);

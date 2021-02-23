@@ -26,6 +26,5 @@ export class ChessPromoteConfirmDialog {
   constructor(
     public dialogRef: MatDialogRef<ChessPromoteConfirmDialog>,
     @Inject(MAT_DIALOG_DATA) public data: PieceData) {
-      console.log(this.pieceDetails);
     }
 }

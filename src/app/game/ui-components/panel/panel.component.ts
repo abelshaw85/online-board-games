@@ -57,15 +57,6 @@ export class PanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  // private jsonToGameDetails(details): GameDetails {
-  //   return new GameDetails(
-  //     details['gameId'],
-  //     details['type'],
-  //     details['status'],
-  //     new Player(details['player1']['username'], details['player1']['colour']),
-  //     new Player(details['player2']['username'], details['player2']['colour']));
-  // }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach((subscription) => {
       subscription.unsubscribe();

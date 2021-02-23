@@ -12,8 +12,15 @@ export abstract class ChessLikeLogic extends GameLogic {
   // List of piece names that could be king
   protected kingPieces: string[] = [];
 
-  init(game: any) {
+  init(game: Game) {
     //Used to show "in-check" pieces if the game is loaded while in check
+    this.checkForCheck(game, "White");
+    this.checkForCheck(game, "Black");
+    this.unhighlightPossibleMoves(game);
+  }
+
+  afterTurn(game: Game) {
+    this.unhighlightCheck(game);
     this.checkForCheck(game, "White");
     this.checkForCheck(game, "Black");
     this.unhighlightPossibleMoves(game);
@@ -99,7 +106,8 @@ export abstract class ChessLikeLogic extends GameLogic {
   protected checkForCheck(game: Game, colour: string): boolean {
     //find the king's square so we can track it
     let kingSquare = this.findKing(game, colour);
-    this.unhighlightCheck(game); // Remove check from king, will be re-applied if piece is actually in check
+    kingSquare.inCheck = false;
+    //this.unhighlightCheck(game); // Remove check from king, will be re-applied if piece is actually in check
 
     //highlight squares for every enemy piece
     this.unhighlightPossibleMoves(game);

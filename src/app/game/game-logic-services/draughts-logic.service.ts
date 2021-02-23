@@ -19,6 +19,10 @@ export class DraughtsLogicService extends GameLogic {
     //not required
   }
 
+  afterTurn(game: any) {
+    //not required
+  }
+
   private activePiecePosition: RowColPosition = null;
 
   highlightPossibleMoves(game: Game, startingPos: RowColPosition) {

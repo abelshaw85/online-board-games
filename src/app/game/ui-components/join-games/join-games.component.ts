@@ -25,8 +25,6 @@ export class JoinGamesComponent implements OnInit {
     this.gameDetailsService.getGamesToJoinDetails().subscribe((response) => {
       let gamesDetails: GameDetails[] = [];
       for (var details of response["data"]) {
-        //let gameDetails: GameDetails = this.jsonToGameDetails(details);
-        console.log(details);
         gamesDetails.push(details);
       }
       this.joinGames = gamesDetails;
@@ -38,18 +36,7 @@ export class JoinGamesComponent implements OnInit {
     });
   }
 
-  // private jsonToGameDetails(details): GameDetails {
-  //   return new GameDetails(
-  //     details['gameId'],
-  //     details['type'],
-  //     details['status'],
-  //     new Player(details['player1']['username'], details['player1']['colour']),
-  //     new Player(details['player2']['username'], details['player2']['colour']));
-  // }
-
   waitingPlayer(joinGame: GameDetails): string {
-    console.log(joinGame.player1);
-    console.log(joinGame.player2);
     if (joinGame.player1.username != "") {
       return joinGame.player1.username;
     } else {

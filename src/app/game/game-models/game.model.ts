@@ -133,6 +133,8 @@ export class Game {
     }
     this.turn = null;
     this.toggleTurn();
+    this.gameLogic.afterTurn(this);
+    this.postTurn();
   }
 
   postTurn() {
@@ -141,7 +143,6 @@ export class Game {
     }
     this.http.post<Turn>(environment.serverUrl + "/makeTurn", this.turn)
       .subscribe((response) => {
-        console.log(response);
         this.turn = null;
       }
     );

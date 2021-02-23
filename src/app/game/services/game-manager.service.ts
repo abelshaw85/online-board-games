@@ -215,6 +215,7 @@ export class GameManagerService implements OnInit, OnDestroy {
     return index;
   }
 
+  /* If user receives a Turn from Websocket, map turn to Actions and takeTurn */
   private manageTurn(turnData) {
     let gameId = turnData['gameId'];
     let player: string = turnData['player'];
